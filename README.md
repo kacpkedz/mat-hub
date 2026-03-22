@@ -1,54 +1,34 @@
-# Math Arcade PWA
+# mat-hub
 
-Gra matematyczna na refleks — działania arytmetyczne i rozkład wielomianów kwadratowych.
-
-## Uruchomienie lokalnie
-
-```bash
-# Python (najprostsze)
-python3 -m http.server 8080
-# następnie otwórz http://localhost:8080
-
-# Node.js
-npx serve .
-```
+Gra matematyczna na refleks — działania arytmetyczne, rozkład wielomianów i wzory skróconego mnożenia.
 
 ## Publikacja na GitHub Pages
 
-1. Utwórz nowe repozytorium na GitHub (np. `math-arcade`)
+1. Utwórz nowe repo na GitHub (np. `mat-hub`)
 2. Wrzuć zawartość tego folderu:
    ```bash
    git init
    git add .
-   git commit -m "init: Math Arcade PWA"
-   git remote add origin https://github.com/TWÓJ_LOGIN/math-arcade.git
+   git commit -m "init"
+   git branch -M main
+   git remote add origin https://github.com/TWÓJ_LOGIN/mat-hub.git
    git push -u origin main
    ```
-3. W ustawieniach repo → **Pages** → Source: `main` / `/ (root)`
-4. Po chwili gra dostępna pod `https://TWÓJ_LOGIN.github.io/math-arcade/`
-5. Na telefonie otwórz URL → **Dodaj do ekranu głównego** → działa offline ✓
+3. Repo → **Settings** → **Pages** → Source: `main / (root)` → **Save**
+4. Gra dostępna pod `https://TWÓJ_LOGIN.github.io/mat-hub/`
 
-## Struktura
+## Tryby gry
 
-```
-index.html      — cała gra (jeden plik)
-manifest.json   — konfiguracja PWA
-sw.js           — service worker (cache offline)
-icons/
-  icon-192.png
-  icon-512.png
-```
+| Tryb | Opis | Punkty |
+|------|------|--------|
+| Działania | + − × ÷ | 10 pkt |
+| Rozkład | miejsca zerowe trójmianu | 20 pkt |
+| Wzory | wzory skróconego mnożenia z x | 20 pkt |
 
-## Poziomy trudności
+## Poziomy
 
-| Poziom  | Arytmetyka     | Kwadratowe (coef) | Znaki pierwiastków |
-|---------|---------------|-------------------|-------------------|
-| Łatwy   | liczby 1–12   | x²  (1)           | losowe +/−        |
-| Średni  | liczby 1–20   | x², 2x², 3x²      | losowe +/−        |
-| Trudny  | liczby 1–30   | x², 2x², 3x², 5x² | losowe +/−, (x±r)²|
-
-## Punktacja
-
-- Działanie arytmetyczne: **10 pkt** × mnożnik combo
-- Rozkład kwadratowy: **20 pkt** × mnożnik combo
-- Co 5 poprawnych z rzędu: mnożnik rośnie o 1 (×2, ×3, ...)
+| Poziom | Wzory dostępne |
+|--------|---------------|
+| Łatwy | (x+b)², (x−b)², (x+b)(x−b) |
+| Średni | j.w. + większe liczby |
+| Trudny | j.w. + (x+b)³ |
