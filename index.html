@@ -418,7 +418,7 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
       <button class="okbtn" id="okQ">↵</button>
     </div>
     <div class="np">
-      <div class="nk sign" data-qv="-">±</div>
+      <div class="nk" style="opacity:0;pointer-events:none" data-qv="">·</div>
       <div class="nk" data-qv="7">7</div>
       <div class="nk" data-qv="8">8</div>
       <div class="nk" data-qv="9">9</div>
@@ -706,9 +706,11 @@ function submitQ() {
   if (isNaN(v0) || isNaN(v1)) return;
 
   const { r1, r2, coef } = S.q;
-  // gracz wpisuje pierwiastki r1 i r2 (ze znakiem)
-  // akceptujemy dowolną kolejność
-  const ok = (v0===r1 && v1===r2) || (v0===r2 && v1===r1);
+  // Gracz wpisuje wartości BEZWZGLĘDNE pierwiastków — dokładnie to co widzi w nawiasach.
+  // (x − 3)(x + 2) → wpisuje 3 i 2
+  // (x + 12)(x + 4) → wpisuje 12 i 4
+  const a0 = ABS(r1), a1 = ABS(r2);
+  const ok = (v0===a0 && v1===a1) || (v0===a1 && v1===a0);
 
   if (ok) {
     hit();
@@ -716,7 +718,7 @@ function submitQ() {
   } else {
     miss();
     qFact.innerHTML  = buildFact(r1, r2, coef, true);
-    htxt.textContent = `x₁ = ${r1},  x₂ = ${r2}`;
+    htxt.textContent = `wpisz: ${a0} i ${a1}`;
     setTimeout(()=>{ if(S.running) nextQ(); }, 1400);
   }
 }
@@ -843,14 +845,8 @@ function qKey(v) {
   const f = S.qfocus;
   if (v==='clr') { S.qbuf[f]=''; updQdisplay(); return; }
   if (v==='del') { S.qbuf[f]=S.qbuf[f].slice(0,-1); updQdisplay(); return; }
-  if (v==='-') {
-    if      (!S.qbuf[f])          S.qbuf[f] = '-';
-    else if (S.qbuf[f]==='-')     S.qbuf[f] = '';
-    else if (S.qbuf[f][0]==='-')  S.qbuf[f] = S.qbuf[f].slice(1);
-    else                           S.qbuf[f] = '-'+S.qbuf[f];
-    updQdisplay(); return;
-  }
-  if (S.qbuf[f].replace('-','').length < 3) { S.qbuf[f]+=v; updQdisplay(); }
+  if (v==='-') return; // znaki są zakodowane w nawiasach — gracz wpisuje tylko |r|
+  if (S.qbuf[f].length < 3) { S.qbuf[f]+=v; updQdisplay(); }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -920,7 +916,7 @@ document.addEventListener('keydown', e=>{
   if (e.key>='0' && e.key<='9') {
     S.mode==='arith' ? aKey(e.key) : qKey(e.key);
   } else if (e.key==='-') {
-    S.mode==='arith' ? aKey('-') : qKey('-');
+    if (S.mode==='arith') aKey('-'); // quad nie używa znaku
   } else if (e.key==='Backspace') {
     e.preventDefault();
     S.mode==='arith' ? aKey('del') : qKey('del');
