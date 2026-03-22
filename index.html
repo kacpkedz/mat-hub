@@ -55,6 +55,7 @@ body{
 .opl{background:var(--s1);border:1.5px solid var(--b1);border-radius:10px;width:54px;height:46px;font-family:'DM Mono',monospace;font-size:21px;color:var(--t2);cursor:pointer;text-align:center;line-height:46px;touch-action:manipulation;user-select:none;transition:border-color .12s,color .12s,background .12s}
 .opl.on{border-color:var(--ac);color:var(--ac);background:rgba(200,200,200,.07)}
 .opl:active{opacity:.65}
+#arithOpts.ops-disabled{opacity:.35;pointer-events:none}
 
 /* mode list */
 .mlist{display:flex;flex-direction:column;gap:8px;width:100%;max-width:340px}
@@ -67,12 +68,10 @@ body{
 }
 .mitem.on{border-color:var(--ac);background:rgba(200,200,200,.06)}
 .mitem:active{opacity:.7}
-.mitem-ico{font-family:'DM Mono',monospace;font-size:18px;width:32px;text-align:center;flex-shrink:0;color:var(--t2)}
+.mitem-ico{font-family:'DM Mono',monospace;font-size:16px;width:36px;text-align:center;flex-shrink:0;color:var(--t2);letter-spacing:-.02em}
 .mitem.on .mitem-ico{color:var(--ac)}
 .mitem-name{font-size:14px;font-weight:600;letter-spacing:.03em;color:var(--t1)}
-.mitem-check{margin-left:auto;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--b2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s}
-.mitem.on .mitem-check{background:var(--ac);border-color:var(--ac)}
-.mitem.on .mitem-check::after{content:'';width:6px;height:6px;border-radius:50%;background:#111}
+/* mitem-check removed */
 
 /* buttons */
 .btn{background:#fff;color:#111;border:none;border-radius:12px;padding:14px 0;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;touch-action:manipulation;transition:opacity .12s,transform .1s;width:100%;max-width:260px}
@@ -123,9 +122,10 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
 .blnk{display:inline-block;min-width:20px;border-bottom:1.5px solid var(--ac);color:var(--ac);text-align:center;padding:0 2px;font-weight:500;letter-spacing:0}
 .pop{position:absolute;font-family:'DM Mono',monospace;font-size:19px;font-weight:500;pointer-events:none;opacity:0;z-index:5;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap}
 
-/* answer — arith */
-.adisp{background:var(--s2);border:1.5px solid var(--b1);border-radius:10px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:26px;font-weight:500;color:var(--t1);text-align:right;min-height:52px;display:flex;align-items:center;justify-content:flex-end;user-select:none;margin-bottom:8px}
-.adisp.mt{color:var(--t3)}
+/* answer — arith: inline w karcie */
+.adisp{display:none} /* ukryte — wartość pokazywana inline w qA */
+.qarith .ans{color:var(--gn)}
+.qarith .ans.mt{color:var(--t3)}
 
 /* answer — quad/form fields */
 .qrow{display:flex;gap:6px;align-items:stretch;margin-bottom:8px}
@@ -168,17 +168,14 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
     <div class="mitem on" data-m="arith">
       <div class="mitem-ico">±</div>
       <div class="mitem-name">Działania</div>
-      <div class="mitem-check"></div>
     </div>
     <div class="mitem on" data-m="quad">
       <div class="mitem-ico">x²</div>
       <div class="mitem-name">Rozkład</div>
-      <div class="mitem-check"></div>
     </div>
     <div class="mitem on" data-m="form">
-      <div class="mitem-ico">(a±b)²</div>
-      <div class="mitem-name">Wzory</div>
-      <div class="mitem-check"></div>
+      <div class="mitem-ico">f(x)</div>
+      <div class="mitem-name">Wzory skrócone</div>
     </div>
   </div>
 
@@ -253,7 +250,7 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
 
   <!-- arith UI -->
   <div id="uiA">
-    <div class="adisp mt" id="aDisp">?</div>
+    <div id="aDisp" style="display:none"></div>
     <div class="np">
       <div class="nk" data-v="7">7</div><div class="nk" data-v="8">8</div><div class="nk" data-v="9">9</div><div class="nk sign" data-v="-">±</div>
       <div class="nk" data-v="4">4</div><div class="nk" data-v="5">5</div><div class="nk" data-v="6">6</div><div class="nk del" data-v="del">⌫</div>
@@ -377,8 +374,10 @@ function genArith() {
   else{b=rnd(2,c.dv[1]);ans=rnd(1,c.dv[1]);a=b*ans;}
   S.q={ans}; S.abuf='';
   qlbl.textContent={'+':'Dodawanie','−':'Odejmowanie','×':'Mnożenie','÷':'Dzielenie'}[op];
-  qA.innerHTML=`${a}<span class="op"> ${op} </span>${b}<span class="eq"> =</span>`;
-  updA();
+  qA.innerHTML=`${a}<span class="op"> ${op} </span>${b}<span class="eq"> = </span><span class="ans mt" id="qAns">?</span>`;
+  // nie wywołuj updA — qAns zarządzane osobno
+  S.abuf='';
+  _updQAns();
 }
 
 /* ── QUAD ──
@@ -678,7 +677,14 @@ function stopComboTimer(){clearInterval(_cInt);$('ctimerWrap').style.display='no
 /* ════════════════════════════════════════
    DISPLAY HELPERS
 ════════════════════════════════════════ */
-function updA(){aDisp.textContent=S.abuf||'?';aDisp.className='adisp'+(S.abuf?'':' mt');}
+function updA(){_updQAns();}
+function _updQAns(){
+  const el=document.getElementById('qAns');
+  if(!el) return;
+  const v=S.abuf||'?';
+  el.textContent=v;
+  el.className='ans'+(S.abuf?'':' mt');
+}
 
 /* ════════════════════════════════════════
    KEY HANDLERS
@@ -817,7 +823,7 @@ document.querySelectorAll('#modeCards .mitem').forEach(b=>{
     b.classList.toggle('on');
     const a=[...document.querySelectorAll('#modeCards .mitem.on')].map(x=>x.dataset.m);
     if(!a.length){b.classList.add('on');return;} S.modes=a;
-    $('arithOpts').style.display=a.every(m=>m!=='arith')?'none':'';
+    $('arithOpts').classList.toggle('ops-disabled',a.every(m=>m!=='arith'));
   });
 });
 
