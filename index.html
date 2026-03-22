@@ -2,8 +2,8 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#111116">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#080808">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,351 +11,174 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>mat-hub</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#080808;--s1:#161616;--s2:#1c1c1c;--s3:#242424;
-  --b1:#2a2a2a;--b2:#383838;--b3:#484848;
-  --t1:#dedede;--t2:#888888;--t3:#4a4a4a;
+  --bg:#080808;--s1:#161616;--s2:#1e1e1e;--s3:#262626;
+  --b1:#2c2c2c;--b2:#3a3a3a;
+  --t1:#dedede;--t2:#888;--t3:#484848;
   --ac:#c8c8c8;--gn:#4ade80;--rd:#f87171;--yl:#d4a017;
-  --st:env(safe-area-inset-top,0px);
-  --sb:env(safe-area-inset-bottom,0px);
-  --sl:env(safe-area-inset-left,0px);
-  --sr:env(safe-area-inset-right,0px);
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+  --sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);
 }
-html{height:100%;background:var(--bg)}
+html,body{height:100%;background:var(--bg)}
 body{
   font-family:'DM Sans',sans-serif;color:var(--t1);
-  min-height:100%;min-height:100dvh;
-  display:flex;flex-direction:column;align-items:center;
+  min-height:100dvh;display:flex;flex-direction:column;align-items:center;
   overflow:hidden;
-  padding:
-    calc(var(--st) + 10px)
-    calc(var(--sr) + 16px)
-    calc(var(--sb) + 8px)
-    calc(var(--sl) + 16px);
+  padding:calc(var(--st)+10px) calc(var(--sr)+16px) calc(var(--sb)+8px) calc(var(--sl)+16px);
 }
 
-/* ── OVERLAY SCREENS ── */
+/* ── SCREENS ── */
 .scr{
   position:fixed;inset:0;z-index:40;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:20px;background:var(--bg);
-  padding:32px 28px calc(32px + var(--sb));
+  gap:16px;background:var(--bg);
+  padding:28px 24px calc(28px + var(--sb));
   overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
 .scr.hide{display:none}
 
-/* typography */
-.ttl{
-  font-family:'DM Mono',monospace;font-size:clamp(28px,9vw,44px);
-  font-weight:500;text-align:center;line-height:1.1;letter-spacing:-.03em;
-}
+.ttl{font-family:'DM Mono',monospace;font-size:clamp(28px,9vw,44px);font-weight:500;text-align:center;line-height:1.1;letter-spacing:-.03em}
 .sub{font-size:13px;color:var(--t2);text-align:center;max-width:280px;line-height:1.75}
 
-/* config blocks */
-.blk{display:flex;flex-direction:column;gap:10px;align-items:center;width:100%;max-width:340px}
+/* config */
+.blk{display:flex;flex-direction:column;gap:8px;align-items:center;width:100%;max-width:340px}
 .blk-lbl{font-size:10px;color:var(--t3);letter-spacing:.18em;text-transform:uppercase}
 .row{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
 
-/* pill toggle */
-.pl{
-  background:var(--s1);border:1.5px solid var(--b1);border-radius:100px;
-  padding:7px 18px;font-size:13px;color:var(--t2);
-  cursor:pointer;touch-action:manipulation;user-select:none;
-  transition:border-color .12s,color .12s,background .12s;
-}
+.pl{background:var(--s1);border:1.5px solid var(--b1);border-radius:100px;padding:7px 18px;font-size:13px;color:var(--t2);cursor:pointer;touch-action:manipulation;user-select:none;transition:border-color .12s,color .12s,background .12s}
 .pl.on{border-color:var(--ac);color:var(--ac);background:rgba(200,200,200,.07)}
 .pl:active{opacity:.65}
 
-/* op pill */
-.opl{
-  background:var(--s1);border:1.5px solid var(--b1);border-radius:10px;
-  width:54px;height:46px;font-family:'DM Mono',monospace;font-size:21px;
-  color:var(--t2);cursor:pointer;text-align:center;line-height:46px;
-  touch-action:manipulation;user-select:none;
-  transition:border-color .12s,color .12s,background .12s;
-}
+.opl{background:var(--s1);border:1.5px solid var(--b1);border-radius:10px;width:54px;height:46px;font-family:'DM Mono',monospace;font-size:21px;color:var(--t2);cursor:pointer;text-align:center;line-height:46px;touch-action:manipulation;user-select:none;transition:border-color .12s,color .12s,background .12s}
 .opl.on{border-color:var(--ac);color:var(--ac);background:rgba(200,200,200,.07)}
 .opl:active{opacity:.65}
 
-/* mode cards */
-.mcards{display:flex;gap:8px;width:100%;max-width:360px}
-.mcard{
-  flex:1;background:var(--s1);border:1.5px solid var(--b1);border-radius:14px;
-  padding:18px 10px;cursor:pointer;text-align:center;
+/* mode list */
+.mlist{display:flex;flex-direction:column;gap:8px;width:100%;max-width:340px}
+.mitem{
+  display:flex;align-items:center;gap:14px;
+  background:var(--s1);border:1.5px solid var(--b1);border-radius:12px;
+  padding:13px 16px;cursor:pointer;
   touch-action:manipulation;user-select:none;
   transition:border-color .12s,background .12s;
 }
-.mcard .ico{font-size:22px;line-height:1;margin-bottom:8px}
-.mcard .nm{font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--t1)}
-.mcard .ds{font-size:10px;color:var(--t2);margin-top:3px}
-.mcard.on{border-color:var(--ac);background:rgba(200,200,200,.07)}
-.mcard:active{opacity:.7}
+.mitem.on{border-color:var(--ac);background:rgba(200,200,200,.06)}
+.mitem:active{opacity:.7}
+.mitem-ico{font-family:'DM Mono',monospace;font-size:18px;width:32px;text-align:center;flex-shrink:0;color:var(--t2)}
+.mitem.on .mitem-ico{color:var(--ac)}
+.mitem-name{font-size:14px;font-weight:600;letter-spacing:.03em;color:var(--t1)}
+.mitem-check{margin-left:auto;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--b2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.mitem.on .mitem-check{background:var(--ac);border-color:var(--ac)}
+.mitem.on .mitem-check::after{content:'';width:6px;height:6px;border-radius:50%;background:#111}
 
 /* buttons */
-.btn{
-  background:#ffffff;color:#111;border:none;border-radius:12px;
-  padding:15px 0;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;
-  cursor:pointer;touch-action:manipulation;
-  transition:opacity .12s,transform .1s;
-  width:100%;max-width:280px;
-}
+.btn{background:#fff;color:#111;border:none;border-radius:12px;padding:14px 0;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;touch-action:manipulation;transition:opacity .12s,transform .1s;width:100%;max-width:260px}
 .btn:active{opacity:.82;transform:scale(.98)}
-.btn.ghost{background:none;border:1px solid var(--b2);color:var(--t2);font-weight:400;color:var(--t1)}
+.btn.ghost{background:none;border:1.5px solid var(--b2);color:var(--t1);font-weight:400}
 .btn.ghost:active{opacity:.6}
 
-/* result grid */
+/* end stats */
 .rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:310px}
 .rbox{background:var(--s1);border:1.5px solid var(--b1);border-radius:12px;padding:14px;text-align:center}
 .rval{font-family:'DM Mono',monospace;font-size:30px;font-weight:500;color:var(--t1);line-height:1}
 .rlbl{font-size:10px;color:var(--t3);letter-spacing:.1em;margin-top:5px;text-transform:uppercase}
 
-/* install hint */
-/* ── GAME WRAP ── */
+/* ── GAME ── */
 .wrap{width:100%;max-width:440px;display:flex;flex-direction:column;gap:9px;flex:1;min-height:0}
 
-/* header */
 .hdr{display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.logo{font-family:'DM Mono',monospace;font-size:13px;color:var(--t3);letter-spacing:.1em}
 .pts{font-family:'DM Mono',monospace;font-size:23px;font-weight:500;color:var(--t1)}
-.mbtn{
-  background:none;border:1px solid var(--b1);border-radius:8px;
-  padding:5px 13px;font-size:11px;color:var(--t2);
-  cursor:pointer;touch-action:manipulation;transition:opacity .12s;
-}
+.hdr-msg{flex:1;font-family:'DM Mono',monospace;font-size:12px;color:var(--t2);text-align:center;padding:0 8px;min-height:18px;transition:color .2s}
+.hdr-msg.ok{color:var(--gn)}
+.hdr-msg.err{color:var(--rd)}
+.mbtn{background:none;border:1.5px solid var(--b1);border-radius:8px;padding:5px 13px;font-size:11px;color:var(--t2);cursor:pointer;touch-action:manipulation;transition:opacity .12s}
 .mbtn:active{opacity:.55}
 
 /* streak */
 .srow{display:flex;align-items:center;gap:7px;min-height:18px;flex-shrink:0}
 .sdots{display:flex;gap:4px}
-.dot{
-  width:7px;height:7px;border-radius:50%;
-  background:var(--s2);border:1px solid var(--b1);
-  transition:background .18s,border-color .18s;
-}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--s2);border:1.5px solid var(--b1);transition:background .18s,border-color .18s}
 .dot.on{background:var(--gn);border-color:var(--gn)}
+.ctimer-wrap{flex:1;height:3px;background:var(--s2);border-radius:2px;overflow:hidden;margin:0 4px}
+.ctimer-bar{height:100%;width:100%;border-radius:2px;background:var(--ac);transform-origin:left;transition:background .3s}
+.ctimer-bar.low{background:var(--rd)}
 .cmbo{margin-left:auto;font-size:11px;color:var(--ac);opacity:0;transition:opacity .2s;font-family:'DM Mono',monospace}
 .cmbo.show{opacity:1}
 
-/* question card */
-.card{
-  background:var(--s1);border:1.5px solid var(--b1);border-radius:16px;
-  padding:20px 18px 16px;text-align:center;
-  position:relative;overflow:hidden;flex-shrink:0;
-  transition:border-color .18s,box-shadow .18s;
-}
+/* card */
+.card{background:var(--s1);border:1.5px solid var(--b1);border-radius:16px;padding:20px 18px 16px;text-align:center;position:relative;overflow:hidden;flex-shrink:0;transition:border-color .18s}
 .card.ok{border-color:var(--gn)}
 .card.err{border-color:var(--rd);animation:shk .24s}
 @keyframes shk{0%,100%{transform:translateX(0)}30%{transform:translateX(-6px)}70%{transform:translateX(6px)}}
-
 .qlbl{font-size:10px;color:var(--t3);letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px}
-
-/* arithmetic */
-.qarith{
-  font-family:'DM Mono',monospace;
-  font-size:clamp(28px,9.5vw,50px);font-weight:500;
-  line-height:1;color:var(--t1);letter-spacing:-.02em;
-}
+.qarith{font-family:'DM Mono',monospace;font-size:clamp(28px,9.5vw,50px);font-weight:500;line-height:1;color:var(--t1);letter-spacing:-.02em}
 .qarith .op{color:var(--ac)}
 .qarith .eq{color:var(--t3)}
-
-/* quadratic */
-.qpoly{
-  font-family:'DM Mono',monospace;
-  font-size:clamp(18px,5.5vw,30px);font-weight:500;
-  color:var(--t1);line-height:1.3;letter-spacing:.01em;
-}
+.qpoly{font-family:'DM Mono',monospace;font-size:clamp(18px,5.5vw,30px);font-weight:500;color:var(--t1);line-height:1.3;letter-spacing:.01em}
 sup{font-size:.58em;vertical-align:super;line-height:0}
-.qfact{
-  font-family:'DM Mono',monospace;
-  font-size:clamp(13px,4vw,20px);color:var(--t2);margin-top:10px;line-height:1.4;
-}
-.blnk{
-  display:inline-block;min-width:20px;
-  border-bottom:1.5px solid var(--ac);color:var(--ac);
-  text-align:center;padding:0 2px;font-weight:500;letter-spacing:0;
-}
+.qfact{font-family:'DM Mono',monospace;font-size:clamp(13px,4vw,20px);color:var(--t2);margin-top:10px;line-height:1.4}
+.blnk{display:inline-block;min-width:20px;border-bottom:1.5px solid var(--ac);color:var(--ac);text-align:center;padding:0 2px;font-weight:500;letter-spacing:0}
+.pop{position:absolute;font-family:'DM Mono',monospace;font-size:19px;font-weight:500;pointer-events:none;opacity:0;z-index:5;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap}
 
-/* floating score pop */
-.pop{
-  position:absolute;font-family:'DM Mono',monospace;font-size:19px;font-weight:500;
-  pointer-events:none;opacity:0;z-index:5;
-  top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;
-}
-
-/* ── ANSWER DISPLAYS ── */
-/* arith */
-.arow{display:flex;gap:8px;align-items:stretch;margin-bottom:8px}
-.adisp{
-  flex:1;background:var(--s2);border:1.5px solid var(--b1);border-radius:10px;
-  padding:10px 14px;font-family:'DM Mono',monospace;font-size:26px;font-weight:500;
-  color:var(--t1);text-align:right;min-height:52px;
-  display:flex;align-items:center;justify-content:flex-end;
-  user-select:none;cursor:default;letter-spacing:-.01em;
-  transition:border-color .15s;
-}
+/* answer — arith */
+.adisp{background:var(--s2);border:1.5px solid var(--b1);border-radius:10px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:26px;font-weight:500;color:var(--t1);text-align:right;min-height:52px;display:flex;align-items:center;justify-content:flex-end;user-select:none;margin-bottom:8px}
 .adisp.mt{color:var(--t3)}
 
-/* quad */
+/* answer — quad/form fields */
 .qrow{display:flex;gap:6px;align-items:stretch;margin-bottom:8px}
-.qfld{
-  flex:1;background:var(--s2);border:1.5px solid var(--b1);border-radius:10px;
-  padding:9px 12px;cursor:pointer;touch-action:manipulation;
-  display:flex;flex-direction:column;gap:2px;transition:border-color .15s;
-}
+.qtabs{display:flex;gap:6px;margin-bottom:5px}
+.qtab{flex:1;background:var(--s1);border:1.5px solid var(--b1);border-radius:8px;padding:7px 0;font-size:11px;color:var(--t2);cursor:pointer;text-align:center;touch-action:manipulation;user-select:none;transition:all .12s;font-family:'DM Mono',monospace}
+.qtab.act{border-color:var(--ac);color:var(--ac);background:rgba(200,200,200,.07)}
+.qtab:active{opacity:.65}
+.qfld{flex:1;background:var(--s2);border:1.5px solid var(--b1);border-radius:10px;padding:9px 12px;cursor:pointer;touch-action:manipulation;display:flex;flex-direction:column;gap:2px;transition:border-color .15s}
 .qfld.act{border-color:var(--ac)}
 .qflbl{font-size:9px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
-.qfval{
-  font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--t1);
-  text-align:right;min-height:30px;display:flex;align-items:center;justify-content:flex-end;
-}
+.qfval{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--t1);text-align:right;min-height:30px;display:flex;align-items:center;justify-content:flex-end}
 .qfval.mt{color:var(--t3)}
 .qsep{align-self:center;color:var(--t3);font-size:16px;flex-shrink:0}
 
-/* ok button */
-.okbtn{
-  background:var(--s2);border:1.5px solid var(--b2);border-radius:10px;
-  width:52px;min-height:52px;font-size:19px;cursor:pointer;flex-shrink:0;
-  color:var(--t1);touch-action:manipulation;
-  display:flex;align-items:center;justify-content:center;
-  transition:background .1s,border-color .1s,transform .08s;
-}
-.okbtn:active{background:var(--ac);border-color:var(--ac);color:#fff;transform:scale(.93)}
-
-/* ── NUMPAD ── */
+/* numpad */
 .np{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.nk{
-  background:var(--s1);border:1.5px solid var(--b1);border-radius:10px;
-  padding:0;height:52px;
-  font-family:'DM Mono',monospace;font-size:17px;font-weight:400;color:var(--t1);
-  cursor:pointer;text-align:center;line-height:52px;
-  user-select:none;-webkit-user-select:none;touch-action:manipulation;
-  transition:background .07s,transform .07s;
-}
+.nk{background:var(--s1);border:1.5px solid var(--b1);border-radius:10px;height:52px;font-family:'DM Mono',monospace;font-size:17px;color:var(--t1);cursor:pointer;text-align:center;line-height:52px;user-select:none;-webkit-user-select:none;touch-action:manipulation;transition:background .07s,transform .07s}
 .nk:active{transform:scale(.9);background:var(--s3)}
 .nk.sign{color:var(--yl)}
 .nk.del{color:var(--rd)}
 .nk.z2{grid-column:span 2}
-.nk.go{background:var(--ac);color:#fff;border-color:var(--ac);font-size:19px}
-.nk.go:active{background:#6673e8;transform:scale(.9)}
-
-/* quad field tabs */
-.qtabs{display:flex;gap:6px;margin-bottom:5px}
-.qtab{
-  flex:1;background:var(--s1);border:1.5px solid var(--b1);border-radius:8px;
-  padding:7px 0;font-size:11px;color:var(--t2);cursor:pointer;text-align:center;
-  touch-action:manipulation;user-select:none;transition:all .12s;
-  font-family:'DM Mono',monospace;letter-spacing:.04em;
-}
-.qtab.act{border-color:var(--ac);color:var(--ac);background:rgba(200,200,200,.07)}
-.qtab:active{opacity:.65}
-
-/* header message */
-.hdr-msg{
-  flex:1;font-family:'DM Mono',monospace;font-size:12px;
-  color:var(--t2);text-align:center;padding:0 8px;
-  min-height:18px;line-height:1.3;transition:color .2s;
-}
-.hdr-msg.ok{color:var(--gn)}
-.hdr-msg.err{color:var(--rd)}
-
-/* combo timer bar */
-.ctimer-wrap{
-  flex:1;height:3px;background:var(--s2);border-radius:2px;overflow:hidden;
-  margin:0 4px;
-}
-.ctimer-bar{
-  height:100%;width:100%;border-radius:2px;
-  background:var(--ac);transform-origin:left;
-  transition:background .3s;
-}
-.ctimer-bar.low{background:var(--rd)}
-
-/* level-up toast */
-.lup{
-  position:fixed;top:24%;left:50%;transform:translateX(-50%);
-  font-family:'DM Mono',monospace;font-size:clamp(16px,5vw,24px);
-  color:var(--ac);opacity:0;pointer-events:none;z-index:60;white-space:nowrap;
-}
-@keyframes la{
-  0%{opacity:0;transform:translateX(-50%) scale(.7)}
-  20%{opacity:1;transform:translateX(-50%) scale(1.05)}
-  70%{opacity:1;transform:translateX(-50%) scale(1)}
-  100%{opacity:0;transform:translateX(-50%) scale(.88)}
-}
-.lup.show{animation:la 1.1s ease forwards}
-
-/* skip key */
+.nk.go{background:#fff;color:#111;border-color:#fff;font-size:19px}
+.nk.go:active{background:#ccc;transform:scale(.9)}
 .nk.skip{font-size:11px;color:var(--t3);letter-spacing:.04em}
+.nk.skip:active{color:var(--t2);transform:scale(.9)}
 
-/* ranking */
-.rank-wrap{width:100%;max-width:340px}
-.rank-title{font-size:10px;color:var(--t3);letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px;text-align:center}
-.rank-list{display:flex;flex-direction:column;gap:5px}
-.rank-row{
-  display:flex;align-items:center;gap:10px;
-  background:var(--s1);border:1.5px solid var(--b1);border-radius:10px;
-  padding:8px 14px;
-}
-.rank-row.gold{border-color:#a07840}
-.rank-pos{font-family:'DM Mono',monospace;font-size:11px;color:var(--t3);width:16px;text-align:center;flex-shrink:0}
-.rank-name{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--t1);flex:1;letter-spacing:.08em}
-.rank-pts{font-family:'DM Mono',monospace;font-size:14px;color:var(--ac);flex-shrink:0}
-.rank-empty{font-size:12px;color:var(--t3);text-align:center;padding:10px 0}
-
-/* modal inicjałów */
-.modal-overlay{
-  position:fixed;inset:0;z-index:80;
-  background:rgba(0,0,0,.75);backdrop-filter:blur(4px);
-  display:flex;align-items:center;justify-content:center;
-}
-.modal-overlay.hide{display:none}
-.modal-box{
-  background:var(--s1);border:1.5px solid var(--b2);border-radius:16px;
-  padding:28px 24px;text-align:center;width:min(320px,90vw);
-}
-.modal-ttl{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;margin-bottom:6px}
-.modal-sub{font-size:12px;color:var(--t2);margin-bottom:20px}
-.initials-row{display:flex;gap:8px;justify-content:center;margin-bottom:20px}
-.init-box{
-  width:52px;height:58px;background:var(--s2);
-  border:1.5px solid var(--b2);border-radius:10px;
-  font-family:'DM Mono',monospace;font-size:26px;font-weight:500;
-  color:var(--t1);text-align:center;line-height:58px;
-  cursor:pointer;transition:border-color .15s;
-  text-transform:uppercase;
-}
-.init-box.act{border-color:var(--ac)}
-.modal-btns{display:flex;gap:8px;justify-content:center}
-.modal-btns .btn{max-width:130px;padding:11px 0;font-size:14px}
+/* toast */
+.lup{position:fixed;top:24%;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:clamp(16px,5vw,24px);color:var(--ac);opacity:0;pointer-events:none;z-index:60;white-space:nowrap}
+@keyframes la{0%{opacity:0;transform:translateX(-50%) scale(.7)}20%{opacity:1;transform:translateX(-50%) scale(1.05)}70%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(.88)}}
+.lup.show{animation:la 1.1s ease forwards}
 </style>
 </head>
 <body>
 
-<!-- ════════════════ MENU ════════════════ -->
+<!-- ════ MENU ════ -->
 <div class="scr" id="sMenu">
   <div class="ttl">mat-hub</div>
 
-  <!-- RANKING -->
-  <div class="rank-wrap" id="rankWrap">
-    <div class="rank-title">Top 5</div>
-    <div class="rank-list" id="rankList"></div>
-  </div>
-
-  <div class="mcards" id="modeCards">
-    <div class="mcard on" data-m="arith">
-      <div class="ico">±</div>
-      <div class="nm">Działania</div>
+  <div class="mlist" id="modeCards">
+    <div class="mitem on" data-m="arith">
+      <div class="mitem-ico">±</div>
+      <div class="mitem-name">Działania</div>
+      <div class="mitem-check"></div>
     </div>
-    <div class="mcard on" data-m="quad">
-      <div class="ico">x²</div>
-      <div class="nm">Rozkład</div>
+    <div class="mitem on" data-m="quad">
+      <div class="mitem-ico">x²</div>
+      <div class="mitem-name">Rozkład</div>
+      <div class="mitem-check"></div>
     </div>
-    <div class="mcard on" data-m="form">
-      <div class="ico">(a±b)²</div>
-      <div class="nm">Wzory</div>
+    <div class="mitem on" data-m="form">
+      <div class="mitem-ico">(a±b)²</div>
+      <div class="mitem-name">Wzory</div>
+      <div class="mitem-check"></div>
     </div>
   </div>
 
@@ -381,7 +204,7 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
   <button class="btn" id="btnStart">Graj</button>
 </div>
 
-<!-- ════════════════ WYNIKI ════════════════ -->
+<!-- ════ WYNIKI ════ -->
 <div class="scr hide" id="sEnd">
   <div class="ttl" style="font-size:clamp(22px,7vw,34px)">wyniki</div>
   <div class="rgrid">
@@ -398,17 +221,14 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
 <!-- toast -->
 <div class="lup" id="lup"></div>
 
-<!-- ════════════════ GRA ════════════════ -->
+<!-- ════ GRA ════ -->
 <div class="wrap">
-
-  <!-- nagłówek -->
   <div class="hdr">
     <div class="pts" id="gPts">0</div>
     <div class="hdr-msg" id="hdrMsg"></div>
     <button class="mbtn" id="btnBack">Menu</button>
   </div>
 
-  <!-- streak dots + combo timer -->
   <div class="srow">
     <div class="sdots" id="sdots"></div>
     <div class="ctimer-wrap" id="ctimerWrap" style="display:none">
@@ -417,503 +237,293 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
     <div class="cmbo" id="cmbo"></div>
   </div>
 
-  <!-- KARTA PYTANIA -->
   <div class="card" id="card">
     <div class="qlbl" id="qlbl"></div>
-
-    <!-- widok arytmetyczny -->
-    <div id="vA">
-      <div class="qarith" id="qA"></div>
-    </div>
-
-    <!-- widok wzorów skróconego mnożenia -->
-    <div id="vF" style="display:none">
-      <div class="qpoly" id="qForm"></div>
-      <div class="qfact" id="qFormFact"></div>
-    </div>
-
-    <!-- widok kwadratowy -->
+    <div id="vA"><div class="qarith" id="qA"></div></div>
     <div id="vQ" style="display:none">
       <div class="qpoly" id="qPoly"></div>
       <div class="qfact" id="qFact"></div>
     </div>
-
+    <div id="vF" style="display:none">
+      <div class="qpoly" id="qForm"></div>
+      <div class="qfact" id="qFormFact"></div>
+    </div>
     <div class="pop" id="pop"></div>
   </div>
 
-  <!-- ODPOWIEDŹ — arytmetyczna -->
+  <!-- arith UI -->
   <div id="uiA">
-    <div class="arow" style="display:block">
-      <div class="adisp mt" id="aDisp">?</div>
-    </div>
+    <div class="adisp mt" id="aDisp">?</div>
     <div class="np">
-      <div class="nk" data-v="7">7</div>
-      <div class="nk" data-v="8">8</div>
-      <div class="nk" data-v="9">9</div>
-      <div class="nk sign" data-v="-">±</div>
-      <div class="nk" data-v="4">4</div>
-      <div class="nk" data-v="5">5</div>
-      <div class="nk" data-v="6">6</div>
-      <div class="nk del" data-v="del">⌫</div>
-      <div class="nk" data-v="1">1</div>
-      <div class="nk" data-v="2">2</div>
-      <div class="nk" data-v="3">3</div>
-      <div class="nk del" data-v="clr">C</div>
-      <div class="nk z2" data-v="0">0</div>
-      <div class="nk skip" data-v="skip">skip</div>
-      <div class="nk go" data-v="ok">↵</div>
+      <div class="nk" data-v="7">7</div><div class="nk" data-v="8">8</div><div class="nk" data-v="9">9</div><div class="nk sign" data-v="-">±</div>
+      <div class="nk" data-v="4">4</div><div class="nk" data-v="5">5</div><div class="nk" data-v="6">6</div><div class="nk del" data-v="del">⌫</div>
+      <div class="nk" data-v="1">1</div><div class="nk" data-v="2">2</div><div class="nk" data-v="3">3</div><div class="nk del" data-v="clr">C</div>
+      <div class="nk z2" data-v="0">0</div><div class="nk skip" data-v="skip">skip</div><div class="nk go" data-v="ok">↵</div>
     </div>
   </div>
 
-  <!-- ODPOWIEDŹ — kwadratowa -->
+  <!-- quad UI -->
   <div id="uiQ" style="display:none">
     <div class="qtabs">
       <div class="qtab act" data-qf="0">x₁</div>
       <div class="qtab" data-qf="1">x₂</div>
     </div>
     <div class="qrow">
-      <div class="qfld act" id="qf0">
-        <div class="qflbl">x₁</div>
-        <div class="qfval mt" id="qv0">?</div>
-      </div>
-      <div class="qsep">·</div>
-      <div class="qfld" id="qf1">
-        <div class="qflbl">x₂</div>
-        <div class="qfval mt" id="qv1">?</div>
-      </div>
+      <div class="qfld act" id="qf0"><div class="qflbl">x₁</div><div class="qfval mt" id="qv0">?</div></div>
+      <div class="qsep" id="qsep">·</div>
+      <div class="qfld" id="qf1"><div class="qflbl">x₂</div><div class="qfval mt" id="qv1">?</div></div>
     </div>
     <div class="np">
-      <div class="nk" data-qv="7">7</div>
-      <div class="nk" data-qv="8">8</div>
-      <div class="nk" data-qv="9">9</div>
-      <div class="nk sign" data-qv="-">±</div>
-      <div class="nk" data-qv="4">4</div>
-      <div class="nk" data-qv="5">5</div>
-      <div class="nk" data-qv="6">6</div>
-      <div class="nk del" data-qv="del">⌫</div>
-      <div class="nk" data-qv="1">1</div>
-      <div class="nk" data-qv="2">2</div>
-      <div class="nk" data-qv="3">3</div>
-      <div class="nk del" data-qv="clr">C</div>
-      <div class="nk z2" data-qv="0">0</div>
-      <div class="nk skip" data-qv="skip">skip</div>
-      <div class="nk go" data-qv="ok">↵</div>
+      <div class="nk" data-qv="7">7</div><div class="nk" data-qv="8">8</div><div class="nk" data-qv="9">9</div><div class="nk sign" data-qv="-">±</div>
+      <div class="nk" data-qv="4">4</div><div class="nk" data-qv="5">5</div><div class="nk" data-qv="6">6</div><div class="nk del" data-qv="del">⌫</div>
+      <div class="nk" data-qv="1">1</div><div class="nk" data-qv="2">2</div><div class="nk" data-qv="3">3</div><div class="nk del" data-qv="clr">C</div>
+      <div class="nk z2" data-qv="0">0</div><div class="nk skip" data-qv="skip">skip</div><div class="nk go" data-qv="ok">↵</div>
     </div>
   </div>
 
-  <!-- ODPOWIEDŹ — wzory skróconego mnożenia -->
+  <!-- form UI -->
   <div id="uiF" style="display:none">
-    <div class="qtabs">
-      <div class="qtab act" data-ff="0">a</div>
+    <div class="qtabs" id="fTabs">
+      <div class="qtab act" data-ff="0">b</div>
       <div class="qtab" data-ff="1">b</div>
     </div>
-    <div class="qrow">
-      <div class="qfld act" id="ff0">
-        <div class="qflbl">a</div>
-        <div class="qfval mt" id="fv0">?</div>
-      </div>
-      <div class="qsep">·</div>
-      <div class="qfld" id="ff1">
-        <div class="qflbl">b</div>
-        <div class="qfval mt" id="fv1">?</div>
-      </div>
+    <div class="qrow" id="fRow">
+      <div class="qfld act" id="ff0"><div class="qflbl" id="ffl0">b</div><div class="qfval mt" id="fv0">?</div></div>
+      <div class="qsep" id="fsep">·</div>
+      <div class="qfld" id="ff1"><div class="qflbl" id="ffl1">b</div><div class="qfval mt" id="fv1">?</div></div>
     </div>
     <div class="np">
-      <div class="nk" data-fv="7">7</div>
-      <div class="nk" data-fv="8">8</div>
-      <div class="nk" data-fv="9">9</div>
-      <div class="nk sign" data-fv="-">±</div>
-      <div class="nk" data-fv="4">4</div>
-      <div class="nk" data-fv="5">5</div>
-      <div class="nk" data-fv="6">6</div>
-      <div class="nk del" data-fv="del">⌫</div>
-      <div class="nk" data-fv="1">1</div>
-      <div class="nk" data-fv="2">2</div>
-      <div class="nk" data-fv="3">3</div>
-      <div class="nk del" data-fv="clr">C</div>
-      <div class="nk z2" data-fv="0">0</div>
-      <div class="nk skip" data-fv="skip">skip</div>
-      <div class="nk go" data-fv="ok">↵</div>
+      <div class="nk" data-fv="7">7</div><div class="nk" data-fv="8">8</div><div class="nk" data-fv="9">9</div><div class="nk sign" data-fv="-">±</div>
+      <div class="nk" data-fv="4">4</div><div class="nk" data-fv="5">5</div><div class="nk" data-fv="6">6</div><div class="nk del" data-fv="del">⌫</div>
+      <div class="nk" data-fv="1">1</div><div class="nk" data-fv="2">2</div><div class="nk" data-fv="3">3</div><div class="nk del" data-fv="clr">C</div>
+      <div class="nk z2" data-fv="0">0</div><div class="nk skip" data-fv="skip">skip</div><div class="nk go" data-fv="ok">↵</div>
     </div>
   </div>
-
-</div><!-- /.wrap -->
+</div>
 
 <script>
-/* ═══════════════════════════════════════════════════════
-   KONFIGURACJA POZIOMÓW
-   ═══════════════════════════════════════════════════════
-   Rozkład kwadratowy:
-     easy   — x²  (coef=1), znaki mieszane (+/+ lub −/−)
-     medium — x², 2x², 3x²  (coef∈{1,2,3}), wszystkie 4 kombinacje znaków
-     hard   — x², 2x², 3x², 5x²  (coef∈{1,2,3,5}), wszystkie kombinacje + podwójne pierwiastki
-   ═══════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════
+   CONFIG
+════════════════════════════════════════ */
 const CFG = {
-  easy:  { ar:[1,12], mu:[1,10], dv:[1,10], qMax:7,  coef:[1],      negR:false, dbl:false },
-  medium:{ ar:[1,20], mu:[1,12], dv:[1,12], qMax:10, coef:[1,2,3],  negR:true,  dbl:false },
-  hard:  { ar:[1,30], mu:[2,15], dv:[2,15], qMax:12, coef:[1,2,3,5],negR:true,  dbl:true  },
+  easy:  {ar:[1,12],mu:[1,10],dv:[1,10],qMax:7, coef:[1],      negR:false,dbl:false},
+  medium:{ar:[1,20],mu:[1,12],dv:[1,12],qMax:10,coef:[1,2,3],  negR:true, dbl:false},
+  hard:  {ar:[1,30],mu:[2,15],dv:[2,15],qMax:12,coef:[1,2,3,5],negR:true, dbl:true },
 };
 
-/* ═══════════════════════════════════════════════════════
-   STAN
-   ═══════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
 const S = {
-  pts:0, streak:0, best:0, ok:0, wrong:0,
-  running:false,
-  diff:'easy',
-  ops:['+','−','×','÷'],
-  modes:['arith','quad'],
-  mul:1,
-  mode:'arith',
-  q:null,        // bieżące pytanie
-  abuf:'',       // bufor arytmetyczny
-  qbuf:['',''],  // bufory kwadratowe [x1, x2]
-  qfocus:0,      // aktywne pole quad
-  fbuf:['',''],  // bufory wzorów [a, b]
-  ffocus:0,      // aktywne pole wzorów
+  pts:0,streak:0,best:0,ok:0,wrong:0,running:false,
+  diff:'easy',ops:['+','−','×','÷'],modes:['arith','quad','form'],
+  mul:1,mode:'arith',q:null,
+  abuf:'',
+  qbuf:['',''],qfocus:0,
+  fbuf:[],ffocus:0,
 };
 
-/* ═══════════════════════════════════════════════════════
+/* ════════════════════════════════════════
    DOM
-   ═══════════════════════════════════════════════════════ */
-const $  = id => document.getElementById(id);
-const gPts=$('gPts'), card=$('card'), pop=$('pop'), qlbl=$('qlbl');
-const hdrMsg=$('hdrMsg');
-const sdots=$('sdots'), cmbo=$('cmbo'), lup=$('lup');
-const vA=$('vA'),   uiA=$('uiA'),  qA=$('qA'),    aDisp=$('aDisp');
-const vQ=$('vQ'),   uiQ=$('uiQ'),  qPoly=$('qPoly'), qFact=$('qFact');
-const vF=$('vF'),   uiF=$('uiF'),  qForm=$('qForm'), qFormFact=$('qFormFact');
-const QFW=[$('qf0'),$('qf1')];
-const QFV=[$('qv0'),$('qv1')];
-const FFW=[$('ff0'),$('ff1')];
-const FFV=[$('fv0'),$('fv1')];
+════════════════════════════════════════ */
+const $   = id => document.getElementById(id);
+const gPts=$('gPts'),card=$('card'),pop=$('pop'),qlbl=$('qlbl'),hdrMsg=$('hdrMsg');
+const sdots=$('sdots'),cmbo=$('cmbo'),lup=$('lup');
+const vA=$('vA'),uiA=$('uiA'),qA=$('qA'),aDisp=$('aDisp');
+const vQ=$('vQ'),uiQ=$('uiQ'),qPoly=$('qPoly'),qFact=$('qFact');
+const vF=$('vF'),uiF=$('uiF'),qForm=$('qForm'),qFormFact=$('qFormFact');
+const QFW=[$('qf0'),$('qf1')], QFV=[$('qv0'),$('qv1')];
+const FFW=[$('ff0'),$('ff1')], FFV=[$('fv0'),$('fv1')];
 
-// buduj 5 kropek streak
 for(let i=0;i<5;i++){const d=document.createElement('div');d.className='dot';sdots.appendChild(d);}
 const DOTS=[...sdots.querySelectorAll('.dot')];
 
-/* ═══════════════════════════════════════════════════════
-   POMOCNICY
-   ═══════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════ */
 const rnd  = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
 const pick = arr  => arr[Math.floor(Math.random()*arr.length)];
 const ABS  = Math.abs;
+const mu   = v => `<span style="color:var(--t2)">${v}</span>`;
+const t3s  = v => `<span style="color:var(--t3)">${v}</span>`;
+const gn   = v => `<span style="color:var(--gn)">${v}</span>`;
+const blnk = (v,id) => `<span class="blnk"${id?` id="${id}"`:''}>${v||'?'}</span>`;
 
-/* ═══════════════════════════════════════════════════════
-   GENEROWANIE PYTAŃ
-   ═══════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════
+   NEXT QUESTION
+════════════════════════════════════════ */
 function nextQ() {
-  hdrMsg.textContent=''; hdrMsg.className='hdr-msg';
+  showMsg('','');
   const pool = S.modes.length ? S.modes : ['arith'];
   S.mode = pick(pool);
-  // przywróć ukryte elementy jeśli poprzedni tryb był 'form'
-  if (S.mode !== 'form') {
-    document.querySelector('.qsep') && (document.querySelector('.qsep').style.display='');
-    FFW[1] && (FFW[1].style.display='');
-    document.querySelectorAll('#uiF .qtab').forEach((t,i)=>{ t.style.display=''; t.textContent=i===0?'a':'b'; });
-  }
-  if (S.mode === 'quad') genQuad();
-  else if (S.mode === 'form') genForm();
+  if (S.mode==='quad') genQuad();
+  else if (S.mode==='form') genForm();
   else genArith();
-  vA.style.display  = S.mode==='arith' ? '' : 'none';
-  vQ.style.display  = S.mode==='quad'  ? '' : 'none';
-  vF.style.display  = S.mode==='form'  ? '' : 'none';
-  uiA.style.display = S.mode==='arith' ? '' : 'none';
-  uiQ.style.display = S.mode==='quad'  ? '' : 'none';
-  uiF.style.display = S.mode==='form'  ? '' : 'none';
+  vA.style.display  = S.mode==='arith'?'':'none';
+  vQ.style.display  = S.mode==='quad' ?'':'none';
+  vF.style.display  = S.mode==='form' ?'':'none';
+  uiA.style.display = S.mode==='arith'?'':'none';
+  uiQ.style.display = S.mode==='quad' ?'':'none';
+  uiF.style.display = S.mode==='form' ?'':'none';
 }
 
-/* ── ARYTMETYKA ── */
+/* ── ARITH ── */
 function genArith() {
-  const c = CFG[S.diff];
-  const ops = S.ops.length ? S.ops : ['+'];
-  const op = pick(ops);
-  let a, b, ans;
-
-  if (op==='+') {
-    a=rnd(...c.ar); b=rnd(...c.ar); ans=a+b;
-  } else if (op==='−') {
-    a=rnd(...c.ar); b=rnd(...c.ar);
-    if (b>a) [a,b]=[b,a];
-    ans=a-b;
-  } else if (op==='×') {
-    a=rnd(...c.mu); b=rnd(...c.mu); ans=a*b;
-  } else {
-    // dzielenie — zawsze całkowite
-    b=rnd(2,c.dv[1]); ans=rnd(1,c.dv[1]); a=b*ans;
-  }
-
-  S.q = { ans };
-  S.abuf = '';
-  qlbl.textContent = { '+':'Dodawanie','−':'Odejmowanie','×':'Mnożenie','÷':'Dzielenie' }[op];
-  qA.innerHTML = `${a}<span class="op"> ${op} </span>${b}<span class="eq"> =</span>`;
+  const c=CFG[S.diff], ops=S.ops.length?S.ops:['+'], op=pick(ops);
+  let a,b,ans;
+  if(op==='+'){a=rnd(...c.ar);b=rnd(...c.ar);ans=a+b;}
+  else if(op==='−'){a=rnd(...c.ar);b=rnd(...c.ar);if(b>a)[a,b]=[b,a];ans=a-b;}
+  else if(op==='×'){a=rnd(...c.mu);b=rnd(...c.mu);ans=a*b;}
+  else{b=rnd(2,c.dv[1]);ans=rnd(1,c.dv[1]);a=b*ans;}
+  S.q={ans}; S.abuf='';
+  qlbl.textContent={'+':'Dodawanie','−':'Odejmowanie','×':'Mnożenie','÷':'Dzielenie'}[op];
+  qA.innerHTML=`${a}<span class="op"> ${op} </span>${b}<span class="eq"> =</span>`;
   updA();
 }
 
-/* ── KWADRATOWE ──
-   Logika (spójna, bez dwuznaczności):
-   ─────────────────────────────────────
-   Losujemy pierwiastki r1, r2 (gracz podaje te wartości).
-   Wielomian:  (coef·a·x − r1)(coef·b·x − r2) ... NIE — prostsze:
-
-   Postać:  coef·(x − r1)(x − r2) = 0
-   Rozwinięcie:
-     coef·x²  −  coef·(r1+r2)·x  +  coef·r1·r2  =  0
-
-   Przy coef > 1 wyświetlamy np. 2x² − 6x + 4 = 0
-   Postać iloczynowa podpowiedzi: coef·(x ± |r1|)(x ± |r2|)
-     znak zależy od znaku r: jeśli r1 > 0 → (x − r1) → wyświetl "−"
-                              jeśli r1 < 0 → (x + |r1|) → wyświetl "+"
-                              jeśli r1 = 0 → (x)
-
-   GRACZ WPISUJE: r1 i r2 (pierwiastki, ze znakiem jeśli ujemne)
-   SPRAWDZENIE:   {v0, v1} == {r1, r2}  (w dowolnej kolejności)
-
-   Przykłady:
-     r1=3, r2=−2, coef=1:
-       x² − x − 6 = 0
-       (x − 3)(x + 2) = 0   → wpisujesz 3 i −2
-     r1=−4, r2=−4, coef=2:
-       2x² + 16x + 32 = 0
-       2(x + 4)² = 0        → wpisujesz −4 i −4
+/* ── QUAD ──
+   coef*(x-r1)*(x-r2)=0
+   gracz wpisuje |r1|,|r2| — wartości z blanków (znaki są w nawiasach)
 */
 function genQuad() {
-  const c = CFG[S.diff];
-  const coef = pick(c.coef);
-
-  // losuj r1
-  let r1 = rnd(1, c.qMax) * (c.negR && Math.random()<.5 ? -1 : 1);
-
-  // r2: przy hard 20% szans na r2=r1 (podwójny pierwiastek)
-  let r2;
-  if (c.dbl && Math.random() < 0.2) {
-    r2 = r1;
-  } else {
-    r2 = rnd(1, c.qMax) * (c.negR && Math.random()<.5 ? -1 : 1);
-  }
-
-  // na easy: oba znaki losujemy niezależnie (ale tylko + lub −, nie 0)
-  // upewniamy się że r≠0
-  if (r1===0) r1=1;
-  if (r2===0) r2=1;
-
-  // współczynniki wielomianu: coef·x² + B·x + C = 0
-  const B = -coef*(r1+r2);
-  const C =  coef*r1*r2;
-
-  S.q = { r1, r2, coef, B, C };
-  S.qbuf   = ['',''];
-  S.qfocus = 0;
-
-  qlbl.textContent = 'Miejsca zerowe';
-  qPoly.innerHTML  = buildPoly(coef, B, C);
-  qFact.innerHTML  = buildFact(r1, r2, coef, false);
-  updQfocus();
-  updQdisplay();
+  const c=CFG[S.diff], coef=pick(c.coef);
+  let r1 = rnd(1,c.qMax)*(c.negR&&Math.random()<.5?-1:1);
+  let r2 = c.dbl&&Math.random()<.2 ? r1 : rnd(1,c.qMax)*(c.negR&&Math.random()<.5?-1:1);
+  if(r1===0)r1=1; if(r2===0)r2=1;
+  const B=-coef*(r1+r2), C=coef*r1*r2;
+  S.q={r1,r2,coef,B,C}; S.qbuf=['','']; S.qfocus=0;
+  qlbl.textContent='Miejsca zerowe';
+  qPoly.innerHTML=buildPoly(coef,B,C);
+  qFact.innerHTML=buildFact(r1,r2,coef,false);
+  updQfocus(); updQdisp();
 }
 
+function buildPoly(coef,B,C) {
+  let s=coef===1?`x<sup>2</sup>`:coef===-1?`−x<sup>2</sup>`:`${coef}x<sup>2</sup>`;
+  if(B!==0){const sg=B>0?'+':'−';const av=ABS(B);s+=` ${mu(sg)} ${av===1?'x':`${av}x`}`;}
+  if(C!==0){const sg=C>0?'+':'−';s+=` ${mu(sg)} ${ABS(C)}`;}
+  s+=` ${t3s('= 0')}`;
+  return s;
+}
 
-/* ══════════════════════════════════════════════════════
-   WZORY SKRÓCONEGO MNOŻENIA
-   ══════════════════════════════════════════════════════
-   Typy wzorów (formula type):
-     0  (a+b)²   = a²x² + 2abx + b²    (dla a=1: x²+2bx+b²)
-     1  (a−b)²   = a²x² − 2abx + b²
-     2  (a+b)(a−b)= a²x² − b²
-     3  (a+b)³   = a³x³+3a²bx²+3ab²x+b³  [tylko hard, a=1]
+function buildFact(r1,r2,coef,reveal) {
+  const pre=coef===1?'':`${coef}`;
+  function br(r,idx){
+    const sg=r>0?'−':(r<0?'+':'');
+    const val=ABS(r);
+    if(!val) return `(x)`;
+    const term=` ${mu(sg)} `;
+    if(reveal) return `(x${term}${gn(val)})`;
+    const cur=S.qbuf[idx]||'?';
+    return `(x${term}${blnk(cur,`fb${idx}`)})`;
+  }
+  if(r1===r2&&reveal){
+    const sg=r1>0?'−':'+';
+    return `${pre}(x ${mu(sg)} ${gn(ABS(r1))})<sup>2</sup> ${t3s('= 0')}`;
+  }
+  return `${pre}${br(r1,0)}${br(r2,1)} ${t3s('= 0')}`;
+}
 
-   Kierunek (dir):
-     0  "złóż"    → widzisz ROZWINIĘCIE, wpisujesz składniki (a,b)
-     1  "rozpisz" → widzisz POSTAĆ SKRÓCONĄ, wpisujesz rozwinięcie (3 liczby)
+function updQdisp() {
+  for(let i=0;i<2;i++){const v=S.qbuf[i];QFV[i].textContent=v||'?';QFV[i].className='qfval'+(v?'':' mt');}
+  if(S.q) qFact.innerHTML=buildFact(S.q.r1,S.q.r2,S.q.coef,false);
+}
+function updQfocus() {
+  for(let i=0;i<2;i++) QFW[i].className='qfld'+(S.qfocus===i?' act':'');
+  document.querySelectorAll('.qtab[data-qf]').forEach((t,i)=>t.classList.toggle('act',i===S.qfocus));
+}
 
-   withA: czy a>1 (na medium/hard dla typów 0,1,2)
-
-   Pola odpowiedzi:
-     dir=0, bez a (a=1): 1 pole  → b
-     dir=0, z a:         2 pola  → a, b
-     dir=1, typ 0/1:     3 pola  → A² (coef x²), 2AB (coef x), B² (stała)
-     dir=1, typ 2:       2 pola  → A² (coef x²), B² (stała)  — środkowy termin = 0
-     dir=1, typ 3 (a=1): 4 pola  → 1, 3b, 3b², b³  — za dużo; robimy 2: b² i b³
-
-   Dla prostoty dir=1 typ 0/1: wpisujesz 3 liczby po kolei.
-   ══════════════════════════════════════════════════════ */
-
+/* ── FORM ──
+   Typy: 0=(ax+b)², 1=(ax-b)², 2=(ax+b)(ax-b), 3=(x+b)³ [hard only]
+   dir:  0=złóż (wpisz składniki), 1=rozpisz (wpisz rozwinięcie)
+*/
 function genForm() {
-  const c   = CFG[S.diff];
-  const maxB = Math.min(c.qMax, 9);
-  const b   = rnd(2, maxB);
+  const c=CFG[S.diff], maxB=Math.min(c.qMax,9);
+  const b=rnd(2,maxB);
+  const type=rnd(0, S.diff==='hard'?3:2);
+  const dir=rnd(0,1);
+  const canHaveA=(dir===0)&&(type<=2)&&(S.diff!=='easy');
+  const a=canHaveA?pick([1,1,2,3]):1;
+  const a2=a*a,b2=b*b,ab2=2*a*b;
 
-  // dir: 0=złóż (wpisz składniki), 1=rozpisz (wpisz rozwinięcie)
-  const dir = rnd(0, 1);
+  // build expand and factored HTML
+  const ax=a===1?'x':`${a}x`;
+  let expand,factored,label,ans;
 
-  // typ wzoru
-  const maxType = S.diff === 'hard' ? 3 : 2;
-  const type = rnd(0, maxType);
-
-  // withA: a>1 tylko dla dir=0, typ 0/1/2, medium/hard
-  const canHaveA = (dir === 0) && (type <= 2) && (S.diff !== 'easy');
-  const aPool = canHaveA ? [1,1,2,3] : [1]; // 50% szans na a=1 nawet na trudnym
-  const a = aPool[rnd(0, aPool.length-1)];
-
-  // oblicz współczynniki rozwinięcia
-  // typ 0: (ax+b)² = a²x²+2abx+b²
-  // typ 1: (ax−b)² = a²x²−2abx+b²
-  // typ 2: (ax+b)(ax−b) = a²x²−b²
-  // typ 3: (x+b)³ = x³+3bx²+3b²x+b³ (a=1 zawsze)
-  const a2=a*a, b2=b*b, ab2=2*a*b;
-
-  let expand, factored, label, fields;
-  const mu = v=>`<span style="color:var(--t2)">${v}</span>`;
-  const t3s = v=>`<span style="color:var(--t3)">${v}</span>`;
-  const xTerm = (coef,pow) => {
-    if (pow===0) return `${coef}`;
-    const xp = pow===1?`x`:`x<sup>${pow}</sup>`;
-    return coef===1&&pow>0 ? xp : `${coef}${xp}`;
-  };
-  const sg = (v,first=false) => v<0?mu('−'):(!first?mu('+'):'');
-
-  if (type === 0) {
-    // (ax+b)² = a²x²+2abx+b²
-    const C1=a2, C2=ab2, C3=b2;
-    expand = `${xTerm(C1,2)} ${mu('+')} ${xTerm(C2,1)} ${mu('+')} ${C3}`;
-    const ax = a===1?'x':`${a}x`;
-    factored = `(${ax} ${mu('+')} ${b})<sup>2</sup>`;
-    label = a===1 ? '(x+b)²' : '(ax+b)²';
-    if (dir===0) fields = a===1 ? ['b'] : ['a','b'];
-    else         fields = ['a²','2ab','b²'];
-    if (dir===0) fields._ans = a===1 ? [b] : [a,b];
-    else         fields._ans = [C1, C2, C3];
-  } else if (type === 1) {
-    // (ax−b)² = a²x²−2abx+b²
-    const C1=a2, C2=ab2, C3=b2;
-    expand = `${xTerm(C1,2)} ${mu('−')} ${xTerm(C2,1)} ${mu('+')} ${C3}`;
-    const ax = a===1?'x':`${a}x`;
-    factored = `(${ax} ${mu('−')} ${b})<sup>2</sup>`;
-    label = a===1 ? '(x−b)²' : '(ax−b)²';
-    if (dir===0) fields = a===1 ? ['b'] : ['a','b'];
-    else         fields = ['a²','2ab','b²'];
-    if (dir===0) fields._ans = a===1 ? [b] : [a,b];
-    else         fields._ans = [C1, C2, C3];
-  } else if (type === 2) {
-    // (ax+b)(ax−b) = a²x²−b²
-    const C1=a2, C3=b2;
-    expand = `${xTerm(C1,2)} ${mu('−')} ${C3}`;
-    const ax = a===1?'x':`${a}x`;
-    factored = `(${ax} ${mu('+')} ${b})(${ax} ${mu('−')} ${b})`;
-    label = a===1 ? '(x+b)(x−b)' : '(ax+b)(ax−b)';
-    if (dir===0) fields = a===1 ? ['b'] : ['a','b'];
-    else         fields = ['a²','b²'];
-    if (dir===0) fields._ans = a===1 ? [b] : [a,b];
-    else         fields._ans = [C1, C3];
+  if(type===0){
+    expand=`${a2===1?`x<sup>2</sup>`:`${a2}x<sup>2</sup>`} ${mu('+')} ${ab2}x ${mu('+')} ${b2}`;
+    factored=`(${ax} ${mu('+')} ${b})<sup>2</sup>`;
+    label='(ax+b)²'; ans=dir===0?(a===1?[b]:[a,b]):[a2,ab2,b2];
+  } else if(type===1){
+    expand=`${a2===1?`x<sup>2</sup>`:`${a2}x<sup>2</sup>`} ${mu('−')} ${ab2}x ${mu('+')} ${b2}`;
+    factored=`(${ax} ${mu('−')} ${b})<sup>2</sup>`;
+    label='(ax−b)²'; ans=dir===0?(a===1?[b]:[a,b]):[a2,ab2,b2];
+  } else if(type===2){
+    expand=`${a2===1?`x<sup>2</sup>`:`${a2}x<sup>2</sup>`} ${mu('−')} ${b2}`;
+    factored=`(${ax} ${mu('+')} ${b})(${ax} ${mu('−')} ${b})`;
+    label='(ax+b)(ax−b)'; ans=dir===0?(a===1?[b]:[a,b]):[a2,b2];
   } else {
-    // (x+b)³ = x³+3bx²+3b²x+b³  (a=1 zawsze)
-    const C1=1, C2=3*b, C3=3*b2, C4=b2*b;
-    expand = `x<sup>3</sup> ${mu('+')} ${C2}x<sup>2</sup> ${mu('+')} ${C3}x ${mu('+')} ${C4}`;
-    factored = `(x ${mu('+')} ${b})<sup>3</sup>`;
-    label = '(x+b)³';
-    if (dir===0) fields = ['b'];
-    else         fields = ['3b','3b²','b³'];
-    if (dir===0) fields._ans = [b];
-    else         fields._ans = [C2, C3, C4];
+    const _3b=3*b,_3b2=3*b2,b3=b2*b;
+    expand=`x<sup>3</sup> ${mu('+')} ${_3b}x<sup>2</sup> ${mu('+')} ${_3b2}x ${mu('+')} ${b3}`;
+    factored=`(x ${mu('+')} ${b})<sup>3</sup>`;
+    label='(x+b)³'; ans=dir===0?[b]:[_3b,_3b2,b3];
   }
 
-  S.q = { a, b, type, dir, fields, expand, factored, label };
-  S.fbuf   = fields.map(()=>'');
-  S.ffocus = 0;
+  // field labels
+  const flds = dir===0 ? (ans.length===1?['b']:['a','b']) : (ans.length===2?['a²','b²']:(type===3?['3b','3b²','b³']:['a²','2ab','b²']));
 
-  // co wyświetlamy w karcie
-  if (dir === 0) {
-    // złóż: pokaż rozwinięcie, wpisz składniki
-    qlbl.textContent = `złóż → ${label}`;
-    qForm.innerHTML  = expand + ` ${t3s('= ?')}`;
-  } else {
-    // rozpisz: pokaż postać skróconą, wpisz rozwinięcie
-    qlbl.textContent = `rozpisz ${label}`;
-    qForm.innerHTML  = factored + ` ${t3s('= ?')}`;
-  }
+  S.q={a,b,type,dir,ans,flds}; S.fbuf=ans.map(()=>''); S.ffocus=0;
 
-  // skonfiguruj pola odpowiedzi
-  _setupFormFields(fields);
-  updFfocus();
-  updFdisplay();
+  qlbl.textContent=dir===0?`złóż → ${label}`:`rozpisz ${label}`;
+  qForm.innerHTML=(dir===0?expand:factored)+` ${t3s('= ?')}`;
+
+  // configure field UI
+  const n=ans.length;
+  $('fsep').style.display=n>=2?'':'none';
+  FFW[1].style.display=n>=2?'':'none';
+  const tabs=$('fTabs').querySelectorAll('.qtab');
+  tabs.forEach((t,i)=>{t.style.display=i<n?'':'none';t.textContent=flds[i]||'';});
+  FFW[0].querySelector('.qflbl').textContent=flds[0];
+  if(n>=2) FFW[1].querySelector('.qflbl').textContent=flds[1];
+
+  updFfocus(); updFdisp();
 }
 
-function _setupFormFields(fields) {
-  const n = fields.length;
-  const sep = document.querySelector('#uiF .qsep');
-
-  // pokaż/ukryj pola i separator
-  FFW[0].style.display = '';
-  FFW[1].style.display = n >= 2 ? '' : 'none';
-  sep.style.display    = n >= 2 ? '' : 'none';
-
-  // etykiety pól
-  FFW[0].querySelector('.qflbl').textContent = fields[0];
-  if (n >= 2) FFW[1].querySelector('.qflbl').textContent = fields[1];
-
-  // jeśli 3+ pola — używamy dodatkowego bufora S.fbuf[2..], ale tylko 2 wyświetlamy na raz
-  // tab pozwala przejść przez wszystkie
-  const tabs = document.querySelectorAll('#uiF .qtab');
-  tabs.forEach((t,i)=>{
-    if (i < n) { t.style.display=''; t.textContent = fields[i]; }
-    else        t.style.display='none';
-  });
-}
-
-function updFdisplay() {
-  const fields = S.q ? S.q.fields : [];
-  const n = fields.length;
-  // widoczne pola: aktualnie aktywne i poprzednie
-  // pokazujemy zawsze pole 0 i 1 (lub tylko 0)
-  for (let i=0; i<2; i++) {
-    if (i < n) {
-      const v = S.fbuf[i];
-      FFV[i].textContent = v || '?';
-      FFV[i].className   = 'qfval' + (v ? '' : ' mt');
-    }
-  }
-  // dla 3 pól — tab pokazuje aktywne pole w slot 0
-  if (n >= 3) {
-    const f = S.ffocus;
-    // slot 0 = aktywne pole
-    FFW[0].querySelector('.qflbl').textContent = fields[f];
-    const v0 = S.fbuf[f]; FFV[0].textContent = v0||'?'; FFV[0].className='qfval'+(v0?'':' mt');
-    // slot 1 = następne pole
-    const next = (f+1)%n;
-    FFW[1].querySelector('.qflbl').textContent = fields[next];
-    const v1 = S.fbuf[next]; FFV[1].textContent = v1||'?'; FFV[1].className='qfval'+(v1?'':' mt');
-    // pokaż oba
-    FFW[1].style.display=''; document.querySelector('#uiF .qsep').style.display='';
-  }
-  if (S.q) updateFormBlanks();
-}
-
-function updateFormBlanks() {
-  // w trybie dir=0: aktualizuj blanki w postaci skróconej w qFormFact
-  // w trybie dir=1: aktualizuj blanki w rozwinięciu w qFormFact
-  if (!S.q) return;
-  const {type, dir, a, b, fields} = S.q;
-  const mu  = v=>`<span style="color:var(--t2)">${v}</span>`;
-  const blnk= (v,id)=>`<span class="blnk" id="${id}">${v||'?'}</span>`;
-  const get = i => S.fbuf[i]||'';
-  const bv  = i => get(i)||'?';
-
-  if (dir === 0) {
-    // pokazujemy postać skróconą z blankami
-    const bVal  = fields.length===1 ? blnk(bv(0),'fb0') : blnk(bv(1),'fb1');
-    const aVal  = fields.length>=2  ? blnk(bv(0),'fb0') : null;
-    const xPart = aVal ? `${aVal}x` : 'x';
-
-    if (type===0) qFormFact.innerHTML=`(${xPart} ${mu('+')} ${bVal})<sup>2</sup>`;
-    else if(type===1) qFormFact.innerHTML=`(${xPart} ${mu('−')} ${bVal})<sup>2</sup>`;
-    else if(type===2) qFormFact.innerHTML=`(${xPart} ${mu('+')} ${bVal})(${xPart} ${mu('−')} ${bVal})`;
-    else qFormFact.innerHTML=`(x ${mu('+')} ${bVal})<sup>3</sup>`;
+function updFdisp() {
+  if(!S.q||S.mode!=='form') return;
+  const {ans,flds,dir,type,a,b}=S.q;
+  const n=ans.length;
+  // update field displays
+  // for 3-field case we show first 2 slots rotating with focus
+  if(n>=3){
+    const f=S.ffocus;
+    const nx=(f+1)%n;
+    FFW[0].querySelector('.qflbl').textContent=flds[f];
+    const v0=S.fbuf[f]; FFV[0].textContent=v0||'?'; FFV[0].className='qfval'+(v0?'':' mt');
+    FFW[1].querySelector('.qflbl').textContent=flds[nx];
+    const v1=S.fbuf[nx]; FFV[1].textContent=v1||'?'; FFV[1].className='qfval'+(v1?'':' mt');
+    $('fsep').style.display=''; FFW[1].style.display='';
   } else {
-    // pokazujemy rozwinięcie z blankami
-    if (type===0||type===1) {
-      const sg = type===0?'+':'−';
+    for(let i=0;i<n;i++){const v=S.fbuf[i];FFV[i].textContent=v||'?';FFV[i].className='qfval'+(v?'':' mt');}
+  }
+  // update blanks in card
+  const ax=a===1?'x':`${a}x`;
+  const bv=(i)=>S.fbuf[i]||'?';
+  if(dir===0){
+    // show factored with blanks
+    const bVal=n===1?blnk(bv(0),'fb0'):blnk(bv(1),'fb1');
+    const aVal=n>=2?blnk(bv(0),'fb0'):null;
+    const xp=aVal?`${aVal}x`:'x';
+    if(type===0) qFormFact.innerHTML=`(${xp} ${mu('+')} ${bVal})<sup>2</sup>`;
+    else if(type===1) qFormFact.innerHTML=`(${xp} ${mu('−')} ${bVal})<sup>2</sup>`;
+    else if(type===2) qFormFact.innerHTML=`(${xp} ${mu('+')} ${bVal})(${xp} ${mu('−')} ${bVal})`;
+    else qFormFact.innerHTML=`(x ${mu('+')} ${blnk(bv(0),'fb0')})<sup>3</sup>`;
+  } else {
+    // show expand with blanks
+    if(type===0||type===1){
+      const sg=type===0?'+':'−';
       qFormFact.innerHTML=`${blnk(bv(0),'fb0')}x<sup>2</sup> ${mu(sg)} ${blnk(bv(1),'fb1')}x ${mu('+')} ${blnk(bv(2),'fb2')}`;
-    } else if(type===2) {
+    } else if(type===2){
       qFormFact.innerHTML=`${blnk(bv(0),'fb0')}x<sup>2</sup> ${mu('−')} ${blnk(bv(1),'fb1')}`;
     } else {
       qFormFact.innerHTML=`x<sup>3</sup> ${mu('+')} ${blnk(bv(0),'fb0')}x<sup>2</sup> ${mu('+')} ${blnk(bv(1),'fb1')}x ${mu('+')} ${blnk(bv(2),'fb2')}`;
@@ -922,691 +532,317 @@ function updateFormBlanks() {
 }
 
 function updFfocus() {
-  const n = S.q ? S.q.fields.length : 2;
-  for (let i=0; i<2; i++) FFW[i].className='qfld'+(S.ffocus===i||(n>=3&&S.ffocus%n===i)?'':'')+
-    (i===0||n<3 ? (S.ffocus===i?' act':'') : (S.ffocus===1?' act':''));
-  // uproszczone: highlight active slot
-  FFW[0].className = 'qfld' + (n<3 ? (S.ffocus===0?' act':'') : ' act');
-  FFW[1].className = 'qfld' + (n<3 ? (S.ffocus===1?' act':'') : '');
-  document.querySelectorAll('#uiF .qtab').forEach((t,i)=>{
-    t.classList.toggle('act', i===S.ffocus);
-  });
+  const n=S.q?S.q.ans.length:2;
+  // highlight active slot (slot 0 is always active when n<3, otherwise both light)
+  FFW[0].className='qfld act';
+  FFW[1].className='qfld'+(n>=2&&S.ffocus>=1?' act':'');
+  $('fTabs').querySelectorAll('.qtab').forEach((t,i)=>t.classList.toggle('act',i===S.ffocus));
+}
+
+/* ════════════════════════════════════════
+   SUBMIT
+════════════════════════════════════════ */
+function submitA() {
+  if(!S.running) return;
+  const v=parseInt(S.abuf);
+  if(S.abuf===''||S.abuf==='-'||isNaN(v)) return;
+  if(v===S.q.ans){hit();setTimeout(()=>{if(S.running)nextQ();},160);}
+  else{miss();showMsg(`Odpowiedź: ${S.q.ans}`,'err');setTimeout(()=>{if(S.running)nextQ();},950);}
+  S.abuf=''; updA();
+}
+
+function submitQ() {
+  if(!S.running) return;
+  const v0=parseInt(S.qbuf[0]), v1=parseInt(S.qbuf[1]);
+  if(isNaN(v0)||isNaN(v1)) return;
+  const{r1,r2,coef}=S.q;
+  const a0=ABS(r1),a1=ABS(r2);
+  const ok=(v0===a0&&v1===a1)||(v0===a1&&v1===a0);
+  if(ok){hit();setTimeout(()=>{if(S.running)nextQ();},160);}
+  else{
+    miss();
+    qFact.innerHTML=buildFact(r1,r2,coef,true);
+    showMsg(`wpisz: ${a0} i ${a1}`,'err');
+    setTimeout(()=>{if(S.running)nextQ();},1300);
+  }
 }
 
 function submitF() {
-  if (!S.running) return;
-  const {fields} = S.q;
-  const vals = fields._ans.map((_,i)=>parseInt(S.fbuf[i]));
-  if (vals.some(isNaN)) return;
-
-  const ok = fields._ans.every((ans,i)=>vals[i]===ans);
-  const mu = v=>`<span style="color:var(--t2)">${v}</span>`;
-  const gn = v=>`<span style="color:var(--gn)">${v}</span>`;
-  const {type, dir, a, b} = S.q;
-
-  if (ok) {
-    hit();
-    setTimeout(()=>{ if(S.running) nextQ(); }, 170);
-  } else {
+  if(!S.running) return;
+  const {ans,a,b,type,dir,flds}=S.q;
+  const n=ans.length;
+  const vals=[];
+  for(let i=0;i<n;i++){const v=parseInt(S.fbuf[i]);if(isNaN(v))return;vals.push(v);}
+  const ok=ans.every((a,i)=>vals[i]===a);
+  if(ok){hit();setTimeout(()=>{if(S.running)nextQ();},160);}
+  else{
     miss();
-    // pokaż pełną odpowiedź
-    if (dir===0) {
-      // złóż → pokaż prawidłową postać skróconą
-      const ax = a===1?'x':`${gn(a)}x`;
+    const ax=a===1?'x':`${gn(a)}x`;
+    if(dir===0){
       if(type===0) qFormFact.innerHTML=`(${ax} ${mu('+')} ${gn(b)})<sup>2</sup>`;
       else if(type===1) qFormFact.innerHTML=`(${ax} ${mu('−')} ${gn(b)})<sup>2</sup>`;
       else if(type===2) qFormFact.innerHTML=`(${ax} ${mu('+')} ${gn(b)})(${ax} ${mu('−')} ${gn(b)})`;
       else qFormFact.innerHTML=`(x ${mu('+')} ${gn(b)})<sup>3</sup>`;
-      const hint = a>1 ? `a=${a}, b=${b}` : `b=${b}`;
-      showMsg(hint, 'err');
+      showMsg(a>1?`a=${a}, b=${b}`:`b=${b}`,'err');
     } else {
-      // rozpisz → pokaż prawidłowe rozwinięcie
-      const ans = fields._ans;
-      if(type===0||type===1) {
-        const sg=type===0?'+':'−';
-        qFormFact.innerHTML=`${gn(ans[0])}x<sup>2</sup> ${mu(sg)} ${gn(ans[1])}x ${mu('+')} ${gn(ans[2])}`;
-      } else if(type===2) {
-        qFormFact.innerHTML=`${gn(ans[0])}x<sup>2</sup> ${mu('−')} ${gn(ans[1])}`;
-      } else {
-        qFormFact.innerHTML=`x<sup>3</sup> ${mu('+')} ${gn(ans[0])}x<sup>2</sup> ${mu('+')} ${gn(ans[1])}x ${mu('+')} ${gn(ans[2])}`;
-      }
-      showMsg(ans.join(' · '), 'err');
+      if(type===0||type===1){const sg=type===0?'+':'−';qFormFact.innerHTML=`${gn(ans[0])}x<sup>2</sup> ${mu(sg)} ${gn(ans[1])}x ${mu('+')} ${gn(ans[2])}`;}
+      else if(type===2) qFormFact.innerHTML=`${gn(ans[0])}x<sup>2</sup> ${mu('−')} ${gn(ans[1])}`;
+      else qFormFact.innerHTML=`x<sup>3</sup> ${mu('+')} ${gn(ans[0])}x<sup>2</sup> ${mu('+')} ${gn(ans[1])}x ${mu('+')} ${gn(ans[2])}`;
+      showMsg(ans.join(' · '),'err');
     }
-    setTimeout(()=>{ if(S.running) nextQ(); }, 1500);
+    setTimeout(()=>{if(S.running)nextQ();},1400);
   }
 }
 
-function fKey(v) {
-  if (!S.running || S.mode!=='form') return;
-  const {fields} = S.q;
-  const n = fields.length;
-  if (v==='ok')  { submitF(); return; }
-  const f = S.ffocus;
-  if (v==='clr') { S.fbuf[f]=''; updFdisplay(); return; }
-  if (v==='del') { S.fbuf[f]=S.fbuf[f].slice(0,-1); updFdisplay(); return; }
-  if (v==='-') return; // wszystkie wartości dodatnie
-  if (S.fbuf[f].length < 4) {
-    S.fbuf[f]+=v;
-    updFdisplay();
-    // auto-advance: jeśli pole ma wartość i nie jest ostatnim, przeskocz
-    if (S.fbuf[f].length >= 2 && parseInt(S.fbuf[f])===fields._ans[f] && f < n-1) {
-      S.ffocus = f+1; updFfocus();
-    }
-  }
-}
-
-/* buduje HTML wielomianu coef·x² + B·x + C = 0 */
-function buildPoly(coef, B, C) {
-  let s = '';
-
-  // x² term
-  if      (coef===1)  s += `x<sup>2</sup>`;
-  else if (coef===-1) s += `−x<sup>2</sup>`;
-  else                s += `${coef}x<sup>2</sup>`;
-
-  // x term
-  if (B !== 0) {
-    const sg = B>0 ? '+' : '−';
-    const av = ABS(B);
-    s += ` <span style="color:var(--t2)">${sg}</span> `;
-    s += av===1 ? `x` : `${av}x`;
-  }
-
-  // stała
-  if (C !== 0) {
-    const sg = C>0 ? '+' : '−';
-    s += ` <span style="color:var(--t2)">${sg}</span> ${ABS(C)}`;
-  }
-
-  s += ` <span style="color:var(--t3)">= 0</span>`;
-  return s;
-}
-
-/* buduje HTML postaci iloczynowej
-   reveal=false → blanki z bieżącym wpisem gracza
-   reveal=true  → poprawne wartości na zielono */
-function buildFact(r1, r2, coef, reveal) {
-  const pre = coef===1 ? '' : `${coef}`;
-
-  function bracket(r, idx) {
-    // (x − r) gdy r>0, (x + |r|) gdy r<0, (x) gdy r=0
-    const sg   = r>0 ? '−' : (r<0 ? '+' : '');
-    const val  = ABS(r);
-    const term = val===0 ? '' : ` <span style="color:var(--t2)">${sg}</span> `;
-
-    if (reveal) {
-      const col = `style="color:var(--gn)"`;
-      return `(x${val===0?'':`${term}<span ${col}>${val}</span>`})`;
-    }
-
-    const cur = S.qbuf[idx] !== '' ? S.qbuf[idx] : '?';
-    return `(x${val===0?'':`${term}<span class="blnk" id="fb${idx}">${cur}</span>`})`;
-  }
-
-  const isDbl = (r1===r2);
-  if (isDbl) {
-    const b = bracket(r1, 0);
-    const hint = reveal ? `<sup>2</sup>` : `·${bracket(r2, 1)}`;
-    if (isDbl && reveal) {
-      return `${pre}(x <span style="color:var(--t2)">${r1>0?'−':'+'}</span> <span style="color:var(--gn)">${ABS(r1)}</span>)<sup>2</sup> <span style="color:var(--t3)">= 0</span>`;
-    }
-    return `${pre}${bracket(r1,0)}·${bracket(r2,1)} <span style="color:var(--t3)">= 0</span>`;
-  }
-
-  return `${pre}${bracket(r1,0)}${bracket(r2,1)} <span style="color:var(--t3)">= 0</span>`;
-}
-
-/* ═══════════════════════════════════════════════════════
-   AKTUALIZACJA WYŚWIETLACZY
-   ═══════════════════════════════════════════════════════ */
-function updA() {
-  const v = S.abuf;
-  aDisp.textContent  = v || '?';
-  aDisp.className    = 'adisp' + (v ? '' : ' mt');
-}
-
-function updQdisplay() {
-  for (let i=0; i<2; i++) {
-    const v = S.qbuf[i];
-    QFV[i].textContent = v || '?';
-    QFV[i].className   = 'qfval' + (v ? '' : ' mt');
-  }
-  // odśwież blanki w podpowiedzi
-  if (S.q) qFact.innerHTML = buildFact(S.q.r1, S.q.r2, S.q.coef, false);
-}
-
-function updQfocus() {
-  for (let i=0; i<2; i++) QFW[i].className = 'qfld' + (S.qfocus===i ? ' act' : '');
-  document.querySelectorAll('.qtab').forEach((t,i)=>t.classList.toggle('act', i===S.qfocus));
-}
-
-/* ═══════════════════════════════════════════════════════
-   ZATWIERDZANIE
-   ═══════════════════════════════════════════════════════ */
-function submitA() {
-  if (!S.running) return;
-  const v = parseInt(S.abuf);
-  if (S.abuf==='' || S.abuf==='-' || isNaN(v)) return;
-
-  if (v === S.q.ans) {
-    hit();
-    setTimeout(()=>{ if(S.running) nextQ(); }, 170);
-  } else {
-    miss();
-    showMsg(`Odpowiedź: ${S.q.ans}`, 'err');
-    setTimeout(()=>{ if(S.running) nextQ(); }, 950);
-  }
-  S.abuf = ''; updA();
-}
-
-function submitQ() {
-  if (!S.running) return;
-  const v0 = parseInt(S.qbuf[0]);
-  const v1 = parseInt(S.qbuf[1]);
-  if (isNaN(v0) || isNaN(v1)) return;
-
-  const { r1, r2, coef } = S.q;
-  // Gracz wpisuje wartości BEZWZGLĘDNE pierwiastków — dokładnie to co widzi w nawiasach.
-  // (x − 3)(x + 2) → wpisuje 3 i 2
-  // (x + 12)(x + 4) → wpisuje 12 i 4
-  const a0 = ABS(r1), a1 = ABS(r2);
-  const ok = (v0===a0 && v1===a1) || (v0===a1 && v1===a0);
-
-  if (ok) {
-    hit();
-    setTimeout(()=>{ if(S.running) nextQ(); }, 170);
-  } else {
-    miss();
-    qFact.innerHTML  = buildFact(r1, r2, coef, true);
-    showMsg(`wpisz: ${a0} i ${a1}`, 'err');
-    setTimeout(()=>{ if(S.running) nextQ(); }, 1400);
-  }
-}
-
-/* ═══════════════════════════════════════════════════════
-   HIT / MISS / ANIMACJE
-   ═══════════════════════════════════════════════════════ */
-function hit() {
-  S.streak++; S.ok++;
-  if (S.streak > S.best) S.best = S.streak;
-  S.mul = Math.floor(S.streak/5) + 1;
-  const pts = (S.mode==='quad' ? 20 : 10) * S.mul;
-  S.pts += pts;
-  gPts.textContent = S.pts;
-  anim('+'+pts, 'var(--gn)');
-  flash('ok');
-  updStreak();
-  vib(22);
-  if (S.streak>0 && S.streak%5===0) toast(`×${S.mul} combo`);
-}
-
-function miss() {
-  S.wrong++; S.streak = 0; S.mul = 1;
-  anim('✕', 'var(--rd)');
-  flash('err');
-  updStreak(); // wywoła stopComboTimer bo mul=1
-  vib([40,15,40]);
-}
-
-function anim(txt, col) {
-  pop.textContent = txt; pop.style.color = col;
-  pop.style.transition = 'none';
-  pop.style.opacity    = '1';
-  pop.style.transform  = 'translate(-50%,-50%) scale(1)';
-  requestAnimationFrame(()=>{
-    pop.style.transition = 'opacity .48s, transform .48s';
-    pop.style.opacity    = '0';
-    pop.style.transform  = 'translate(-50%,-70%) scale(1.3)';
-  });
-}
-
-function flash(cls) {
-  card.classList.remove('ok','err');
-  void card.offsetWidth;
-  card.classList.add(cls);
-  setTimeout(()=>card.classList.remove(cls), 290);
-}
-
-/* COMBO TIMER — 8 sekund, resetuje się przy trafieniu, kończy combo przy błędzie */
-const COMBO_SEC = 8;
-let _ctimerInt = null;
-let _ctimerLeft = 0;
-
-function startComboTimer() {
-  clearInterval(_ctimerInt);
-  _ctimerLeft = COMBO_SEC;
-  $('ctimerWrap').style.display = '';
-  $('ctimerBar').classList.remove('low');
-  $('ctimerBar').style.transition = 'none';
-  $('ctimerBar').style.width = '100%';
-  _ctimerInt = setInterval(()=>{
-    _ctimerLeft -= 0.1;
-    const pct = Math.max(0, _ctimerLeft / COMBO_SEC * 100);
-    $('ctimerBar').style.transition = 'width .1s linear';
-    $('ctimerBar').style.width = pct + '%';
-    if (_ctimerLeft <= 2) $('ctimerBar').classList.add('low');
-    if (_ctimerLeft <= 0) {
-      clearInterval(_ctimerInt);
-      $('ctimerWrap').style.display = 'none';
-      // combo wygasa — reset
-      if (S.streak >= 5) {
-        S.streak = 0; S.mul = 1;
-        updStreak();
-        showMsg('combo wygasło', 'err');
-      }
-    }
-  }, 100);
-}
-
-function stopComboTimer() {
-  clearInterval(_ctimerInt);
-  $('ctimerWrap').style.display = 'none';
-  $('ctimerBar').style.width = '100%';
-}
-
-function updStreak() {
-  const p = S.streak % 5;
-  DOTS.forEach((d,i)=>d.classList.toggle('on', i < (S.streak>0 && p===0 ? 5 : p)));
-  if (S.mul >= 2) {
-    cmbo.textContent=`×${S.mul}`;
-    cmbo.classList.add('show');
-    startComboTimer(); // odśwież timer przy każdym trafieniu w combo
-  } else {
-    cmbo.classList.remove('show');
-    stopComboTimer();
-  }
-}
-
-function showMsg(txt, cls) {
-  hdrMsg.textContent = txt;
-  hdrMsg.className = 'hdr-msg' + (cls ? ' '+cls : '');
-  // auto-clear po chwili
-  clearTimeout(hdrMsg._t);
-  hdrMsg._t = setTimeout(()=>{ hdrMsg.textContent=''; hdrMsg.className='hdr-msg'; }, 2000);
-}
-
-function toast(msg) {
-  lup.textContent = msg;
-  lup.classList.remove('show');
-  void lup.offsetWidth;
-  lup.classList.add('show');
-}
-
-function vib(p) {
-  try { if(navigator.vibrate) navigator.vibrate(p); } catch(_){}
-}
-
-/* ═══════════════════════════════════════════════════════
-   FLOW GRY
-   ═══════════════════════════════════════════════════════ */
-function startGame() {
-  $('sMenu').classList.add('hide');
-  $('sEnd').classList.add('hide');
-  Object.assign(S, {
-    pts:0, streak:0, best:0, ok:0, wrong:0, mul:1,
-    running:true, abuf:'', qbuf:['',''], qfocus:0, fbuf:[], ffocus:0
-  });
-  gPts.textContent = '0';
-  DOTS.forEach(d=>d.classList.remove('on'));
-  cmbo.classList.remove('show');
-  stopComboTimer();
-  hdrMsg.textContent=''; hdrMsg.className='hdr-msg';
-  nextQ();
-}
-
-function showResults() {
-  S.running = false;
-  stopComboTimer();
-  $('ePts').textContent  = S.pts;
-  $('eOk').textContent   = S.ok;
-  $('eBest').textContent = S.best;
-  const tot = S.ok + S.wrong;
-  $('eAcc').textContent  = tot ? Math.round(S.ok/tot*100)+'%' : '—';
-  const msgs = [[0,'Ćwicz dalej!'],[80,'Nieźle!'],[200,'Świetnie!'],[450,'Rewelacja!'],[800,'Legenda! 🏆']];
-  let m=''; for(const[t,msg] of msgs) if(S.pts>=t) m=msg;
-  $('eMsg').textContent = m;
-  $('sEnd').classList.remove('hide');
-  vib([50,30,50,30,80]);
-}
-
-function goMenu() {
-  S.running = false;
-  $('sEnd').classList.add('hide');
-  $('sMenu').classList.remove('hide');
-}
-
-/* ═══════════════════════════════════════════════════════
-   OBSŁUGA WEJŚCIA — NUMPAD
-   ═══════════════════════════════════════════════════════ */
-function aKey(v) {
-  if (!S.running || S.mode!=='arith') return;
-  if (v==='ok')   { submitA(); return; }
-  if (v==='skip') { skip(); return; }
-  if (v==='clr') { S.abuf=''; updA(); return; }
-  if (v==='del') { S.abuf=S.abuf.slice(0,-1); updA(); return; }
-  if (v==='-') {
-    if      (!S.abuf)           S.abuf = '-';
-    else if (S.abuf==='-')      S.abuf = '';
-    else if (S.abuf[0]==='-')   S.abuf = S.abuf.slice(1);
-    else                         S.abuf = '-'+S.abuf;
-    updA(); return;
-  }
-  if (S.abuf.replace('-','').length < 4) { S.abuf+=v; updA(); }
-}
-
-function qKey(v) {
-  if (!S.running || S.mode!=='quad') return;
-  if (v==='ok')   { submitQ(); return; }
-  if (v==='skip')  { skip(); return; }
-  const f = S.qfocus;
-  if (v==='clr') { S.qbuf[f]=''; updQdisplay(); return; }
-  if (v==='del') { S.qbuf[f]=S.qbuf[f].slice(0,-1); updQdisplay(); return; }
-  if (v==='-') return; // znaki są zakodowane w nawiasach — gracz wpisuje tylko |r|
-  if (S.qbuf[f].length < 3) { S.qbuf[f]+=v; updQdisplay(); }
-}
-
-/* ═══════════════════════════════════════════════════════
-   EVENTY
-   ═══════════════════════════════════════════════════════ */
-// numpad arytmetyczny
-uiA.addEventListener('pointerdown', e=>{
-  const b = e.target.closest('[data-v]');
-  if (!b) return; e.preventDefault(); aKey(b.dataset.v);
-});
-
-// numpad wzorów
-uiF.addEventListener('pointerdown', e=>{
-  const b = e.target.closest('[data-fv]');
-  if (!b) return; e.preventDefault(); fKey(b.dataset.fv);
-});
-
-// pola wzorów + taby
-[0,1].forEach(i=>{
-  FFW[i].addEventListener('pointerdown', e=>{ e.preventDefault(); S.ffocus=i; updFfocus(); });
-});
-document.querySelectorAll('#uiF .qtab').forEach((t,i)=>{
-  t.addEventListener('pointerdown', e=>{ e.preventDefault(); S.ffocus=i; updFfocus(); });
-});
-
-// numpad kwadratowy
-uiQ.addEventListener('pointerdown', e=>{
-  const b = e.target.closest('[data-qv]');
-  if (!b) return; e.preventDefault(); qKey(b.dataset.qv);
-});
-
-// pola quad + taby
-[0,1].forEach(i=>{
-  QFW[i].addEventListener('pointerdown', e=>{ e.preventDefault(); S.qfocus=i; updQfocus(); });
-});
-document.querySelectorAll('.qtab').forEach((t,i)=>{
-  t.addEventListener('pointerdown', e=>{ e.preventDefault(); S.qfocus=i; updQfocus(); });
-});
-
-// przyciski nawigacji
-$('btnStart').addEventListener('click', startGame);
-$('btnAgain').addEventListener('click', startGame);
-$('btnMenu').addEventListener('click', goMenu); // back from end screen
-$('btnBack').addEventListener('click', showResults);
-
-
-/* ── SKIP ── */
+/* ════════════════════════════════════════
+   SKIP
+════════════════════════════════════════ */
 function skip() {
-  if (!S.running) return;
+  if(!S.running) return;
   miss();
-  // pokaż poprawną odpowiedź
-  if (S.mode === 'arith') {
-    showMsg(`Odpowiedź: ${S.q.ans}`, 'err');
-  } else if (S.mode === 'quad') {
-    const {r1, r2, coef} = S.q;
-    qFact.innerHTML = buildFact(r1, r2, coef, true);
-    showMsg(`x₁=${r1}, x₂=${r2}`, 'err');
-  } else if (S.mode === 'form') {
-    const {b, type, dir, a, fields} = S.q;
-    const mu = v=>`<span style="color:var(--t2)">${v}</span>`;
-    const gn = v=>`<span style="color:var(--gn)">${v}</span>`;
-    const ax = a===1?'x':`${gn(a)}x`;
+  if(S.mode==='arith'){
+    showMsg(`Odpowiedź: ${S.q.ans}`,'err');
+  } else if(S.mode==='quad'){
+    const{r1,r2,coef}=S.q;
+    qFact.innerHTML=buildFact(r1,r2,coef,true);
+    showMsg(`${ABS(r1)} i ${ABS(r2)}`,'err');
+  } else {
+    const{a,b,type,dir,ans}=S.q;
+    const ax=a===1?'x':`${gn(a)}x`;
     if(type===0) qFormFact.innerHTML=`(${ax} ${mu('+')} ${gn(b)})<sup>2</sup>`;
     else if(type===1) qFormFact.innerHTML=`(${ax} ${mu('−')} ${gn(b)})<sup>2</sup>`;
     else if(type===2) qFormFact.innerHTML=`(${ax} ${mu('+')} ${gn(b)})(${ax} ${mu('−')} ${gn(b)})`;
     else qFormFact.innerHTML=`(x ${mu('+')} ${gn(b)})<sup>3</sup>`;
-    showMsg(a>1?`a=${a}, b=${b}`:`b=${b}`, 'err');
+    showMsg(a>1?`a=${a}, b=${b}`:`b=${b}`,'err');
   }
-  setTimeout(()=>{ if(S.running) nextQ(); }, 1100);
+  setTimeout(()=>{if(S.running)nextQ();},1100);
 }
 
-// skip handled via numpad data-v/qv/fv="skip"
+/* ════════════════════════════════════════
+   HIT / MISS / VISUALS
+════════════════════════════════════════ */
+function hit() {
+  S.streak++; S.ok++;
+  if(S.streak>S.best) S.best=S.streak;
+  S.mul=Math.floor(S.streak/5)+1;
+  const pts=(S.mode==='quad'||S.mode==='form'?20:10)*S.mul;
+  S.pts+=pts; gPts.textContent=S.pts;
+  popAnim('+'+pts,'var(--gn)');
+  flash('ok'); updStreak(); vib(22);
+  if(S.streak>0&&S.streak%5===0) toast(`×${S.mul} combo`);
+}
+function miss() {
+  S.wrong++; S.streak=0; S.mul=1;
+  popAnim('✕','var(--rd)');
+  flash('err'); updStreak(); vib([40,15,40]);
+}
+function popAnim(txt,col) {
+  pop.textContent=txt; pop.style.color=col;
+  pop.style.transition='none'; pop.style.opacity='1'; pop.style.transform='translate(-50%,-50%) scale(1)';
+  requestAnimationFrame(()=>{pop.style.transition='opacity .48s,transform .48s';pop.style.opacity='0';pop.style.transform='translate(-50%,-70%) scale(1.3)';});
+}
+function flash(c) {
+  card.classList.remove('ok','err'); void card.offsetWidth;
+  card.classList.add(c); setTimeout(()=>card.classList.remove(c),300);
+}
+function updStreak() {
+  const p=S.streak%5;
+  DOTS.forEach((d,i)=>d.classList.toggle('on',i<(S.streak>0&&p===0?5:p)));
+  if(S.mul>=2){cmbo.textContent=`×${S.mul}`;cmbo.classList.add('show');startComboTimer();}
+  else{cmbo.classList.remove('show');stopComboTimer();}
+}
+function showMsg(txt,cls) {
+  hdrMsg.textContent=txt; hdrMsg.className='hdr-msg'+(cls?' '+cls:'');
+  clearTimeout(hdrMsg._t);
+  if(txt) hdrMsg._t=setTimeout(()=>{hdrMsg.textContent='';hdrMsg.className='hdr-msg';},2200);
+}
+function toast(msg) {lup.textContent=msg;lup.classList.remove('show');void lup.offsetWidth;lup.classList.add('show');}
+function vib(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(_){}}
 
-// konfiguracja: poziom
+/* ── COMBO TIMER ── */
+const COMBO_SEC=8;
+let _cInt=null,_cLeft=0;
+function startComboTimer(){
+  clearInterval(_cInt); _cLeft=COMBO_SEC;
+  $('ctimerWrap').style.display='';
+  const bar=$('ctimerBar'); bar.classList.remove('low'); bar.style.transition='none'; bar.style.width='100%';
+  _cInt=setInterval(()=>{
+    _cLeft-=.1;
+    bar.style.transition='width .1s linear'; bar.style.width=Math.max(0,_cLeft/COMBO_SEC*100)+'%';
+    if(_cLeft<=2) bar.classList.add('low');
+    if(_cLeft<=0){clearInterval(_cInt);$('ctimerWrap').style.display='none';if(S.streak>=5){S.streak=0;S.mul=1;updStreak();showMsg('combo wygasło','err');}}
+  },100);
+}
+function stopComboTimer(){clearInterval(_cInt);$('ctimerWrap').style.display='none';}
+
+/* ════════════════════════════════════════
+   DISPLAY HELPERS
+════════════════════════════════════════ */
+function updA(){aDisp.textContent=S.abuf||'?';aDisp.className='adisp'+(S.abuf?'':' mt');}
+
+/* ════════════════════════════════════════
+   KEY HANDLERS
+════════════════════════════════════════ */
+function aKey(v){
+  if(!S.running||S.mode!=='arith') return;
+  if(v==='ok'){submitA();return;}
+  if(v==='skip'){skip();return;}
+  if(v==='clr'){S.abuf='';updA();return;}
+  if(v==='del'){S.abuf=S.abuf.slice(0,-1);updA();return;}
+  if(v==='-'){
+    if(!S.abuf)S.abuf='-';
+    else if(S.abuf==='-')S.abuf='';
+    else if(S.abuf[0]==='-')S.abuf=S.abuf.slice(1);
+    else S.abuf='-'+S.abuf;
+    updA();return;
+  }
+  if(S.abuf.replace('-','').length<4){S.abuf+=v;updA();}
+}
+
+function qKey(v){
+  if(!S.running||S.mode!=='quad') return;
+  if(v==='ok'){submitQ();return;}
+  if(v==='skip'){skip();return;}
+  const f=S.qfocus;
+  if(v==='clr'){S.qbuf[f]='';updQdisp();return;}
+  if(v==='del'){S.qbuf[f]=S.qbuf[f].slice(0,-1);updQdisp();return;}
+  if(v==='-'){
+    if(!S.qbuf[f])S.qbuf[f]='-';
+    else if(S.qbuf[f]==='-')S.qbuf[f]='';
+    else if(S.qbuf[f][0]==='-')S.qbuf[f]=S.qbuf[f].slice(1);
+    else S.qbuf[f]='-'+S.qbuf[f];
+    updQdisp();return;
+  }
+  if(S.qbuf[f].replace('-','').length<3){S.qbuf[f]+=v;updQdisp();}
+}
+
+function fKey(v){
+  if(!S.running||S.mode!=='form') return;
+  if(v==='ok'){submitF();return;}
+  if(v==='skip'){skip();return;}
+  const f=S.ffocus, n=S.q.ans.length;
+  if(v==='clr'){S.fbuf[f]='';updFdisp();return;}
+  if(v==='del'){S.fbuf[f]=S.fbuf[f].slice(0,-1);updFdisp();return;}
+  if(v==='-') return; // form values always positive
+  if(S.fbuf[f].length<4){S.fbuf[f]+=v;updFdisp();}
+}
+
+/* ════════════════════════════════════════
+   GAME FLOW
+════════════════════════════════════════ */
+function startGame(){
+  $('sMenu').classList.add('hide'); $('sEnd').classList.add('hide');
+  Object.assign(S,{pts:0,streak:0,best:0,ok:0,wrong:0,mul:1,running:true,abuf:'',qbuf:['',''],qfocus:0,fbuf:[],ffocus:0});
+  gPts.textContent='0'; DOTS.forEach(d=>d.classList.remove('on')); cmbo.classList.remove('show');
+  stopComboTimer(); showMsg('',''); nextQ();
+}
+
+function showResults(){
+  S.running=false; stopComboTimer();
+  $('ePts').textContent=S.pts; $('eOk').textContent=S.ok; $('eBest').textContent=S.best;
+  const tot=S.ok+S.wrong; $('eAcc').textContent=tot?Math.round(S.ok/tot*100)+'%':'—';
+  const msgs=[[0,'Ćwicz dalej!'],[80,'Nieźle!'],[200,'Świetnie!'],[450,'Rewelacja!'],[800,'Legenda!']];
+  let m=''; for(const[t,msg]of msgs)if(S.pts>=t)m=msg; $('eMsg').textContent=m;
+  $('sEnd').classList.remove('hide');
+}
+
+function goMenu(){S.running=false;stopComboTimer();$('sEnd').classList.add('hide');$('sMenu').classList.remove('hide');}
+
+/* ════════════════════════════════════════
+   EVENTS
+════════════════════════════════════════ */
+uiA.addEventListener('pointerdown',e=>{
+  const b=e.target.closest('[data-v]'); if(!b)return; e.preventDefault(); aKey(b.dataset.v);
+});
+uiQ.addEventListener('pointerdown',e=>{
+  const b=e.target.closest('[data-qv]'); if(!b)return; e.preventDefault(); qKey(b.dataset.qv);
+});
+uiF.addEventListener('pointerdown',e=>{
+  const b=e.target.closest('[data-fv]'); if(!b)return; e.preventDefault(); fKey(b.dataset.fv);
+});
+
+// quad field focus
+[0,1].forEach(i=>{
+  QFW[i].addEventListener('pointerdown',e=>{e.preventDefault();S.qfocus=i;updQfocus();});
+});
+document.querySelectorAll('.qtab[data-qf]').forEach((t,i)=>{
+  t.addEventListener('pointerdown',e=>{e.preventDefault();S.qfocus=i;updQfocus();});
+});
+
+// form field focus
+[0,1].forEach(i=>{
+  FFW[i].addEventListener('pointerdown',e=>{
+    if(!S.q) return; e.preventDefault();
+    const n=S.q.ans.length;
+    // map visual slot to actual buffer index
+    if(n>=3){
+      // slot 0 = S.ffocus, slot 1 = (S.ffocus+1)%n
+      if(i===1){S.ffocus=(S.ffocus+1)%n;}
+    } else {
+      S.ffocus=i;
+    }
+    updFfocus(); updFdisp();
+  });
+});
+document.querySelectorAll('.qtab[data-ff]').forEach((t,i)=>{
+  t.addEventListener('pointerdown',e=>{
+    if(!S.q) return; e.preventDefault();
+    S.ffocus=i%S.q.ans.length; updFfocus(); updFdisp();
+  });
+});
+
+$('btnStart').addEventListener('click',startGame);
+$('btnAgain').addEventListener('click',startGame);
+$('btnMenu').addEventListener('click',goMenu);
+$('btnBack').addEventListener('click',showResults);
+
+// difficulty
 document.querySelectorAll('#diffPills .pl').forEach(b=>{
-  b.addEventListener('click', ()=>{
+  b.addEventListener('click',()=>{
     document.querySelectorAll('#diffPills .pl').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on');
-    S.diff = b.dataset.d;
+    b.classList.add('on'); S.diff=b.dataset.d;
   });
 });
-
-// konfiguracja: operatory
+// ops
 document.querySelectorAll('#opPills .opl').forEach(b=>{
-  b.addEventListener('click', ()=>{
+  b.addEventListener('click',()=>{
     b.classList.toggle('on');
-    const active = [...document.querySelectorAll('#opPills .opl.on')].map(x=>x.dataset.op);
-    if (!active.length) { b.classList.add('on'); return; }
-    S.ops = active;
+    const a=[...document.querySelectorAll('#opPills .opl.on')].map(x=>x.dataset.op);
+    if(!a.length){b.classList.add('on');return;} S.ops=a;
   });
 });
-
-// konfiguracja: tryby gry
-document.querySelectorAll('#modeCards .mcard').forEach(b=>{
-  b.addEventListener('click', ()=>{
+// modes
+document.querySelectorAll('#modeCards .mitem').forEach(b=>{
+  b.addEventListener('click',()=>{
     b.classList.toggle('on');
-    const active = [...document.querySelectorAll('#modeCards .mcard.on')].map(x=>x.dataset.m);
-    if (!active.length) { b.classList.add('on'); return; }
-    S.modes = active;
-    const noArith = active.every(m=>m!=='arith');
-    $('arithOpts').style.display = noArith ? 'none' : '';
+    const a=[...document.querySelectorAll('#modeCards .mitem.on')].map(x=>x.dataset.m);
+    if(!a.length){b.classList.add('on');return;} S.modes=a;
+    $('arithOpts').style.display=a.every(m=>m!=='arith')?'none':'';
   });
 });
 
-// klawiatura fizyczna
-document.addEventListener('keydown', e=>{
-  if (!S.running) return;
-  if (e.key>='0' && e.key<='9') {
-    S.mode==='arith' ? aKey(e.key) : (S.mode==='quad' ? qKey(e.key) : fKey(e.key));
-  } else if (e.key==='-') {
-    if (S.mode==='arith') aKey('-'); // quad nie używa znaku
-  } else if (e.key==='Backspace') {
+// physical keyboard
+document.addEventListener('keydown',e=>{
+  if(!S.running) return;
+  if(e.key>='0'&&e.key<='9'){S.mode==='arith'?aKey(e.key):S.mode==='quad'?qKey(e.key):fKey(e.key);}
+  else if(e.key==='-'){if(S.mode==='arith')aKey('-');else if(S.mode==='quad')qKey('-');}
+  else if(e.key==='Backspace'){e.preventDefault();S.mode==='arith'?aKey('del'):S.mode==='quad'?qKey('del'):fKey('del');}
+  else if(e.key==='Enter'||e.key===' '){e.preventDefault();S.mode==='arith'?submitA():S.mode==='quad'?submitQ():submitF();}
+  else if(e.key==='Escape'){if(S.mode==='arith'){S.abuf='';updA();}else if(S.mode==='quad'){S.qbuf[S.qfocus]='';updQdisp();}else{S.fbuf[S.ffocus]='';updFdisp();}}
+  else if(e.key==='Tab'){
     e.preventDefault();
-    S.mode==='arith' ? aKey('del') : (S.mode==='quad' ? qKey('del') : fKey('del'));
-  } else if (e.key==='Enter' || e.key===' ') {
-    e.preventDefault();
-    S.mode==='arith' ? submitA() : (S.mode==='quad' ? submitQ() : submitF());
-  } else if (e.key==='Escape') {
-    if (S.mode==='arith') { S.abuf=''; updA(); }
-    else if (S.mode==='quad') { S.qbuf[S.qfocus]=''; updQdisplay(); }
-    else { S.fbuf[S.ffocus]=''; updFdisplay(); }
-  } else if (e.key==='Tab' && (S.mode==='quad'||S.mode==='form')) {
-    e.preventDefault();
-    if(S.mode==='quad'){S.qfocus=(S.qfocus+1)%2;updQfocus();}else{const n=S.q?S.q.fields.length:2;S.ffocus=(S.ffocus+1)%n;updFdisplay();updFfocus();}
+    if(S.mode==='quad'){S.qfocus=(S.qfocus+1)%2;updQfocus();}
+    else if(S.mode==='form'&&S.q){S.ffocus=(S.ffocus+1)%S.q.ans.length;updFfocus();updFdisp();}
   }
 });
 
-
-/* ═══════════════════════════════════════════════════════
-   RANKING — localStorage
-   ═══════════════════════════════════════════════════════ */
-const RANK_KEY = 'mathub_rank_v1';
-const RANK_MAX = 5;
-
-function loadRank() {
-  try { return JSON.parse(localStorage.getItem(RANK_KEY)) || []; }
-  catch(_) { return []; }
-}
-
-function saveRank(list) {
-  try { localStorage.setItem(RANK_KEY, JSON.stringify(list)); } catch(_){}
-}
-
-function addToRank(name, pts) {
-  const list = loadRank();
-  list.push({ name: name.toUpperCase().slice(0,3).padEnd(3,'·'), pts });
-  list.sort((a,b)=>b.pts-a.pts);
-  const trimmed = list.slice(0, RANK_MAX);
-  saveRank(trimmed);
-  return trimmed;
-}
-
-function renderRank() {
-  const list = loadRank();
-  const el = $('rankList');
-  if (!list.length) {
-    el.innerHTML = '<div class="rank-empty">brak wyników</div>';
-    return;
-  }
-  el.innerHTML = list.map((e,i)=>`
-    <div class="rank-row${i===0?' gold':''}">
-      <div class="rank-pos">${['①','②','③','④','⑤'][i]||i+1}</div>
-      <div class="rank-name">${e.name}</div>
-      <div class="rank-pts">${e.pts}</div>
-    </div>`).join('');
-}
-
-/* modal inicjałów */
-let _initials = ['','',''];
-let _initFocus = 0;
-
-function openInitialsModal(pts) {
-  _initials = ['','',''];
-  _initFocus = 0;
-  $('modalScore').textContent = `${pts} pkt`;
-  [0,1,2].forEach(i=>{ $('ib'+i).textContent='_'; $('ib'+i).classList.toggle('act',i===0); });
-  $('modalInitials').classList.remove('hide');
-}
-
-function closeInitialsModal() {
-  $('modalInitials').classList.add('hide');
-}
-
-function initType(char) {
-  if (_initFocus > 2) return;
-  const c = char.replace(/[^a-zA-Z0-9]/g,'').toUpperCase();
-  if (!c) return;
-  _initials[_initFocus] = c;
-  $('ib'+_initFocus).textContent = c;
-  if (_initFocus < 2) {
-    _initFocus++;
-    [0,1,2].forEach(i=>$('ib'+i).classList.toggle('act',i===_initFocus));
-  }
-}
-
-function initDel() {
-  if (_initFocus > 0 && !_initials[_initFocus]) _initFocus--;
-  _initials[_initFocus] = '';
-  $('ib'+_initFocus).textContent = '_';
-  [0,1,2].forEach(i=>$('ib'+i).classList.toggle('act',i===_initFocus));
-}
-
-// klawiatura dla modala
-document.addEventListener('keydown', e=>{
-  if ($('modalInitials').classList.contains('hide')) return;
-  e.preventDefault();
-  if (e.key==='Backspace') { initDel(); return; }
-  if (e.key==='Enter') { $('btnSaveRank').click(); return; }
-  if (e.key==='Escape') { closeInitialsModal(); return; }
-  if (e.key.length===1) initType(e.key);
-});
-
-// klik na box inicjała
-[0,1,2].forEach(i=>{
-  $('ib'+i).addEventListener('click',()=>{
-    _initFocus=i;
-    [0,1,2].forEach(j=>$('ib'+j).classList.toggle('act',j===i));
-  });
-});
-
-// numpad w modalu — przekieruj klawisze
-document.querySelectorAll('.nk').forEach(k=>{
-  k.addEventListener('pointerdown', e=>{
-    if ($('modalInitials').classList.contains('hide')) return;
-    e.preventDefault();
-    const v = k.dataset.v||k.dataset.qv||k.dataset.fv||'';
-    if (v==='del'||v==='clr') { initDel(); return; }
-    if (v>='0'&&v<='9') { initType(v); return; }
-  });
-});
-
-$('btnSaveRank').addEventListener('click', ()=>{
-  const name = _initials.map(c=>c||'·').join('');
-  addToRank(name, S.pts);
-  closeInitialsModal();
-  renderRank();
-  goMenu();
-});
-
-$('btnSkipRank').addEventListener('click', ()=>{
-  closeInitialsModal();
-  goMenu();
-});
-
-// Zmodyfikuj showResults żeby pytać o inicjały
-const _origShowResults = showResults;
-function showResultsWithRank() {
-  _origShowResults();
-  // sprawdź czy wynik jest w top5
-  const list = loadRank();
-  const qualifies = list.length < RANK_MAX || S.pts > (list[list.length-1]?.pts||0);
-  if (qualifies && S.pts > 0) {
-    // pokaż modal po krótkiej chwili
-    setTimeout(()=>openInitialsModal(S.pts), 600);
-  }
-}
-
-// podmień showResults
-// (btnBack wywołuje showResults — nadpisujemy)
-$('btnBack').removeEventListener('click', showResults);
-$('btnBack').addEventListener('click', showResultsWithRank);
-
-// renderuj ranking przy starcie
-renderRank();
-
-/* ═══════════════════════════════════════════════════════
+/* ════════════════════════════════════════
    PWA
-   ═══════════════════════════════════════════════════════ */
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
-
-// hint instalacji — tylko gdy nie w trybie standalone
-const isStandalone =
-  window.matchMedia('(display-mode:standalone)').matches ||
-  window.matchMedia('(display-mode:fullscreen)').matches ||
-  navigator.standalone === true;
-// blokuj multi-touch zoom
-document.addEventListener('touchmove', e=>{ if(e.touches.length>1) e.preventDefault(); }, {passive:false});
-
-// blokuj double-tap zoom (ale nie dla scrollowania menu)
-let _lt = 0;
-document.addEventListener('touchend', e=>{
-  const now = Date.now();
-  if (now - _lt < 280 && e.target.tagName!=='INPUT') e.preventDefault();
-  _lt = now;
-}, {passive:false});
+════════════════════════════════════════ */
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});
+let _lt=0;
+document.addEventListener('touchend',e=>{const n=Date.now();if(n-_lt<280&&e.target.tagName!=='INPUT')e.preventDefault();_lt=n;},{passive:false});
 </script>
-<!-- ════════════════ MODAL INICJAŁÓW ════════════════ -->
-<div class="modal-overlay hide" id="modalInitials">
-  <div class="modal-box">
-    <div class="modal-ttl" id="modalScore">0 pkt</div>
-    <div class="modal-sub">Wpisz inicjały (3 litery)</div>
-    <div class="initials-row">
-      <div class="init-box act" id="ib0">_</div>
-      <div class="init-box" id="ib1">_</div>
-      <div class="init-box" id="ib2">_</div>
-    </div>
-    <div class="modal-btns">
-      <button class="btn" id="btnSaveRank">Zapisz</button>
-      <button class="btn ghost" id="btnSkipRank">Pomiń</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
