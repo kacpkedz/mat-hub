@@ -1,15 +1,18 @@
 {
-  "name": "Math Arcade",
-  "short_name": "MathArcade",
-  "description": "Szybkie działania matematyczne i rozkład wielomianów – gra na refleks",
+  "name": "mat-hub",
+  "short_name": "mat-hub",
+  "description": "Szybkie działania matematyczne i rozkład wielomianów",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#111116",
-  "theme_color": "#111116",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
   "lang": "pl",
-  "categories": ["education", "games"],
+  "categories": [
+    "education",
+    "games"
+  ],
   "icons": [
     {
       "src": "icons/icon-192.png",

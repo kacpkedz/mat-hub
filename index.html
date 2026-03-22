@@ -7,18 +7,18 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MathArcade">
+<meta name="apple-mobile-web-app-title" content="mat-hub">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<title>Math Arcade</title>
+<title>mat-hub</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#111116;--s1:#1a1a21;--s2:#222229;--s3:#2a2a33;
-  --b1:#2e2e38;--b2:#3e3e4a;--b3:#52526a;
-  --t1:#e2e2e8;--t2:#9898aa;--t3:#55556a;
-  --ac:#7c8cff;--gn:#4ade80;--rd:#f87171;--yl:#fbbf24;
+  --bg:#0a0a0a;--s1:#141414;--s2:#1c1c1c;--s3:#242424;
+  --b1:#2a2a2a;--b2:#383838;--b3:#484848;
+  --t1:#dedede;--t2:#888888;--t3:#4a4a4a;
+  --ac:#c8c8c8;--gn:#4ade80;--rd:#f87171;--yl:#d4a017;
   --st:env(safe-area-inset-top,0px);
   --sb:env(safe-area-inset-bottom,0px);
   --sl:env(safe-area-inset-left,0px);
@@ -66,7 +66,7 @@ body{
   cursor:pointer;touch-action:manipulation;user-select:none;
   transition:border-color .12s,color .12s,background .12s;
 }
-.pl.on{border-color:var(--ac);color:var(--ac);background:rgba(124,140,255,.08)}
+.pl.on{border-color:var(--ac);color:var(--ac);background:rgba(200,200,200,.07)}
 .pl:active{opacity:.65}
 
 /* op pill */
@@ -77,7 +77,7 @@ body{
   touch-action:manipulation;user-select:none;
   transition:border-color .12s,color .12s,background .12s;
 }
-.opl.on{border-color:var(--ac);color:var(--ac);background:rgba(124,140,255,.08)}
+.opl.on{border-color:var(--ac);color:var(--ac);background:rgba(200,200,200,.07)}
 .opl:active{opacity:.65}
 
 /* mode cards */
@@ -91,7 +91,7 @@ body{
 .mcard .ico{font-size:24px;line-height:1;margin-bottom:6px}
 .mcard .nm{font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--t1)}
 .mcard .ds{font-size:10px;color:var(--t2);margin-top:3px}
-.mcard.on{border-color:var(--ac);background:rgba(124,140,255,.07)}
+.mcard.on{border-color:var(--ac);background:rgba(200,200,200,.07)}
 .mcard:active{opacity:.7}
 
 /* buttons */
@@ -113,13 +113,6 @@ body{
 .rlbl{font-size:10px;color:var(--t3);letter-spacing:.1em;margin-top:5px;text-transform:uppercase}
 
 /* install hint */
-.ihint{
-  font-size:11px;color:var(--t3);text-align:center;line-height:1.75;
-  border:1px dashed var(--b1);border-radius:10px;
-  padding:10px 16px;max-width:270px;display:none;
-}
-.ihint.show{display:block}
-
 /* ── GAME WRAP ── */
 .wrap{width:100%;max-width:440px;display:flex;flex-direction:column;gap:9px;flex:1;min-height:0}
 
@@ -258,7 +251,7 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
   touch-action:manipulation;user-select:none;transition:all .12s;
   font-family:'DM Mono',monospace;letter-spacing:.04em;
 }
-.qtab.act{border-color:var(--ac);color:var(--ac);background:rgba(124,140,255,.07)}
+.qtab.act{border-color:var(--ac);color:var(--ac);background:rgba(200,200,200,.07)}
 .qtab:active{opacity:.65}
 
 /* level-up toast */
@@ -280,18 +273,16 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
 
 <!-- ════════════════ MENU ════════════════ -->
 <div class="scr" id="sMenu">
-  <div class="ttl">math<br>arcade</div>
+  <div class="ttl">mat-hub</div>
 
   <div class="mcards" id="modeCards">
     <div class="mcard on" data-m="arith">
       <div class="ico">±</div>
       <div class="nm">Działania</div>
-      <div class="ds">+ − × ÷</div>
     </div>
     <div class="mcard on" data-m="quad">
       <div class="ico">x²</div>
-      <div class="nm">Kwadratowe</div>
-      <div class="ds">miejsca zerowe</div>
+      <div class="nm">Rozkład</div>
     </div>
   </div>
 
@@ -315,12 +306,6 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
   </div>
 
   <button class="btn" id="btnStart">Graj</button>
-
-  <div class="ihint" id="ihint">
-    Dodaj do ekranu głównego:<br>
-    iOS: Udostępnij → „Dodaj do ekranu"<br>
-    Android: Menu ⋮ → „Zainstaluj aplikację"
-  </div>
 </div>
 
 <!-- ════════════════ WYNIKI ════════════════ -->
@@ -345,8 +330,7 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
 
   <!-- nagłówek -->
   <div class="hdr">
-    <div class="logo">M·A</div>
-    <div class="pts" id="gPts">0</div>
+        <div class="pts" id="gPts">0</div>
     <button class="mbtn" id="btnBack">Menu</button>
   </div>
 
@@ -377,23 +361,22 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
 
   <!-- ODPOWIEDŹ — arytmetyczna -->
   <div id="uiA">
-    <div class="arow">
+    <div class="arow" style="display:block">
       <div class="adisp mt" id="aDisp">?</div>
-      <button class="okbtn" id="okA">↵</button>
     </div>
     <div class="np">
-      <div class="nk sign" data-v="-">±</div>
       <div class="nk" data-v="7">7</div>
       <div class="nk" data-v="8">8</div>
       <div class="nk" data-v="9">9</div>
-      <div class="nk del" data-v="del">⌫</div>
+      <div class="nk sign" data-v="-">±</div>
       <div class="nk" data-v="4">4</div>
       <div class="nk" data-v="5">5</div>
       <div class="nk" data-v="6">6</div>
-      <div class="nk del" data-v="clr">C</div>
+      <div class="nk del" data-v="del">⌫</div>
       <div class="nk" data-v="1">1</div>
       <div class="nk" data-v="2">2</div>
       <div class="nk" data-v="3">3</div>
+      <div class="nk del" data-v="clr">C</div>
       <div class="nk z2" data-v="0">0</div>
       <div class="nk go" data-v="ok">↵</div>
     </div>
@@ -415,21 +398,20 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
         <div class="qflbl">x₂</div>
         <div class="qfval mt" id="qv1">?</div>
       </div>
-      <button class="okbtn" id="okQ">↵</button>
     </div>
     <div class="np">
-      <div class="nk" style="opacity:0;pointer-events:none" data-qv="">·</div>
       <div class="nk" data-qv="7">7</div>
       <div class="nk" data-qv="8">8</div>
       <div class="nk" data-qv="9">9</div>
-      <div class="nk del" data-qv="del">⌫</div>
+      <div class="nk" style="opacity:0;pointer-events:none" data-qv="">·</div>
       <div class="nk" data-qv="4">4</div>
       <div class="nk" data-qv="5">5</div>
       <div class="nk" data-qv="6">6</div>
-      <div class="nk del" data-qv="clr">C</div>
+      <div class="nk del" data-qv="del">⌫</div>
       <div class="nk" data-qv="1">1</div>
       <div class="nk" data-qv="2">2</div>
       <div class="nk" data-qv="3">3</div>
+      <div class="nk del" data-qv="clr">C</div>
       <div class="nk z2" data-qv="0">0</div>
       <div class="nk go" data-qv="ok">↵</div>
     </div>
@@ -857,14 +839,12 @@ uiA.addEventListener('pointerdown', e=>{
   const b = e.target.closest('[data-v]');
   if (!b) return; e.preventDefault(); aKey(b.dataset.v);
 });
-$('okA').addEventListener('pointerdown', e=>{ e.preventDefault(); submitA(); });
 
 // numpad kwadratowy
 uiQ.addEventListener('pointerdown', e=>{
   const b = e.target.closest('[data-qv]');
   if (!b) return; e.preventDefault(); qKey(b.dataset.qv);
 });
-$('okQ').addEventListener('pointerdown', e=>{ e.preventDefault(); submitQ(); });
 
 // pola quad + taby
 [0,1].forEach(i=>{
@@ -944,7 +924,7 @@ const isStandalone =
   window.matchMedia('(display-mode:standalone)').matches ||
   window.matchMedia('(display-mode:fullscreen)').matches ||
   navigator.standalone === true;
-if (!isStandalone) $('ihint').classList.add('show');
+if (!isStandalone)
 
 // blokuj multi-touch zoom
 document.addEventListener('touchmove', e=>{ if(e.touches.length>1) e.preventDefault(); }, {passive:false});
