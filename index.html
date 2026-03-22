@@ -27,7 +27,7 @@ body{
   font-family:'DM Sans',sans-serif;color:var(--t1);
   min-height:100dvh;display:flex;flex-direction:column;align-items:center;
   overflow:hidden;
-  padding:calc(var(--st)+10px) calc(var(--sr)+16px) calc(var(--sb)+8px) calc(var(--sl)+16px);
+  padding:calc(var(--st)+20px) calc(var(--sr)+16px) calc(var(--sb)+8px) calc(var(--sl)+16px);
 }
 
 /* ── SCREENS ── */
@@ -259,11 +259,14 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
     <div class="qtabs" id="fTabs">
       <div class="qtab act" data-ff="0">b</div>
       <div class="qtab" data-ff="1">b</div>
+      <div class="qtab" data-ff="2">b</div>
     </div>
     <div class="qrow">
       <div class="qfld act" id="ff0"><div class="qflbl" id="ffl0">b</div><div class="qfval ph" id="fv0">?</div></div>
-      <div class="qsep" id="fsep">·</div>
+      <div class="qsep" id="fsep0">·</div>
       <div class="qfld" id="ff1"><div class="qflbl" id="ffl1">b</div><div class="qfval ph" id="fv1">?</div></div>
+      <div class="qsep" id="fsep1">·</div>
+      <div class="qfld" id="ff2"><div class="qflbl" id="ffl2">b</div><div class="qfval ph" id="fv2">?</div></div>
     </div>
     <div class="np">
       <div class="nk" data-fv="7">7</div><div class="nk" data-fv="8">8</div><div class="nk" data-fv="9">9</div><div class="nk sign" data-fv="-">±</div>
@@ -298,7 +301,7 @@ const vA=$('vA'),uiA=$('uiA'),qA=$('qA');
 const vQ=$('vQ'),uiQ=$('uiQ'),qPoly=$('qPoly'),qFact=$('qFact');
 const vF=$('vF'),uiF=$('uiF'),qForm=$('qForm'),qFormFact=$('qFormFact');
 const QFW=[$('qf0'),$('qf1')],QFV=[$('qv0'),$('qv1')];
-const FFW=[$('ff0'),$('ff1')],FFV=[$('fv0'),$('fv1')];
+const FFW=[$('ff0'),$('ff1'),$('ff2')],FFV=[$('fv0'),$('fv1'),$('fv2')];
 
 for(let i=0;i<5;i++){const d=document.createElement('div');d.className='dot';sdots.appendChild(d);}
 const DOTS=[...sdots.querySelectorAll('.dot')];
@@ -422,28 +425,25 @@ function genForm(){
   qlbl.textContent=dir===0?`złóż → ${label}`:`rozpisz ${label}`;
   qForm.innerHTML=(dir===0?expand:factored)+` ${t3('= ?')}`;
   const n=ans.length;
-  $('fsep').style.display=n>=2?'':'none';
-  FFW[1].style.display=n>=2?'':'none';
+  // pokaż dokładnie n pól i n tabów
+  [0,1,2].forEach(i=>{
+    const show=i<n;
+    FFW[i].style.display=show?'':'none';
+    const sep=i===0?$('fsep0'):$('fsep1');
+    if(sep) sep.style.display=(i<n-1)?'':'none';
+    if(show) FFW[i].querySelector('.qflbl').textContent=flds[i];
+  });
   const tabs=$('fTabs').querySelectorAll('.qtab');
   tabs.forEach((t,i)=>{t.style.display=i<n?'':'none';t.textContent=flds[i]||'';});
-  FFW[0].querySelector('.qflbl').textContent=flds[0];
-  if(n>=2)FFW[1].querySelector('.qflbl').textContent=flds[1];
   updFfocus();updFdisp();
 }
 
 function updFdisp(){
   if(!S.q||S.mode!=='form')return;
   const{ans,flds,dir,type,a,b}=S.q,n=ans.length;
-  if(n>=3){
-    const f=S.ffocus,nx=(f+1)%n;
-    FFW[0].querySelector('.qflbl').textContent=flds[f];
-    const v0=S.fbuf[f];FFV[0].textContent=v0||'?';FFV[0].className='qfval'+(v0?'':' ph');
-    FFW[1].querySelector('.qflbl').textContent=flds[nx];
-    const v1=S.fbuf[nx];FFV[1].textContent=v1||'?';FFV[1].className='qfval'+(v1?'':' ph');
-    $('fsep').style.display='';FFW[1].style.display='';
-  }else{
-    for(let i=0;i<n;i++){const v=S.fbuf[i];FFV[i].textContent=v||'?';FFV[i].className='qfval'+(v?'':' ph');}
-  }
+  // zawsze aktualizuj wszystkie n pól bezpośrednio
+  for(let i=0;i<n;i++){const v=S.fbuf[i];FFV[i].textContent=v||'?';FFV[i].className='qfval'+(v?'':' ph');}
+  {
   // update blanks
   const ax=a===1?'x':`${a}x`,bv=i=>S.fbuf[i]||'?';
   if(dir===0){
@@ -462,8 +462,7 @@ function updFdisp(){
 }
 function updFfocus(){
   const n=S.q?S.q.ans.length:1;
-  FFW[0].className='qfld act';
-  FFW[1].className='qfld'+(n>=2&&S.ffocus>=1?' act':'');
+  [0,1,2].forEach(i=>{if(i<n) FFW[i].className='qfld'+(i===S.ffocus?' act':'');});
   $('fTabs').querySelectorAll('.qtab').forEach((t,i)=>t.classList.toggle('act',i===S.ffocus));
 }
 
@@ -643,11 +642,10 @@ uiF.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-fv]');if(
 document.querySelectorAll('.qtab[data-qf]').forEach((t,i)=>{
   t.addEventListener('pointerdown',e=>{e.preventDefault();S.qfocus=i;updQfocus();});
 });
-[0,1].forEach(i=>{
+[0,1,2].forEach(i=>{
   FFW[i].addEventListener('pointerdown',e=>{
-    if(!S.q)return;e.preventDefault();
-    if(S.q.ans.length>=3){if(i===1){S.ffocus=(S.ffocus+1)%S.q.ans.length;}}else{S.ffocus=i;}
-    updFfocus();updFdisp();
+    if(!S.q||i>=S.q.ans.length)return;
+    e.preventDefault();S.ffocus=i;updFfocus();
   });
 });
 document.querySelectorAll('.qtab[data-ff]').forEach((t,i)=>{
