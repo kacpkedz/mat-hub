@@ -81,14 +81,14 @@ body{
 .opl:active{opacity:.65}
 
 /* mode cards */
-.mcards{display:flex;gap:12px;width:100%;max-width:340px}
+.mcards{display:flex;gap:8px;width:100%;max-width:360px}
 .mcard{
   flex:1;background:var(--s1);border:1.5px solid var(--b1);border-radius:14px;
   padding:18px 10px;cursor:pointer;text-align:center;
   touch-action:manipulation;user-select:none;
   transition:border-color .12s,background .12s;
 }
-.mcard .ico{font-size:28px;line-height:1;margin-bottom:8px}
+.mcard .ico{font-size:22px;line-height:1;margin-bottom:8px}
 .mcard .nm{font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--t1)}
 .mcard .ds{font-size:10px;color:var(--t2);margin-top:3px}
 .mcard.on{border-color:var(--ac);background:rgba(200,200,200,.07)}
@@ -303,6 +303,10 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
       <div class="ico">x²</div>
       <div class="nm">Rozkład</div>
     </div>
+    <div class="mcard on" data-m="form">
+      <div class="ico">(a±b)²</div>
+      <div class="nm">Wzory</div>
+    </div>
   </div>
 
   <div class="blk" id="arithOpts">
@@ -372,6 +376,12 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
       <div class="qarith" id="qA"></div>
     </div>
 
+    <!-- widok wzorów skróconego mnożenia -->
+    <div id="vF" style="display:none">
+      <div class="qpoly" id="qForm"></div>
+      <div class="qfact" id="qFormFact"></div>
+    </div>
+
     <!-- widok kwadratowy -->
     <div id="vQ" style="display:none">
       <div class="qpoly" id="qPoly"></div>
@@ -425,7 +435,7 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
       <div class="nk" data-qv="7">7</div>
       <div class="nk" data-qv="8">8</div>
       <div class="nk" data-qv="9">9</div>
-      <div class="nk" style="opacity:0;pointer-events:none" data-qv="">·</div>
+      <div class="nk sign" data-qv="-">±</div>
       <div class="nk" data-qv="4">4</div>
       <div class="nk" data-qv="5">5</div>
       <div class="nk" data-qv="6">6</div>
@@ -436,6 +446,41 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
       <div class="nk del" data-qv="clr">C</div>
       <div class="nk z2" data-qv="0">0</div>
       <div class="nk go" data-qv="ok">↵</div>
+    </div>
+  </div>
+
+  <!-- ODPOWIEDŹ — wzory skróconego mnożenia -->
+  <div id="uiF" style="display:none">
+    <div class="qtabs">
+      <div class="qtab act" data-ff="0">a</div>
+      <div class="qtab" data-ff="1">b</div>
+    </div>
+    <div class="qrow">
+      <div class="qfld act" id="ff0">
+        <div class="qflbl">a</div>
+        <div class="qfval mt" id="fv0">?</div>
+      </div>
+      <div class="qsep">·</div>
+      <div class="qfld" id="ff1">
+        <div class="qflbl">b</div>
+        <div class="qfval mt" id="fv1">?</div>
+      </div>
+    </div>
+    <div class="np">
+      <div class="nk" data-fv="7">7</div>
+      <div class="nk" data-fv="8">8</div>
+      <div class="nk" data-fv="9">9</div>
+      <div class="nk sign" data-fv="-">±</div>
+      <div class="nk" data-fv="4">4</div>
+      <div class="nk" data-fv="5">5</div>
+      <div class="nk" data-fv="6">6</div>
+      <div class="nk del" data-fv="del">⌫</div>
+      <div class="nk" data-fv="1">1</div>
+      <div class="nk" data-fv="2">2</div>
+      <div class="nk" data-fv="3">3</div>
+      <div class="nk del" data-fv="clr">C</div>
+      <div class="nk z2" data-fv="0">0</div>
+      <div class="nk go" data-fv="ok">↵</div>
     </div>
   </div>
 
@@ -471,6 +516,8 @@ const S = {
   abuf:'',       // bufor arytmetyczny
   qbuf:['',''],  // bufory kwadratowe [x1, x2]
   qfocus:0,      // aktywne pole quad
+  fbuf:['',''],  // bufory wzorów [a, b]
+  ffocus:0,      // aktywne pole wzorów
 };
 
 /* ═══════════════════════════════════════════════════════
@@ -482,8 +529,11 @@ const hdrMsg=$('hdrMsg');
 const sdots=$('sdots'), cmbo=$('cmbo'), lup=$('lup');
 const vA=$('vA'),   uiA=$('uiA'),  qA=$('qA'),    aDisp=$('aDisp');
 const vQ=$('vQ'),   uiQ=$('uiQ'),  qPoly=$('qPoly'), qFact=$('qFact');
+const vF=$('vF'),   uiF=$('uiF'),  qForm=$('qForm'), qFormFact=$('qFormFact');
 const QFW=[$('qf0'),$('qf1')];
 const QFV=[$('qv0'),$('qv1')];
+const FFW=[$('ff0'),$('ff1')];
+const FFV=[$('fv0'),$('fv1')];
 
 // buduj 5 kropek streak
 for(let i=0;i<5;i++){const d=document.createElement('div');d.className='dot';sdots.appendChild(d);}
@@ -504,11 +554,14 @@ function nextQ() {
   const pool = S.modes.length ? S.modes : ['arith'];
   S.mode = pick(pool);
   if (S.mode === 'quad') genQuad();
+  else if (S.mode === 'form') genForm();
   else genArith();
   vA.style.display  = S.mode==='arith' ? '' : 'none';
   vQ.style.display  = S.mode==='quad'  ? '' : 'none';
+  vF.style.display  = S.mode==='form'  ? '' : 'none';
   uiA.style.display = S.mode==='arith' ? '' : 'none';
   uiQ.style.display = S.mode==='quad'  ? '' : 'none';
+  uiF.style.display = S.mode==='form'  ? '' : 'none';
 }
 
 /* ── ARYTMETYKA ── */
@@ -598,6 +651,138 @@ function genQuad() {
   qFact.innerHTML  = buildFact(r1, r2, coef, false);
   updQfocus();
   updQdisplay();
+}
+
+
+/* ── WZORY SKRÓCONEGO MNOŻENIA ──
+   Trzy wzory:
+   1. (a+b)² = a² + 2ab + b²    → gracz widzi rozwinięcie, wpisuje a i b (oba >0)
+   2. (a−b)² = a² − 2ab + b²    → j.w., b>0
+   3. (a+b)(a−b) = a² − b²      → gracz widzi a²−b², wpisuje a i b (oba >0)
+
+   Wyświetlamy ROZWINIĘCIE (prawa strona) i postać skróconą z blankami (lewa).
+   Gracz wpisuje a i b — zawsze dodatnie.
+*/
+function genForm() {
+  const c = CFG[S.diff];
+  const maxV = c.qMax;
+  // a,b zawsze dodatnie
+  const a = rnd(2, maxV);
+  const b = rnd(1, Math.min(a-1, maxV)); // b < a żeby uniknąć trywialnych
+  const type = rnd(0, 2);
+
+  let polyHTML, factHTML;
+
+  if (type === 0) {
+    // (a+b)² = a² + 2ab + b²
+    const A2 = a*a, _2ab = 2*a*b, B2 = b*b;
+    polyHTML = `${A2} <span style="color:var(--t2)">+</span> ${_2ab}x <span style="color:var(--t2)">+</span> ${B2}`;
+    // czekaj — tu nie ma x, to są liczby konkretne. Pokażmy wzór z x jako symbol
+    // Lepiej: losuj a i b, pokaż a²+2ab+b² jako liczby, a skrótowy wzór z blankami
+    polyHTML = `${A2} <span style="color:var(--t2)">+</span> ${_2ab} <span style="color:var(--t2)">+</span> ${B2}`;
+    factHTML = `(<span class="blnk" id="fb0">?</span> <span style="color:var(--t2)">+</span> <span class="blnk" id="fb1">?</span>)<sup>2</sup>`;
+    qlbl.textContent = '(a+b)²';
+  } else if (type === 1) {
+    // (a−b)² = a² − 2ab + b²
+    const A2 = a*a, _2ab = 2*a*b, B2 = b*b;
+    polyHTML = `${A2} <span style="color:var(--t2)">−</span> ${_2ab} <span style="color:var(--t2)">+</span> ${B2}`;
+    factHTML = `(<span class="blnk" id="fb0">?</span> <span style="color:var(--t2)">−</span> <span class="blnk" id="fb1">?</span>)<sup>2</sup>`;
+    qlbl.textContent = '(a−b)²';
+  } else {
+    // (a+b)(a−b) = a² − b²
+    const A2 = a*a, B2 = b*b;
+    polyHTML = `${A2} <span style="color:var(--t2)">−</span> ${B2}`;
+    factHTML = `(<span class="blnk" id="fb0">?</span> <span style="color:var(--t2)">+</span> <span class="blnk" id="fb1">?</span>)(<span class="blnk" id="fb0b">?</span> <span style="color:var(--t2)">−</span> <span class="blnk" id="fb1b">?</span>)`;
+    qlbl.textContent = '(a+b)(a−b)';
+  }
+
+  S.q = { a, b, type };
+  S.fbuf = ['', ''];
+  S.ffocus = 0;
+
+  qForm.innerHTML = polyHTML + ` <span style="color:var(--t3)">= ?</span>`;
+  qFormFact.innerHTML = factHTML;
+  updFfocus();
+  updFdisplay();
+}
+
+function updFdisplay() {
+  for (let i=0; i<2; i++) {
+    const v = S.fbuf[i];
+    FFV[i].textContent = v || '?';
+    FFV[i].className = 'qfval' + (v ? '' : ' mt');
+  }
+  // odśwież blanki w qFormFact
+  const {a, b, type} = S.q || {};
+  if (a == null) return;
+  updateFormBlanks();
+}
+
+function updateFormBlanks() {
+  const {type} = S.q;
+  const v0 = S.fbuf[0] || '?', v1 = S.fbuf[1] || '?';
+  const mu = "style='color:var(--t2)'";
+  const t3 = "style='color:var(--t3)'";
+  const blnk = (v, id) => `<span class="blnk" id="${id}">${v}</span>`;
+
+  if (type === 0) {
+    qFormFact.innerHTML = `(${blnk(v0,'fb0')} <span ${mu}>+</span> ${blnk(v1,'fb1')})<sup>2</sup>`;
+  } else if (type === 1) {
+    qFormFact.innerHTML = `(${blnk(v0,'fb0')} <span ${mu}>−</span> ${blnk(v1,'fb1')})<sup>2</sup>`;
+  } else {
+    qFormFact.innerHTML = `(${blnk(v0,'fb0')} <span ${mu}>+</span> ${blnk(v1,'fb1')})(${blnk(v0,'fb0b')} <span ${mu}>−</span> ${blnk(v1,'fb1b')})`;
+  }
+}
+
+function updFfocus() {
+  for (let i=0; i<2; i++) FFW[i].className = 'qfld' + (S.ffocus===i ? ' act' : '');
+  document.querySelectorAll('#uiF .qtab').forEach((t,i)=>t.classList.toggle('act', i===S.ffocus));
+}
+
+function submitF() {
+  if (!S.running) return;
+  const v0 = parseInt(S.fbuf[0]);
+  const v1 = parseInt(S.fbuf[1]);
+  if (isNaN(v0) || isNaN(v1)) return;
+
+  const {a, b, type} = S.q;
+  let ok = false;
+
+  if (type === 0 || type === 1) {
+    // (a±b)² — kolejność ma znaczenie (a≥b zawsze)
+    ok = (v0 === a && v1 === b);
+  } else {
+    // (a+b)(a−b) — a i b niezamiennie
+    ok = (v0 === a && v1 === b);
+  }
+
+  if (ok) {
+    hit();
+    setTimeout(()=>{ if(S.running) nextQ(); }, 170);
+  } else {
+    miss();
+    // pokaż odpowiedź
+    const mu = "style='color:var(--t2)'";
+    if (type === 0) {
+      qFormFact.innerHTML = `(<span style="color:var(--gn)">${a}</span> <span ${mu}>+</span> <span style="color:var(--gn)">${b}</span>)<sup>2</sup>`;
+    } else if (type === 1) {
+      qFormFact.innerHTML = `(<span style="color:var(--gn)">${a}</span> <span ${mu}>−</span> <span style="color:var(--gn)">${b}</span>)<sup>2</sup>`;
+    } else {
+      qFormFact.innerHTML = `(<span style="color:var(--gn)">${a}</span> <span ${mu}>+</span> <span style="color:var(--gn)">${b}</span>)(<span style="color:var(--gn)">${a}</span> <span ${mu}>−</span> <span style="color:var(--gn)">${b}</span>)`;
+    }
+    showMsg(`a = ${a},  b = ${b}`, 'err');
+    setTimeout(()=>{ if(S.running) nextQ(); }, 1400);
+  }
+}
+
+function fKey(v) {
+  if (!S.running || S.mode!=='form') return;
+  if (v==='ok')  { submitF(); return; }
+  const f = S.ffocus;
+  if (v==='clr') { S.fbuf[f]=''; updFdisplay(); return; }
+  if (v==='del') { S.fbuf[f]=S.fbuf[f].slice(0,-1); updFdisplay(); return; }
+  if (v==='-') return; // a,b zawsze dodatnie
+  if (S.fbuf[f].length < 3) { S.fbuf[f]+=v; updFdisplay(); }
 }
 
 /* buduje HTML wielomianu coef·x² + B·x + C = 0 */
@@ -849,7 +1034,7 @@ function startGame() {
   $('sEnd').classList.add('hide');
   Object.assign(S, {
     pts:0, streak:0, best:0, ok:0, wrong:0, mul:1,
-    running:true, abuf:'', qbuf:['',''], qfocus:0
+    running:true, abuf:'', qbuf:['',''], qfocus:0, fbuf:['',''], ffocus:0
   });
   gPts.textContent = '0';
   DOTS.forEach(d=>d.classList.remove('on'));
@@ -917,6 +1102,20 @@ uiA.addEventListener('pointerdown', e=>{
   if (!b) return; e.preventDefault(); aKey(b.dataset.v);
 });
 
+// numpad wzorów
+uiF.addEventListener('pointerdown', e=>{
+  const b = e.target.closest('[data-fv]');
+  if (!b) return; e.preventDefault(); fKey(b.dataset.fv);
+});
+
+// pola wzorów + taby
+[0,1].forEach(i=>{
+  FFW[i].addEventListener('pointerdown', e=>{ e.preventDefault(); S.ffocus=i; updFfocus(); });
+});
+document.querySelectorAll('#uiF .qtab').forEach((t,i)=>{
+  t.addEventListener('pointerdown', e=>{ e.preventDefault(); S.ffocus=i; updFfocus(); });
+});
+
 // numpad kwadratowy
 uiQ.addEventListener('pointerdown', e=>{
   const b = e.target.closest('[data-qv]');
@@ -963,7 +1162,8 @@ document.querySelectorAll('#modeCards .mcard').forEach(b=>{
     const active = [...document.querySelectorAll('#modeCards .mcard.on')].map(x=>x.dataset.m);
     if (!active.length) { b.classList.add('on'); return; }
     S.modes = active;
-    $('arithOpts').style.display = (active.length===1 && active[0]==='quad') ? 'none' : '';
+    const noArith = active.every(m=>m!=='arith');
+    $('arithOpts').style.display = noArith ? 'none' : '';
   });
 });
 
@@ -971,21 +1171,22 @@ document.querySelectorAll('#modeCards .mcard').forEach(b=>{
 document.addEventListener('keydown', e=>{
   if (!S.running) return;
   if (e.key>='0' && e.key<='9') {
-    S.mode==='arith' ? aKey(e.key) : qKey(e.key);
+    S.mode==='arith' ? aKey(e.key) : (S.mode==='quad' ? qKey(e.key) : fKey(e.key));
   } else if (e.key==='-') {
     if (S.mode==='arith') aKey('-'); // quad nie używa znaku
   } else if (e.key==='Backspace') {
     e.preventDefault();
-    S.mode==='arith' ? aKey('del') : qKey('del');
+    S.mode==='arith' ? aKey('del') : (S.mode==='quad' ? qKey('del') : fKey('del'));
   } else if (e.key==='Enter' || e.key===' ') {
     e.preventDefault();
-    S.mode==='arith' ? submitA() : submitQ();
+    S.mode==='arith' ? submitA() : (S.mode==='quad' ? submitQ() : submitF());
   } else if (e.key==='Escape') {
     if (S.mode==='arith') { S.abuf=''; updA(); }
-    else { S.qbuf[S.qfocus]=''; updQdisplay(); }
-  } else if (e.key==='Tab' && S.mode==='quad') {
+    else if (S.mode==='quad') { S.qbuf[S.qfocus]=''; updQdisplay(); }
+    else { S.fbuf[S.ffocus]=''; updFdisplay(); }
+  } else if (e.key==='Tab' && (S.mode==='quad'||S.mode==='form')) {
     e.preventDefault();
-    S.qfocus = (S.qfocus+1)%2; updQfocus();
+    if(S.mode==='quad'){S.qfocus=(S.qfocus+1)%2;updQfocus();}else{S.ffocus=(S.ffocus+1)%2;updFfocus();}
   }
 });
 
