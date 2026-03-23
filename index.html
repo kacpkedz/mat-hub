@@ -443,7 +443,6 @@ function updFdisp(){
   const{ans,flds,dir,type,a,b}=S.q,n=ans.length;
   // zawsze aktualizuj wszystkie n pól bezpośrednio
   for(let i=0;i<n;i++){const v=S.fbuf[i];FFV[i].textContent=v||'?';FFV[i].className='qfval'+(v?'':' ph');}
-  {
   // update blanks
   const ax=a===1?'x':`${a}x`,bv=i=>S.fbuf[i]||'?';
   if(dir===0){
