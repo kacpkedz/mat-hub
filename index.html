@@ -27,7 +27,7 @@
 html,body{height:100%;background:var(--bg)}
 body{
   font-family:'DM Sans',sans-serif;color:var(--t1);
-  height:100%;height:100dvh;display:flex;flex-direction:column;
+  min-height:100dvh;display:flex;flex-direction:column;
   align-items:center;overflow:hidden;
 }
 
@@ -118,11 +118,9 @@ body{
 /* ── GAME WRAP ── */
 .wrap{
   width:100%;max-width:440px;
-  display:flex;flex-direction:column;
-  height:100%;height:100dvh;
+  display:flex;flex-direction:column;gap:9px;
+  flex:1;min-height:0;
   padding:calc(var(--st)+16px) 16px calc(var(--sb)+12px);
-  justify-content:space-between;
-  gap:0;
 }
 .hdr{display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .pts{font-family:'DM Mono',monospace;font-size:23px;font-weight:500;color:var(--t1)}
@@ -134,7 +132,7 @@ body{
 .mbtn:active{opacity:.55}
 
 /* streak */
-.srow{display:flex;align-items:center;gap:7px;min-height:18px;flex-shrink:0;margin-bottom:4px}
+.srow{display:flex;align-items:center;gap:7px;min-height:18px;flex-shrink:0}
 .sdots{display:flex;gap:4px}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--s2);border:1.5px solid var(--b1);transition:background .18s,border-color .18s}
 .dot.on{background:var(--gn);border-color:var(--gn)}
@@ -148,9 +146,8 @@ body{
 .card{
   background:var(--s1);border:1.5px solid var(--b1);border-radius:16px;
   padding:20px 18px 16px;text-align:center;
-  position:relative;overflow:hidden;
-  flex:1;display:flex;flex-direction:column;justify-content:center;
-  transition:border-color .18s;margin:9px 0;
+  position:relative;overflow:hidden;flex-shrink:0;
+  transition:border-color .18s;
 }
 .card.ok{border-color:var(--gn)}
 .card.err{border-color:var(--rd);animation:shk .24s}
