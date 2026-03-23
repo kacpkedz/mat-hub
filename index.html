@@ -28,22 +28,10 @@ html{background:var(--bg)}
 body{
   font-family:'DM Sans',sans-serif;color:var(--t1);
   min-height:100dvh;display:flex;flex-direction:column;
-  align-items:center;
+  align-items:center;justify-content:center;
 }
 
-/* standalone PWA — iPhone notch/dynamic island fix */
-@supports (padding-top: env(safe-area-inset-top)) {
-  .wrap {
-    padding-top: max(44px, calc(env(safe-area-inset-top) + 16px));
-    padding-bottom: max(20px, calc(env(safe-area-inset-bottom) + 12px));
-    padding-left: max(16px, calc(env(safe-area-inset-left) + 16px));
-    padding-right: max(16px, calc(env(safe-area-inset-right) + 16px));
-  }
-  .scr {
-    padding-top: max(60px, calc(env(safe-area-inset-top) + 56px));
-    padding-bottom: max(48px, calc(env(safe-area-inset-bottom) + 48px));
-  }
-}
+
 
 /* ── SCREENS ── */
 .scr{
@@ -133,7 +121,7 @@ body{
 .wrap{
   width:100%;max-width:440px;
   display:flex;flex-direction:column;gap:9px;
-  padding:calc(var(--st)+16px) 16px calc(var(--sb)+16px);
+  padding:16px;
 }
 .hdr{display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .pts{font-family:'DM Mono',monospace;font-size:23px;font-weight:500;color:var(--t1)}
