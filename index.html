@@ -18,7 +18,7 @@
   --bg:#080808;--s1:#161616;--s2:#1e1e1e;--s3:#262626;
   --b1:#2c2c2c;--b2:#3a3a3a;
   --t1:#dedede;--t2:#888;--t3:#484848;
-  --ac:#c8c8c8;--gn:#4ade80;--rd:#f87171;--yl:#d4a017;
+  --ac:#c8c8c8;--gn:#4ade80;--rd:#f87171;--yl:#d4a017;--bl:#60a5fa;
   --st:env(safe-area-inset-top,0px);
   --sb:env(safe-area-inset-bottom,0px);
   --sl:env(safe-area-inset-left,0px);
@@ -31,28 +31,26 @@ body{
   align-items:center;justify-content:center;
 }
 
-
-
-/* ── SCREENS ── */
+/* ── EKRANY ── */
 .scr{
   position:fixed;inset:0;z-index:40;
   display:flex;flex-direction:column;align-items:center;
   background:var(--bg);
-  /* równomierny rozkład: safe-area + stały margines */
   padding-top:calc(var(--st) + 56px);
   padding-bottom:calc(var(--sb) + 48px);
   padding-left:calc(var(--sl) + 24px);
   padding-right:calc(var(--sr) + 24px);
   overflow-y:auto;
-  /* title na górze, reszta na środku, graj na dole */
   justify-content:space-between;
 }
 .scr.hide{display:none}
 
-/* menu wewnętrzna struktura */
+/* struktura menu */
 .menu-top{width:100%;max-width:340px;text-align:center;padding-bottom:8px}
 .menu-mid{width:100%;max-width:340px;display:flex;flex-direction:column;gap:14px;flex:1;justify-content:center}
-.menu-bot{width:100%;max-width:340px;padding-top:8px}
+
+/* przycisk Graj trochę wyżej — mniejszy padding-top */
+.menu-bot{width:100%;max-width:340px;padding-top:2px}
 
 .ttl{
   font-family:'DM Mono',monospace;
@@ -60,10 +58,12 @@ body{
   font-weight:500;line-height:1;letter-spacing:-.03em;
 }
 
-/* config */
+/* bloki config */
 .blk{display:flex;flex-direction:column;gap:8px;align-items:center}
 .blk-lbl{font-size:10px;color:var(--t3);letter-spacing:.18em;text-transform:uppercase}
 .row{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
+
+/* pigułki (poziom) */
 .pl{
   background:var(--s1);border:1.5px solid var(--b1);border-radius:100px;
   padding:7px 18px;font-size:13px;color:var(--t2);
@@ -72,6 +72,8 @@ body{
 }
 .pl.on{border-color:var(--ac);color:var(--ac);background:rgba(200,200,200,.07)}
 .pl:active{opacity:.65}
+
+/* pigułki operacji */
 .opl{
   background:var(--s1);border:1.5px solid var(--b1);border-radius:10px;
   width:54px;height:46px;font-family:'DM Mono',monospace;font-size:21px;
@@ -83,7 +85,7 @@ body{
 .opl:active{opacity:.65}
 #arithOpts.dim{opacity:.3;pointer-events:none}
 
-/* mode list */
+/* lista trybów */
 .mlist{display:flex;flex-direction:column;gap:8px;width:100%}
 .mitem{
   display:flex;align-items:center;gap:14px;
@@ -97,7 +99,7 @@ body{
 .mitem.on .mitem-ico{color:var(--ac)}
 .mitem-name{font-size:14px;font-weight:600;letter-spacing:.03em;color:var(--t1)}
 
-/* buttons */
+/* przyciski główne */
 .btn{
   background:#fff;color:#111;border:none;border-radius:12px;
   padding:14px 0;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
@@ -108,16 +110,16 @@ body{
 .btn.ghost{background:none;border:1.5px solid var(--b2);color:var(--t1);font-weight:400}
 .btn.ghost:active{opacity:.6}
 
-/* end stats */
+/* siatka wyników */
 .rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:310px}
 .rbox{background:var(--s1);border:1.5px solid var(--b1);border-radius:12px;padding:14px;text-align:center}
 .rval{font-family:'DM Mono',monospace;font-size:30px;font-weight:500;color:var(--t1);line-height:1}
 .rlbl{font-size:10px;color:var(--t3);letter-spacing:.1em;margin-top:5px;text-transform:uppercase}
 
-/* end screen */
+/* ekran końca */
 .end-inner{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:310px;flex:1;justify-content:center}
 
-/* ── GAME WRAP ── */
+/* ── OBSZAR GRY ── */
 .wrap{
   width:100%;max-width:440px;
   display:flex;flex-direction:column;gap:9px;
@@ -132,7 +134,7 @@ body{
 }
 .mbtn:active{opacity:.55}
 
-/* streak */
+/* pasek serii */
 .srow{display:flex;align-items:center;gap:7px;min-height:18px;flex-shrink:0}
 .sdots{display:flex;gap:4px}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--s2);border:1.5px solid var(--b1);transition:background .18s,border-color .18s}
@@ -143,7 +145,7 @@ body{
 .cmbo{margin-left:auto;font-size:11px;color:var(--ac);opacity:0;transition:opacity .2s;font-family:'DM Mono',monospace}
 .cmbo.show{opacity:1}
 
-/* card */
+/* karta pytania */
 .card{
   background:var(--s1);border:1.5px solid var(--b1);border-radius:16px;
   padding:20px 18px 16px;text-align:center;
@@ -165,7 +167,7 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
 .blnk{display:inline-block;min-width:20px;border-bottom:1.5px solid var(--ac);color:var(--ac);text-align:center;padding:0 2px;font-weight:500;letter-spacing:0}
 .pop{position:absolute;font-family:'DM Mono',monospace;font-size:19px;font-weight:500;pointer-events:none;opacity:0;z-index:5;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap}
 
-/* answer fields */
+/* pola odpowiedzi */
 .qrow{display:flex;gap:5px;align-items:stretch;margin-bottom:8px;flex-shrink:0}
 .qtabs{display:flex;gap:6px;margin-bottom:5px;flex-shrink:0}
 .qtab{flex:1;background:var(--s1);border:1.5px solid var(--b1);border-radius:8px;padding:7px 0;font-size:11px;color:var(--t2);cursor:pointer;text-align:center;touch-action:manipulation;user-select:none;transition:all .12s;font-family:'DM Mono',monospace}
@@ -178,19 +180,26 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
 .qfval.ph{color:var(--t3)}
 .qsep{align-self:center;color:var(--t3);font-size:13px;flex-shrink:0;padding:0 1px}
 
-/* numpad */
+/* ── TRYB PITAGORAS ── */
+.pitagoras-trojkat{
+  display:flex;justify-content:center;align-items:center;
+  margin:6px 0;
+}
+.pitagoras-trojkat canvas{max-width:100%;height:auto;}
+
+/* klawiatura numeryczna */
 .np{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;flex-shrink:0}
 .nk{background:var(--s1);border:1.5px solid var(--b1);border-radius:10px;height:52px;font-family:'DM Mono',monospace;font-size:17px;color:var(--t1);cursor:pointer;text-align:center;line-height:52px;user-select:none;-webkit-user-select:none;touch-action:manipulation;transition:background .07s,transform .07s}
 .nk:active{transform:scale(.9);background:var(--s3)}
-.nk.sign{color:var(--yl)}
+.nk.znak{color:var(--yl)}
 .nk.del{color:var(--rd)}
 .nk.z2{grid-column:span 2}
 .nk.go{background:#fff;color:#111;border-color:#fff;font-size:19px}
 .nk.go:active{background:#ccc;transform:scale(.9)}
-.nk.skip{font-size:11px;color:var(--t3);letter-spacing:.04em}
-.nk.skip:active{color:var(--t2);transform:scale(.9)}
+.nk.pomin{font-size:11px;color:var(--t3);letter-spacing:.04em}
+.nk.pomin:active{color:var(--t2);transform:scale(.9)}
 
-/* toast */
+/* powiadomienie */
 .lup{position:fixed;top:24%;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:clamp(16px,5vw,24px);color:var(--ac);opacity:0;pointer-events:none;z-index:60;white-space:nowrap}
 @keyframes la{0%{opacity:0;transform:translateX(-50%) scale(.7)}20%{opacity:1;transform:translateX(-50%) scale(1.05)}70%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(.88)}}
 .lup.show{animation:la 1.1s ease forwards}
@@ -217,6 +226,10 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
       <div class="mitem on" data-m="form">
         <div class="mitem-ico">f(x)</div>
         <div class="mitem-name">Wzory</div>
+      </div>
+      <div class="mitem on" data-m="pita">
+        <div class="mitem-ico">△</div>
+        <div class="mitem-name">Pitagoras</div>
       </div>
     </div>
 
@@ -279,29 +292,43 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
 
   <div class="card" id="card">
     <div class="qlbl" id="qlbl"></div>
+
+    <!-- widok: działania -->
     <div id="vA"><div class="qarith" id="qA"></div></div>
+
+    <!-- widok: rozkład wielomianu -->
     <div id="vQ" style="display:none">
       <div class="qpoly" id="qPoly"></div>
       <div class="qfact" id="qFact"></div>
     </div>
+
+    <!-- widok: wzory skróconego mnożenia -->
     <div id="vF" style="display:none">
       <div class="qpoly" id="qForm"></div>
       <div class="qfact" id="qFormFact"></div>
     </div>
+
+    <!-- widok: pitagoras -->
+    <div id="vP" style="display:none">
+      <div class="pitagoras-trojkat">
+        <canvas id="trojkatCanvas" width="220" height="160"></canvas>
+      </div>
+    </div>
+
     <div class="pop" id="pop"></div>
   </div>
 
-  <!-- arith numpad -->
+  <!-- klawiatura: działania -->
   <div id="uiA">
     <div class="np">
-      <div class="nk" data-v="7">7</div><div class="nk" data-v="8">8</div><div class="nk" data-v="9">9</div><div class="nk sign" data-v="-">±</div>
+      <div class="nk" data-v="7">7</div><div class="nk" data-v="8">8</div><div class="nk" data-v="9">9</div><div class="nk znak" data-v="-">±</div>
       <div class="nk" data-v="4">4</div><div class="nk" data-v="5">5</div><div class="nk" data-v="6">6</div><div class="nk del" data-v="del">⌫</div>
       <div class="nk" data-v="1">1</div><div class="nk" data-v="2">2</div><div class="nk" data-v="3">3</div><div class="nk del" data-v="clr">C</div>
-      <div class="nk z2" data-v="0">0</div><div class="nk skip" data-v="skip">skip</div><div class="nk go" data-v="ok">↵</div>
+      <div class="nk z2" data-v="0">0</div><div class="nk pomin" data-v="skip">skip</div><div class="nk go" data-v="ok">↵</div>
     </div>
   </div>
 
-  <!-- quad numpad -->
+  <!-- klawiatura: rozkład -->
   <div id="uiQ" style="display:none">
     <div class="qtabs">
       <div class="qtab act" data-qf="0">x₁</div>
@@ -313,14 +340,14 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
       <div class="qfld" id="qf1"><div class="qflbl">x₂</div><div class="qfval ph" id="qv1">?</div></div>
     </div>
     <div class="np">
-      <div class="nk" data-qv="7">7</div><div class="nk" data-qv="8">8</div><div class="nk" data-qv="9">9</div><div class="nk sign" data-qv="-">±</div>
+      <div class="nk" data-qv="7">7</div><div class="nk" data-qv="8">8</div><div class="nk" data-qv="9">9</div><div class="nk znak" data-qv="-">±</div>
       <div class="nk" data-qv="4">4</div><div class="nk" data-qv="5">5</div><div class="nk" data-qv="6">6</div><div class="nk del" data-qv="del">⌫</div>
       <div class="nk" data-qv="1">1</div><div class="nk" data-qv="2">2</div><div class="nk" data-qv="3">3</div><div class="nk del" data-qv="clr">C</div>
-      <div class="nk z2" data-qv="0">0</div><div class="nk skip" data-qv="skip">skip</div><div class="nk go" data-qv="ok">↵</div>
+      <div class="nk z2" data-qv="0">0</div><div class="nk pomin" data-qv="skip">skip</div><div class="nk go" data-qv="ok">↵</div>
     </div>
   </div>
 
-  <!-- form numpad -->
+  <!-- klawiatura: wzory -->
   <div id="uiF" style="display:none">
     <div class="qtabs" id="fTabs">
       <div class="qtab act" data-ff="0">b</div>
@@ -335,480 +362,1120 @@ sup{font-size:.58em;vertical-align:super;line-height:0}
       <div class="qfld" id="ff2"><div class="qflbl" id="ffl2">b</div><div class="qfval ph" id="fv2">?</div></div>
     </div>
     <div class="np">
-      <div class="nk" data-fv="7">7</div><div class="nk" data-fv="8">8</div><div class="nk" data-fv="9">9</div><div class="nk sign" data-fv="-">±</div>
+      <div class="nk" data-fv="7">7</div><div class="nk" data-fv="8">8</div><div class="nk" data-fv="9">9</div><div class="nk znak" data-fv="-">±</div>
       <div class="nk" data-fv="4">4</div><div class="nk" data-fv="5">5</div><div class="nk" data-fv="6">6</div><div class="nk del" data-fv="del">⌫</div>
       <div class="nk" data-fv="1">1</div><div class="nk" data-fv="2">2</div><div class="nk" data-fv="3">3</div><div class="nk del" data-fv="clr">C</div>
-      <div class="nk z2" data-fv="0">0</div><div class="nk skip" data-fv="skip">skip</div><div class="nk go" data-fv="ok">↵</div>
+      <div class="nk z2" data-fv="0">0</div><div class="nk pomin" data-fv="skip">skip</div><div class="nk go" data-fv="ok">↵</div>
+    </div>
+  </div>
+
+  <!-- klawiatura: pitagoras (jedna liczba) -->
+  <div id="uiP" style="display:none">
+    <div class="np">
+      <div class="nk" data-pv="7">7</div><div class="nk" data-pv="8">8</div><div class="nk" data-pv="9">9</div><div class="nk del" data-pv="del">⌫</div>
+      <div class="nk" data-pv="4">4</div><div class="nk" data-pv="5">5</div><div class="nk" data-pv="6">6</div><div class="nk del" data-pv="clr">C</div>
+      <div class="nk" data-pv="1">1</div><div class="nk" data-pv="2">2</div><div class="nk" data-pv="3">3</div><div class="nk pomin" data-pv="skip">skip</div>
+      <div class="nk z2" data-pv="0">0</div><div class="nk pomin" data-pv="skip">skip</div><div class="nk go" data-pv="ok">↵</div>
     </div>
   </div>
 </div>
 
 <script>
-/* ── CONFIG ── */
-const CFG={
-  easy:  {ar:[1,12],mu:[1,10],dv:[1,10],qMax:7, coef:[1],      negR:false,dbl:false},
-  medium:{ar:[1,20],mu:[1,12],dv:[1,12],qMax:10,coef:[1,2,3],  negR:true, dbl:false},
-  hard:  {ar:[1,30],mu:[2,15],dv:[2,15],qMax:12,coef:[1,2,3,5],negR:true, dbl:true },
+/* ═══════════════════════════════════════════════════
+   KONFIGURACJA POZIOMÓW
+   każdy poziom określa zakresy liczb i możliwości
+   ═══════════════════════════════════════════════════ */
+const POZIOMY = {
+  easy:   { zakresAr: [1,12], zakresM: [1,10],  zakresD: [1,10],  maxQ: 7,  wspolczynniki: [1],         ujemneP: false, podwojne: false },
+  medium: { zakresAr: [1,20], zakresM: [1,12],  zakresD: [1,12],  maxQ: 10, wspolczynniki: [1,2,3],     ujemneP: true,  podwojne: false },
+  hard:   { zakresAr: [1,30], zakresM: [2,15],  zakresD: [2,15],  maxQ: 12, wspolczynniki: [1,2,3,5],   ujemneP: true,  podwojne: true  },
 };
 
-/* ── STATE ── */
-const S={
-  pts:0,streak:0,best:0,ok:0,wrong:0,running:false,
-  diff:'easy',ops:['+','−','×','÷'],modes:['arith','quad','form'],
-  mul:1,mode:'arith',q:null,
-  abuf:'',qbuf:['',''],qfocus:0,fbuf:[],ffocus:0,
+/* ═══════════════════════════════════════════════════
+   STAN GRY
+   wszystko co się zmienia w trakcie sesji
+   ═══════════════════════════════════════════════════ */
+const stan = {
+  punkty: 0,
+  seria: 0,
+  najlepszaSeria: 0,
+  poprawne: 0,
+  bledne: 0,
+  trwa: false,
+
+  poziom: 'easy',
+  operacje: ['+', '−', '×', '÷'],
+  tryby: ['arith', 'quad', 'form', 'pita'],
+
+  mnoznik: 1,
+  tryb: 'arith',
+  pytanie: null,
+
+  // bufory wpisywania (każdy tryb ma swój)
+  arithBufor: '',
+  quadBufor: ['', ''],
+  quadFokus: 0,
+  formBufor: [],
+  formFokus: 0,
+  pitaBufor: '',
 };
 
-/* ── DOM ── */
-const $=id=>document.getElementById(id);
-const gPts=$('gPts'),card=$('card'),pop=$('pop'),qlbl=$('qlbl');
-const sdots=$('sdots'),cmbo=$('cmbo'),lup=$('lup');
-const vA=$('vA'),uiA=$('uiA'),qA=$('qA');
-const vQ=$('vQ'),uiQ=$('uiQ'),qPoly=$('qPoly'),qFact=$('qFact');
-const vF=$('vF'),uiF=$('uiF'),qForm=$('qForm'),qFormFact=$('qFormFact');
-const QFW=[$('qf0'),$('qf1')],QFV=[$('qv0'),$('qv1')];
-const FFW=[$('ff0'),$('ff1'),$('ff2')],FFV=[$('fv0'),$('fv1'),$('fv2')];
+/* ═══════════════════════════════════════════════════
+   SKRÓTY DOM
+   ═══════════════════════════════════════════════════ */
+const el = id => document.getElementById(id);
 
-for(let i=0;i<5;i++){const d=document.createElement('div');d.className='dot';sdots.appendChild(d);}
-const DOTS=[...sdots.querySelectorAll('.dot')];
+const domPunkty   = el('gPts');
+const domKarta    = el('card');
+const domPop      = el('pop');
+const domEtykieta = el('qlbl');
+const domDotki    = el('sdots');
+const domKombo    = el('cmbo');
+const domLup      = el('lup');
 
-/* ── UTILS ── */
-const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
-const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
-const ABS=Math.abs;
-const mu=v=>`<span style="color:var(--t2)">${v}</span>`;
-const t3=v=>`<span style="color:var(--t3)">${v}</span>`;
-const gn=v=>`<span style="color:var(--gn)">${v}</span>`;
-const blnk=(v,id)=>`<span class="blnk"${id?` id="${id}"`:''}>${v||'?'}</span>`;
+// widoki w karcie
+const widokA = el('vA'), widokQ = el('vQ'), widokF = el('vF'), widokP = el('vP');
+const qA     = el('qA'), qPoly  = el('qPoly'), qFact = el('qFact');
+const qForm  = el('qForm'), qFormFact = el('qFormFact');
 
-/* ── ROUTING ── */
-function nextQ(){
-  const pool=S.modes.length?S.modes:['arith'];
-  S.mode=pick(pool);
-  if(S.mode==='quad')genQuad();
-  else if(S.mode==='form')genForm();
-  else genArith();
-  vA.style.display  =S.mode==='arith'?'':'none';
-  vQ.style.display  =S.mode==='quad' ?'':'none';
-  vF.style.display  =S.mode==='form' ?'':'none';
-  uiA.style.display =S.mode==='arith'?'':'none';
-  uiQ.style.display =S.mode==='quad' ?'':'none';
-  uiF.style.display =S.mode==='form' ?'':'none';
+// klawiatury
+const kbA = el('uiA'), kbQ = el('uiQ'), kbF = el('uiF'), kbP = el('uiP');
+
+// pola rozkładu
+const quadPola   = [el('qf0'), el('qf1')];
+const quadWart   = [el('qv0'), el('qv1')];
+
+// pola wzorów
+const formPola   = [el('ff0'), el('ff1'), el('ff2')];
+const formWart   = [el('fv0'), el('fv1'), el('fv2')];
+
+// canvas pitagorasa
+const canvasTrojkat = el('trojkatCanvas');
+const ctx           = canvasTrojkat.getContext('2d');
+
+// dotki serii
+for (let i = 0; i < 5; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot';
+  domDotki.appendChild(d);
+}
+const DOTKI = [...domDotki.querySelectorAll('.dot')];
+
+
+/* ═══════════════════════════════════════════════════
+   POMOCNIKI
+   ═══════════════════════════════════════════════════ */
+const losujInt   = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const losujZ     = arr    => arr[Math.floor(Math.random() * arr.length)];
+const abs        = Math.abs;
+
+// kolory do HTML w kartach
+const kolorSzary  = v => `<span style="color:var(--t2)">${v}</span>`;
+const kolorCiemny = v => `<span style="color:var(--t3)">${v}</span>`;
+const kolorZiel   = v => `<span style="color:var(--gn)">${v}</span>`;
+const kolorNieb   = v => `<span style="color:var(--bl)">${v}</span>`;
+const puste       = (v, id) => `<span class="blnk"${id ? ` id="${id}"` : ''}>${v || '?'}</span>`;
+
+
+/* ═══════════════════════════════════════════════════
+   ROUTING — który tryb gry teraz
+   ═══════════════════════════════════════════════════ */
+function nastepnePytanie() {
+  const pula = stan.tryby.length ? stan.tryby : ['arith'];
+  stan.tryb = losujZ(pula);
+
+  // pokaż odpowiedni widok i klawiaturę
+  widokA.style.display = stan.tryb === 'arith' ? '' : 'none';
+  widokQ.style.display = stan.tryb === 'quad'  ? '' : 'none';
+  widokF.style.display = stan.tryb === 'form'  ? '' : 'none';
+  widokP.style.display = stan.tryb === 'pita'  ? '' : 'none';
+  kbA.style.display    = stan.tryb === 'arith' ? '' : 'none';
+  kbQ.style.display    = stan.tryb === 'quad'  ? '' : 'none';
+  kbF.style.display    = stan.tryb === 'form'  ? '' : 'none';
+  kbP.style.display    = stan.tryb === 'pita'  ? '' : 'none';
+
+  if (stan.tryb === 'arith') generujDzialanie();
+  else if (stan.tryb === 'quad')  generujRozklad();
+  else if (stan.tryb === 'form')  generujWzor();
+  else if (stan.tryb === 'pita')  generujPitagoras();
 }
 
-/* ── ARITH ── */
-function genArith(){
-  const c=CFG[S.diff],ops=S.ops.length?S.ops:['+'],op=pick(ops);
-  let a,b,ans;
-  if(op==='+'){a=rnd(...c.ar);b=rnd(...c.ar);ans=a+b;}
-  else if(op==='−'){a=rnd(...c.ar);b=rnd(...c.ar);if(b>a)[a,b]=[b,a];ans=a-b;}
-  else if(op==='×'){a=rnd(...c.mu);b=rnd(...c.mu);ans=a*b;}
-  else{b=rnd(2,c.dv[1]);ans=rnd(1,c.dv[1]);a=b*ans;}
-  S.q={ans};S.abuf='';
-  qlbl.textContent={'+':'Dodawanie','−':'Odejmowanie','×':'Mnożenie','÷':'Dzielenie'}[op];
-  qA.innerHTML=`${a}<span class="op"> ${op} </span>${b}<span class="eq"> = </span><span class="ans ph" id="qAns">?</span>`;
-}
-function updArith(){
-  const el=$('qAns');if(!el)return;
-  el.textContent=S.abuf||'?';
-  el.className='ans'+(S.abuf?'':' ph');
+
+/* ═══════════════════════════════════════════════════
+   TRYB: DZIAŁANIA ARYTMETYCZNE
+   ═══════════════════════════════════════════════════ */
+function generujDzialanie() {
+  const cfg = POZIOMY[stan.poziom];
+  const ops = stan.operacje.length ? stan.operacje : ['+'];
+  const op  = losujZ(ops);
+
+  let a, b, odpowiedz;
+
+  if (op === '+') {
+    a = losujInt(...cfg.zakresAr);
+    b = losujInt(...cfg.zakresAr);
+    odpowiedz = a + b;
+  } else if (op === '−') {
+    a = losujInt(...cfg.zakresAr);
+    b = losujInt(...cfg.zakresAr);
+    if (b > a) [a, b] = [b, a]; // żeby nie wyszło ujemne na łatwym
+    odpowiedz = a - b;
+  } else if (op === '×') {
+    a = losujInt(...cfg.zakresM);
+    b = losujInt(...cfg.zakresM);
+    odpowiedz = a * b;
+  } else { // ÷
+    b = losujInt(2, cfg.zakresD[1]);
+    odpowiedz = losujInt(1, cfg.zakresD[1]);
+    a = b * odpowiedz; // zagwarantuj dzielenie całkowite
+  }
+
+  stan.pytanie = { odpowiedz };
+  stan.arithBufor = '';
+
+  const nazwaOp = { '+': 'Dodawanie', '−': 'Odejmowanie', '×': 'Mnożenie', '÷': 'Dzielenie' }[op];
+  domEtykieta.textContent = nazwaOp;
+  qA.innerHTML = `${a}<span class="op"> ${op} </span>${b}<span class="eq"> = </span><span class="ans ph" id="qAns">?</span>`;
 }
 
-/* ── QUAD ── */
-function genQuad(){
-  const c=CFG[S.diff],coef=pick(c.coef);
-  let r1=rnd(1,c.qMax)*(c.negR&&Math.random()<.5?-1:1);
-  let r2=c.dbl&&Math.random()<.2?r1:rnd(1,c.qMax)*(c.negR&&Math.random()<.5?-1:1);
-  if(!r1)r1=1;if(!r2)r2=1;
-  const B=-coef*(r1+r2),C=coef*r1*r2;
-  S.q={r1,r2,coef};S.qbuf=['',''];S.qfocus=0;
-  qlbl.textContent='Miejsca zerowe';
-  qPoly.innerHTML=buildPoly(coef,B,C);
-  qFact.innerHTML=buildFact(r1,r2,coef,false);
-  updQfocus();updQdisp();
+function aktualizujArith() {
+  const elAns = el('qAns');
+  if (!elAns) return;
+  elAns.textContent = stan.arithBufor || '?';
+  elAns.className   = 'ans' + (stan.arithBufor ? '' : ' ph');
 }
-function buildPoly(coef,B,C){
-  let s=coef===1?`x<sup>2</sup>`:coef===-1?`−x<sup>2</sup>`:`${coef}x<sup>2</sup>`;
-  if(B){const sg=B>0?'+':'−';s+=` ${mu(sg)} ${ABS(B)===1?'x':`${ABS(B)}x`}`;}
-  if(C){s+=` ${mu(C>0?'+':'−')} ${ABS(C)}`;}
-  return s+` ${t3('= 0')}`;
+
+function ujawnijArith() {
+  const elAns = el('qAns');
+  if (elAns) { elAns.textContent = stan.pytanie.odpowiedz; elAns.className = 'ans'; }
 }
-function buildFact(r1,r2,coef,reveal){
-  const pre=coef===1?'':`${coef}`;
-  const br=(r,idx)=>{
-    if(!ABS(r))return'(x)';
-    const term=` ${mu(r>0?'−':'+')} `;
-    return reveal?`(x${term}${gn(ABS(r))})`: `(x${term}${blnk(S.qbuf[idx]||'?',`fb${idx}`)})`;
+
+function sprawdzArith() {
+  if (!stan.trwa) return;
+  const wart = parseInt(stan.arithBufor);
+  if (stan.arithBufor === '' || stan.arithBufor === '-' || isNaN(wart)) return;
+
+  if (wart === stan.pytanie.odpowiedz) {
+    trafiony();
+    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 160);
+  } else {
+    chybiony();
+    ujawnijArith();
+    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 950);
+  }
+  stan.arithBufor = '';
+  aktualizujArith();
+}
+
+function klawiaturaDzialania(klawisz) {
+  if (!stan.trwa || stan.tryb !== 'arith') return;
+
+  if (klawisz === 'ok')   { sprawdzArith(); return; }
+  if (klawisz === 'skip') { pominPytanie(); return; }
+  if (klawisz === 'clr')  { stan.arithBufor = ''; aktualizujArith(); return; }
+  if (klawisz === 'del')  { stan.arithBufor = stan.arithBufor.slice(0, -1); aktualizujArith(); return; }
+
+  if (klawisz === '-') {
+    // przełącz znak
+    if (!stan.arithBufor) stan.arithBufor = '-';
+    else if (stan.arithBufor === '-') stan.arithBufor = '';
+    else if (stan.arithBufor[0] === '-') stan.arithBufor = stan.arithBufor.slice(1);
+    else stan.arithBufor = '-' + stan.arithBufor;
+    aktualizujArith();
+    return;
+  }
+
+  // cyfra — max 4 cyfry
+  if (stan.arithBufor.replace('-', '').length < 4) {
+    stan.arithBufor += klawisz;
+    aktualizujArith();
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════
+   TRYB: ROZKŁAD TRÓJMIANU (miejsca zerowe)
+   ═══════════════════════════════════════════════════ */
+function generujRozklad() {
+  const cfg = POZIOMY[stan.poziom];
+  const wsp = losujZ(cfg.wspolczynniki);
+
+  // losuj dwa pierwiastki
+  let p1 = losujInt(1, cfg.maxQ) * (cfg.ujemneP && Math.random() < .5 ? -1 : 1);
+  let p2 = cfg.podwojne && Math.random() < .2 ? p1 : losujInt(1, cfg.maxQ) * (cfg.ujemneP && Math.random() < .5 ? -1 : 1);
+  if (!p1) p1 = 1;
+  if (!p2) p2 = 1;
+
+  // oblicz współczynniki trójmianu
+  const B = -wsp * (p1 + p2);
+  const C = wsp * p1 * p2;
+
+  stan.pytanie = { p1, p2, wsp };
+  stan.quadBufor = ['', ''];
+  stan.quadFokus = 0;
+
+  domEtykieta.textContent = 'Miejsca zerowe';
+  qPoly.innerHTML = zbudujTrojmian(wsp, B, C);
+  qFact.innerHTML = zbudujCzynniki(p1, p2, wsp, false);
+
+  aktualizujQuadFokus();
+  aktualizujQuadWyswietlanie();
+}
+
+function zbudujTrojmian(wsp, B, C) {
+  let s = wsp === 1 ? `x<sup>2</sup>` : wsp === -1 ? `−x<sup>2</sup>` : `${wsp}x<sup>2</sup>`;
+  if (B) {
+    const sg = B > 0 ? '+' : '−';
+    s += ` ${kolorSzary(sg)} ${abs(B) === 1 ? 'x' : `${abs(B)}x`}`;
+  }
+  if (C) s += ` ${kolorSzary(C > 0 ? '+' : '−')} ${abs(C)}`;
+  return s + ` ${kolorCiemny('= 0')}`;
+}
+
+function zbudujCzynniki(p1, p2, wsp, ujawnij) {
+  const prefix = wsp === 1 ? '' : `${wsp}`;
+
+  const czlon = (p, idx) => {
+    if (!abs(p)) return '(x)';
+    const term = ` ${kolorSzary(p > 0 ? '−' : '+')} `;
+    return ujawnij
+      ? `(x${term}${kolorZiel(abs(p))})`
+      : `(x${term}${puste(stan.quadBufor[idx] || '?', `fb${idx}`)})`;
   };
-  if(r1===r2&&reveal)
-    return `${pre}(x ${mu(r1>0?'−':'+')} ${gn(ABS(r1))})<sup>2</sup> ${t3('= 0')}`;
-  return `${pre}${br(r1,0)}${br(r2,1)} ${t3('= 0')}`;
-}
-function updQdisp(){
-  for(let i=0;i<2;i++){const v=S.qbuf[i];QFV[i].textContent=v||'?';QFV[i].className='qfval'+(v?'':' ph');}
-  if(S.q)qFact.innerHTML=buildFact(S.q.r1,S.q.r2,S.q.coef,false);
-}
-function updQfocus(){
-  for(let i=0;i<2;i++)QFW[i].className='qfld'+(S.qfocus===i?' act':'');
-  document.querySelectorAll('.qtab[data-qf]').forEach((t,i)=>t.classList.toggle('act',i===S.qfocus));
+
+  if (p1 === p2 && ujawnij)
+    return `${prefix}(x ${kolorSzary(p1 > 0 ? '−' : '+')} ${kolorZiel(abs(p1))})<sup>2</sup> ${kolorCiemny('= 0')}`;
+
+  return `${prefix}${czlon(p1, 0)}${czlon(p2, 1)} ${kolorCiemny('= 0')}`;
 }
 
-/* ── FORM ──
-   Typy:  0=(ax+b)²  1=(ax-b)²  2=(ax+b)(ax-b)  3=(x+b)³ [hard]
-   Dir:   0=złóż(wpisz składniki)  1=rozpisz(wpisz rozwinięcie)
-*/
-function genForm(){
-  const c=CFG[S.diff],maxB=Math.min(c.qMax,9),b=rnd(2,maxB);
-  const type=rnd(0,S.diff==='hard'?3:2),dir=rnd(0,1);
-  const a=dir===0&&type<=2&&S.diff!=='easy'?pick([1,1,2,3]):1;
-  const a2=a*a,b2=b*b,ab2=2*a*b,ax=a===1?'x':`${a}x`;
-  let expand,factored,label,ans;
+function aktualizujQuadWyswietlanie() {
+  for (let i = 0; i < 2; i++) {
+    const v = stan.quadBufor[i];
+    quadWart[i].textContent = v || '?';
+    quadWart[i].className   = 'qfval' + (v ? '' : ' ph');
+  }
+  if (stan.pytanie) qFact.innerHTML = zbudujCzynniki(stan.pytanie.p1, stan.pytanie.p2, stan.pytanie.wsp, false);
+}
 
-  if(type===0){
-    expand=`${a2===1?'x':a2+'x'}<sup>2</sup> ${mu('+')} ${ab2}x ${mu('+')} ${b2}`;
-    factored=`(${ax} ${mu('+')} ${b})<sup>2</sup>`;
-    label='(ax+b)²';
-    ans=dir===0?(a===1?[b]:[a,b]):[a2,ab2,b2];
-  }else if(type===1){
-    expand=`${a2===1?'x':a2+'x'}<sup>2</sup> ${mu('−')} ${ab2}x ${mu('+')} ${b2}`;
-    factored=`(${ax} ${mu('−')} ${b})<sup>2</sup>`;
-    label='(ax−b)²';
-    ans=dir===0?(a===1?[b]:[a,b]):[a2,ab2,b2];
-  }else if(type===2){
-    expand=`${a2===1?'x':a2+'x'}<sup>2</sup> ${mu('−')} ${b2}`;
-    factored=`(${ax} ${mu('+')} ${b})(${ax} ${mu('−')} ${b})`;
-    label='(ax+b)(ax−b)';
-    ans=dir===0?(a===1?[b]:[a,b]):[a2,b2];
-  }else{
-    const _3b=3*b,_3b2=3*b2,b3=b2*b;
-    expand=`x<sup>3</sup> ${mu('+')} ${_3b}x<sup>2</sup> ${mu('+')} ${_3b2}x ${mu('+')} ${b3}`;
-    factored=`(x ${mu('+')} ${b})<sup>3</sup>`;
-    label='(x+b)³';
-    ans=dir===0?[b]:[_3b,_3b2,b3];
+function aktualizujQuadFokus() {
+  for (let i = 0; i < 2; i++)
+    quadPola[i].className = 'qfld' + (stan.quadFokus === i ? ' act' : '');
+  document.querySelectorAll('.qtab[data-qf]').forEach((t, i) =>
+    t.classList.toggle('act', i === stan.quadFokus)
+  );
+}
+
+function ujawnijRozklad() {
+  qFact.innerHTML = zbudujCzynniki(stan.pytanie.p1, stan.pytanie.p2, stan.pytanie.wsp, true);
+}
+
+function sprawdzRozklad() {
+  if (!stan.trwa) return;
+  const v0 = parseInt(stan.quadBufor[0]);
+  const v1 = parseInt(stan.quadBufor[1]);
+  if (isNaN(v0) || isNaN(v1)) return;
+
+  const { p1, p2 } = stan.pytanie;
+  const a0 = abs(p1), a1 = abs(p2);
+
+  // kolejność p1/p2 może być dowolna
+  if ((v0 === a0 && v1 === a1) || (v0 === a1 && v1 === a0)) {
+    trafiony();
+    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 160);
+  } else {
+    chybiony();
+    ujawnijRozklad();
+    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 1200);
+  }
+}
+
+function klawiaturaRozkladu(klawisz) {
+  if (!stan.trwa || stan.tryb !== 'quad') return;
+  if (klawisz === 'ok')   { sprawdzRozklad(); return; }
+  if (klawisz === 'skip') { pominPytanie(); return; }
+
+  const f = stan.quadFokus;
+  if (klawisz === 'clr') { stan.quadBufor[f] = ''; aktualizujQuadWyswietlanie(); return; }
+  if (klawisz === 'del') { stan.quadBufor[f] = stan.quadBufor[f].slice(0, -1); aktualizujQuadWyswietlanie(); return; }
+
+  if (klawisz === '-') {
+    const b = stan.quadBufor[f];
+    if (!b) stan.quadBufor[f] = '-';
+    else if (b === '-') stan.quadBufor[f] = '';
+    else if (b[0] === '-') stan.quadBufor[f] = b.slice(1);
+    else stan.quadBufor[f] = '-' + b;
+    aktualizujQuadWyswietlanie();
+    return;
   }
 
-  const flds=dir===0
-    ?(ans.length===1?['b']:['a','b'])
-    :(ans.length===2?['a²','b²']:(type===3?['3b','3b²','b³']:['a²','2ab','b²']));
-
-  S.q={a,b,type,dir,ans,flds};
-  S.fbuf=ans.map(()=>'');
-  S.ffocus=0;
-
-  qlbl.textContent=dir===0?`złóż → ${label}`:`rozpisz ${label}`;
-  qForm.innerHTML=(dir===0?expand:factored)+` ${t3('= ?')}`;
-
-  // show exactly n fields
-  const n=ans.length;
-  [0,1,2].forEach(i=>{
-    const show=i<n;
-    FFW[i].style.display=show?'':'none';
-    if(show)FFW[i].querySelector('.qflbl').textContent=flds[i];
-  });
-  const s0=$('fsep0'),s1=$('fsep1');
-  s0.style.display=n>=2?'':'none';
-  s1.style.display=n>=3?'':'none';
-  const tabs=$('fTabs').querySelectorAll('.qtab');
-  tabs.forEach((t,i)=>{t.style.display=i<n?'':'none';t.textContent=flds[i]||'';});
-
-  updFfocus();updFdisp();
+  if (stan.quadBufor[f].replace('-', '').length < 3) {
+    stan.quadBufor[f] += klawisz;
+    aktualizujQuadWyswietlanie();
+  }
 }
 
-function updFdisp(){
-  if(!S.q||S.mode!=='form')return;
-  const{ans,flds,dir,type,a,b}=S.q,n=ans.length;
-  for(let i=0;i<n;i++){const v=S.fbuf[i];FFV[i].textContent=v||'?';FFV[i].className='qfval'+(v?'':' ph');}
-  // update blanks in card
-  const ax=a===1?'x':`${a}x`,bv=i=>S.fbuf[i]||'?';
-  if(dir===0){
-    const bVal=n===1?blnk(bv(0),'fb0'):blnk(bv(1),'fb1');
-    const xp=n>=2?`${blnk(bv(0),'fb0')}x`:'x';
-    if(type===0)      qFormFact.innerHTML=`(${xp} ${mu('+')} ${bVal})<sup>2</sup>`;
-    else if(type===1) qFormFact.innerHTML=`(${xp} ${mu('−')} ${bVal})<sup>2</sup>`;
-    else if(type===2) qFormFact.innerHTML=`(${xp} ${mu('+')} ${bVal})(${xp} ${mu('−')} ${bVal})`;
-    else              qFormFact.innerHTML=`(x ${mu('+')} ${blnk(bv(0),'fb0')})<sup>3</sup>`;
-  }else{
-    if(type===0||type===1){
-      const sg=type===0?'+':'−';
-      qFormFact.innerHTML=`${blnk(bv(0),'fb0')}x<sup>2</sup> ${mu(sg)} ${blnk(bv(1),'fb1')}x ${mu('+')} ${blnk(bv(2),'fb2')}`;
-    }else if(type===2){
-      qFormFact.innerHTML=`${blnk(bv(0),'fb0')}x<sup>2</sup> ${mu('−')} ${blnk(bv(1),'fb1')}`;
-    }else{
-      qFormFact.innerHTML=`x<sup>3</sup> ${mu('+')} ${blnk(bv(0),'fb0')}x<sup>2</sup> ${mu('+')} ${blnk(bv(1),'fb1')}x ${mu('+')} ${blnk(bv(2),'fb2')}`;
+
+/* ═══════════════════════════════════════════════════
+   TRYB: WZORY SKRÓCONEGO MNOŻENIA
+   Typy: 0=(ax+b)²  1=(ax-b)²  2=(ax+b)(ax-b)  3=(x+b)³ (hard)
+   Kierunek: 0=złóż(podaj składniki)  1=rozpisz(podaj rozwinięcie)
+   ═══════════════════════════════════════════════════ */
+function generujWzor() {
+  const cfg = POZIOMY[stan.poziom];
+  const maxB = Math.min(cfg.maxQ, 9);
+  const b    = losujInt(2, maxB);
+  const typ  = losujInt(0, stan.poziom === 'hard' ? 3 : 2);
+  const kier = losujInt(0, 1); // 0=złóż, 1=rozpisz
+
+  // współczynnik a (tylko dla wyższych poziomów)
+  const a = kier === 0 && typ <= 2 && stan.poziom !== 'easy' ? losujZ([1, 1, 2, 3]) : 1;
+
+  const a2   = a * a;
+  const b2   = b * b;
+  const ab2  = 2 * a * b;
+  const ax   = a === 1 ? 'x' : `${a}x`;
+
+  let rozwiniety, rozlozony, etykieta, odpowiedzi;
+
+  if (typ === 0) { // (ax+b)²
+    rozwiniety = `${a2 === 1 ? 'x' : a2 + 'x'}<sup>2</sup> ${kolorSzary('+')} ${ab2}x ${kolorSzary('+')} ${b2}`;
+    rozlozony  = `(${ax} ${kolorSzary('+')} ${b})<sup>2</sup>`;
+    etykieta   = '(ax+b)²';
+    odpowiedzi = kier === 0 ? (a === 1 ? [b] : [a, b]) : [a2, ab2, b2];
+  } else if (typ === 1) { // (ax-b)²
+    rozwiniety = `${a2 === 1 ? 'x' : a2 + 'x'}<sup>2</sup> ${kolorSzary('−')} ${ab2}x ${kolorSzary('+')} ${b2}`;
+    rozlozony  = `(${ax} ${kolorSzary('−')} ${b})<sup>2</sup>`;
+    etykieta   = '(ax−b)²';
+    odpowiedzi = kier === 0 ? (a === 1 ? [b] : [a, b]) : [a2, ab2, b2];
+  } else if (typ === 2) { // (ax+b)(ax-b)
+    rozwiniety = `${a2 === 1 ? 'x' : a2 + 'x'}<sup>2</sup> ${kolorSzary('−')} ${b2}`;
+    rozlozony  = `(${ax} ${kolorSzary('+')} ${b})(${ax} ${kolorSzary('−')} ${b})`;
+    etykieta   = '(ax+b)(ax−b)';
+    odpowiedzi = kier === 0 ? (a === 1 ? [b] : [a, b]) : [a2, b2];
+  } else { // (x+b)³
+    const _3b  = 3 * b;
+    const _3b2 = 3 * b2;
+    const b3   = b2 * b;
+    rozwiniety = `x<sup>3</sup> ${kolorSzary('+')} ${_3b}x<sup>2</sup> ${kolorSzary('+')} ${_3b2}x ${kolorSzary('+')} ${b3}`;
+    rozlozony  = `(x ${kolorSzary('+')} ${b})<sup>3</sup>`;
+    etykieta   = '(x+b)³';
+    odpowiedzi = kier === 0 ? [b] : [_3b, _3b2, b3];
+  }
+
+  // nazwy pól do wpisania
+  const nazwyPol = kier === 0
+    ? (odpowiedzi.length === 1 ? ['b'] : ['a', 'b'])
+    : (odpowiedzi.length === 2 ? ['a²', 'b²'] : (typ === 3 ? ['3b', '3b²', 'b³'] : ['a²', '2ab', 'b²']));
+
+  stan.pytanie = { a, b, typ, kier, odpowiedzi, nazwyPol };
+  stan.formBufor = odpowiedzi.map(() => '');
+  stan.formFokus = 0;
+
+  domEtykieta.textContent = kier === 0 ? `złóż → ${etykieta}` : `rozpisz ${etykieta}`;
+  qForm.innerHTML = (kier === 0 ? rozwiniety : rozlozony) + ` ${kolorCiemny('= ?')}`;
+
+  // pokaż odpowiednią liczbę pól
+  const n = odpowiedzi.length;
+  [0, 1, 2].forEach(i => {
+    const widoczne = i < n;
+    formPola[i].style.display = widoczne ? '' : 'none';
+    if (widoczne) formPola[i].querySelector('.qflbl').textContent = nazwyPol[i];
+  });
+
+  el('fsep0').style.display = n >= 2 ? '' : 'none';
+  el('fsep1').style.display = n >= 3 ? '' : 'none';
+
+  const tabki = el('fTabs').querySelectorAll('.qtab');
+  tabki.forEach((t, i) => { t.style.display = i < n ? '' : 'none'; t.textContent = nazwyPol[i] || ''; });
+
+  aktualizujFormFokus();
+  aktualizujFormWyswietlanie();
+}
+
+function aktualizujFormWyswietlanie() {
+  if (!stan.pytanie || stan.tryb !== 'form') return;
+  const { odpowiedzi, nazwyPol, kier, typ, a, b } = stan.pytanie;
+  const n   = odpowiedzi.length;
+  const bv  = i => stan.formBufor[i] || '?';
+  const ax  = a === 1 ? 'x' : `${a}x`;
+
+  for (let i = 0; i < n; i++) {
+    const v = stan.formBufor[i];
+    formWart[i].textContent = v || '?';
+    formWart[i].className   = 'qfval' + (v ? '' : ' ph');
+  }
+
+  // live update blanków w karcie
+  if (kier === 0) {
+    const polB = n === 1 ? puste(bv(0), 'fb0') : puste(bv(1), 'fb1');
+    const polX = n >= 2  ? `${puste(bv(0), 'fb0')}x` : 'x';
+    if (typ === 0)      qFormFact.innerHTML = `(${polX} ${kolorSzary('+')} ${polB})<sup>2</sup>`;
+    else if (typ === 1) qFormFact.innerHTML = `(${polX} ${kolorSzary('−')} ${polB})<sup>2</sup>`;
+    else if (typ === 2) qFormFact.innerHTML = `(${polX} ${kolorSzary('+')} ${polB})(${polX} ${kolorSzary('−')} ${polB})`;
+    else                qFormFact.innerHTML = `(x ${kolorSzary('+')} ${puste(bv(0), 'fb0')})<sup>3</sup>`;
+  } else {
+    if (typ === 0 || typ === 1) {
+      const sg = typ === 0 ? '+' : '−';
+      qFormFact.innerHTML = `${puste(bv(0),'fb0')}x<sup>2</sup> ${kolorSzary(sg)} ${puste(bv(1),'fb1')}x ${kolorSzary('+')} ${puste(bv(2),'fb2')}`;
+    } else if (typ === 2) {
+      qFormFact.innerHTML = `${puste(bv(0),'fb0')}x<sup>2</sup> ${kolorSzary('−')} ${puste(bv(1),'fb1')}`;
+    } else {
+      qFormFact.innerHTML = `x<sup>3</sup> ${kolorSzary('+')} ${puste(bv(0),'fb0')}x<sup>2</sup> ${kolorSzary('+')} ${puste(bv(1),'fb1')}x ${kolorSzary('+')} ${puste(bv(2),'fb2')}`;
     }
   }
 }
-function updFfocus(){
-  const n=S.q?S.q.ans.length:1;
-  [0,1,2].forEach(i=>{if(i<n)FFW[i].className='qfld'+(i===S.ffocus?' act':'');});
-  $('fTabs').querySelectorAll('.qtab').forEach((t,i)=>t.classList.toggle('act',i===S.ffocus));
+
+function aktualizujFormFokus() {
+  const n = stan.pytanie ? stan.pytanie.odpowiedzi.length : 1;
+  [0, 1, 2].forEach(i => { if (i < n) formPola[i].className = 'qfld' + (i === stan.formFokus ? ' act' : ''); });
+  el('fTabs').querySelectorAll('.qtab').forEach((t, i) => t.classList.toggle('act', i === stan.formFokus));
 }
 
-/* ── REVEAL ── */
-function revealArith(){
-  const el=$('qAns');if(el){el.textContent=S.q.ans;el.className='ans';}
-}
-function revealQuad(){
-  qFact.innerHTML=buildFact(S.q.r1,S.q.r2,S.q.coef,true);
-}
-function revealForm(){
-  const{a,b,type,dir,ans}=S.q,ax=a===1?'x':`${gn(a)}x`;
-  if(dir===0){
-    if(type===0)      qFormFact.innerHTML=`(${ax} ${mu('+')} ${gn(b)})<sup>2</sup>`;
-    else if(type===1) qFormFact.innerHTML=`(${ax} ${mu('−')} ${gn(b)})<sup>2</sup>`;
-    else if(type===2) qFormFact.innerHTML=`(${ax} ${mu('+')} ${gn(b)})(${ax} ${mu('−')} ${gn(b)})`;
-    else              qFormFact.innerHTML=`(x ${mu('+')} ${gn(b)})<sup>3</sup>`;
-  }else{
-    if(type===0||type===1){
-      const sg=type===0?'+':'−';
-      qFormFact.innerHTML=`${gn(ans[0])}x<sup>2</sup> ${mu(sg)} ${gn(ans[1])}x ${mu('+')} ${gn(ans[2])}`;
-    }else if(type===2){
-      qFormFact.innerHTML=`${gn(ans[0])}x<sup>2</sup> ${mu('−')} ${gn(ans[1])}`;
-    }else{
-      qFormFact.innerHTML=`x<sup>3</sup> ${mu('+')} ${gn(ans[0])}x<sup>2</sup> ${mu('+')} ${gn(ans[1])}x ${mu('+')} ${gn(ans[2])}`;
+function ujawnijWzor() {
+  const { a, b, typ, kier, odpowiedzi } = stan.pytanie;
+  const ax = a === 1 ? 'x' : `${kolorZiel(a)}x`;
+  if (kier === 0) {
+    if (typ === 0)      qFormFact.innerHTML = `(${ax} ${kolorSzary('+')} ${kolorZiel(b)})<sup>2</sup>`;
+    else if (typ === 1) qFormFact.innerHTML = `(${ax} ${kolorSzary('−')} ${kolorZiel(b)})<sup>2</sup>`;
+    else if (typ === 2) qFormFact.innerHTML = `(${ax} ${kolorSzary('+')} ${kolorZiel(b)})(${ax} ${kolorSzary('−')} ${kolorZiel(b)})`;
+    else                qFormFact.innerHTML = `(x ${kolorSzary('+')} ${kolorZiel(b)})<sup>3</sup>`;
+  } else {
+    if (typ === 0 || typ === 1) {
+      const sg = typ === 0 ? '+' : '−';
+      qFormFact.innerHTML = `${kolorZiel(odpowiedzi[0])}x<sup>2</sup> ${kolorSzary(sg)} ${kolorZiel(odpowiedzi[1])}x ${kolorSzary('+')} ${kolorZiel(odpowiedzi[2])}`;
+    } else if (typ === 2) {
+      qFormFact.innerHTML = `${kolorZiel(odpowiedzi[0])}x<sup>2</sup> ${kolorSzary('−')} ${kolorZiel(odpowiedzi[1])}`;
+    } else {
+      qFormFact.innerHTML = `x<sup>3</sup> ${kolorSzary('+')} ${kolorZiel(odpowiedzi[0])}x<sup>2</sup> ${kolorSzary('+')} ${kolorZiel(odpowiedzi[1])}x ${kolorSzary('+')} ${kolorZiel(odpowiedzi[2])}`;
     }
   }
 }
 
-/* ── SUBMIT ── */
-function submitA(){
-  if(!S.running)return;
-  const v=parseInt(S.abuf);
-  if(S.abuf===''||S.abuf==='-'||isNaN(v))return;
-  if(v===S.q.ans){hit();setTimeout(()=>{if(S.running)nextQ();},160);}
-  else{miss();revealArith();setTimeout(()=>{if(S.running)nextQ();},950);}
-  S.abuf='';updArith();
-}
-function submitQ(){
-  if(!S.running)return;
-  const v0=parseInt(S.qbuf[0]),v1=parseInt(S.qbuf[1]);
-  if(isNaN(v0)||isNaN(v1))return;
-  const{r1,r2,coef}=S.q,a0=ABS(r1),a1=ABS(r2);
-  if((v0===a0&&v1===a1)||(v0===a1&&v1===a0)){hit();setTimeout(()=>{if(S.running)nextQ();},160);}
-  else{miss();revealQuad();setTimeout(()=>{if(S.running)nextQ();},1200);}
-}
-function submitF(){
-  if(!S.running)return;
-  const{ans}=S.q,n=ans.length,vals=[];
-  for(let i=0;i<n;i++){const v=parseInt(S.fbuf[i]);if(isNaN(v))return;vals.push(v);}
-  if(ans.every((a,i)=>vals[i]===a)){hit();setTimeout(()=>{if(S.running)nextQ();},160);}
-  else{miss();revealForm();setTimeout(()=>{if(S.running)nextQ();},1400);}
-}
-function skip(){
-  if(!S.running)return;
-  miss();
-  if(S.mode==='arith')revealArith();
-  else if(S.mode==='quad')revealQuad();
-  else revealForm();
-  setTimeout(()=>{if(S.running)nextQ();},1100);
+function sprawdzWzor() {
+  if (!stan.trwa) return;
+  const { odpowiedzi } = stan.pytanie;
+  const n = odpowiedzi.length;
+  const wpisane = [];
+  for (let i = 0; i < n; i++) {
+    const v = parseInt(stan.formBufor[i]);
+    if (isNaN(v)) return; // coś nie wypełnione
+    wpisane.push(v);
+  }
+  if (odpowiedzi.every((a, i) => wpisane[i] === a)) {
+    trafiony();
+    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 160);
+  } else {
+    chybiony();
+    ujawnijWzor();
+    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 1400);
+  }
 }
 
-/* ── HIT / MISS ── */
-function hit(){
-  S.streak++;S.ok++;
-  if(S.streak>S.best)S.best=S.streak;
-  S.mul=Math.floor(S.streak/5)+1;
-  const pts=(S.mode==='arith'?10:20)*S.mul;
-  S.pts+=pts;gPts.textContent=S.pts;
-  popAnim('+'+pts,'var(--gn)');flash('ok');updStreak();vib(22);
-  if(S.streak>0&&S.streak%5===0)toast(`×${S.mul} combo`);
-}
-function miss(){
-  S.wrong++;S.streak=0;S.mul=1;
-  popAnim('✕','var(--rd)');flash('err');updStreak();vib([40,15,40]);
-}
-function popAnim(txt,col){
-  pop.textContent=txt;pop.style.color=col;
-  pop.style.transition='none';pop.style.opacity='1';pop.style.transform='translate(-50%,-50%) scale(1)';
-  requestAnimationFrame(()=>{
-    pop.style.transition='opacity .48s,transform .48s';
-    pop.style.opacity='0';pop.style.transform='translate(-50%,-70%) scale(1.3)';
-  });
-}
-function flash(c){
-  card.classList.remove('ok','err');void card.offsetWidth;
-  card.classList.add(c);setTimeout(()=>card.classList.remove(c),300);
-}
-function updStreak(){
-  const p=S.streak%5;
-  DOTS.forEach((d,i)=>d.classList.toggle('on',i<(S.streak>0&&p===0?5:p)));
-  if(S.mul>=2){cmbo.textContent=`×${S.mul}`;cmbo.classList.add('show');startComboTimer();}
-  else{cmbo.classList.remove('show');stopComboTimer();}
-}
-function toast(msg){lup.textContent=msg;lup.classList.remove('show');void lup.offsetWidth;lup.classList.add('show');}
-function vib(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(_){}}
+function klawiaturaWzorow(klawisz) {
+  if (!stan.trwa || stan.tryb !== 'form') return;
+  if (klawisz === 'ok')   { sprawdzWzor(); return; }
+  if (klawisz === 'skip') { pominPytanie(); return; }
 
-/* ── COMBO TIMER ── */
-const COMBO_SEC=8;let _cInt=null,_cLeft=0;
-function startComboTimer(){
-  clearInterval(_cInt);_cLeft=COMBO_SEC;
-  $('ctimerWrap').style.display='';
-  const bar=$('ctimerBar');
-  bar.classList.remove('low');bar.style.transition='none';bar.style.width='100%';
-  _cInt=setInterval(()=>{
-    _cLeft-=.1;
-    bar.style.transition='width .1s linear';
-    bar.style.width=Math.max(0,_cLeft/COMBO_SEC*100)+'%';
-    if(_cLeft<=2)bar.classList.add('low');
-    if(_cLeft<=0){
-      clearInterval(_cInt);$('ctimerWrap').style.display='none';
-      if(S.streak>=5){S.streak=0;S.mul=1;updStreak();}
+  const f = stan.formFokus;
+  if (klawisz === 'clr') { stan.formBufor[f] = ''; aktualizujFormWyswietlanie(); return; }
+  if (klawisz === 'del') { stan.formBufor[f] = stan.formBufor[f].slice(0, -1); aktualizujFormWyswietlanie(); return; }
+  if (klawisz === '-') return; // wzory nie mają ujemnych odpowiedzi
+
+  if (stan.formBufor[f].length < 4) {
+    stan.formBufor[f] += klawisz;
+    aktualizujFormWyswietlanie();
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════
+   TRYB: PITAGORAS
+   Trójkąt prostokątny — różne konfiguracje nieznanych boków
+   Konfiguracje: 0=szukaj przeciwprostokatnej(c)  1=szukaj przyprostokatnej(a)  2=szukaj przyprostokatnej(b)
+   Zawsze używamy trójek pitagorejskich — wyniki są ZAWSZE całkowite, bez żadnych pierwiastków.
+   ═══════════════════════════════════════════════════ */
+
+// wszystkie popularne trójki pitagorejskie pogrupowane po poziomie
+const TROJKI_EASY   = [[3,4,5],[6,8,10],[5,12,13],[8,15,17]];
+const TROJKI_MEDIUM = [[3,4,5],[5,12,13],[8,15,17],[7,24,25],[9,12,15],[10,24,26],[12,16,20]];
+const TROJKI_HARD   = [[3,4,5],[5,12,13],[8,15,17],[7,24,25],[20,21,29],[9,40,41],[12,35,37],[11,60,61],[13,84,85],[6,8,10],[9,12,15],[15,20,25]];
+
+function generujPitagoras() {
+  // dobierz pulę trójek do aktualnego poziomu
+  const pula = stan.poziom === 'easy' ? TROJKI_EASY
+             : stan.poziom === 'medium' ? TROJKI_MEDIUM
+             : TROJKI_HARD;
+
+  // wybierz trójkę i ewentualnie przeskaluj (na wyższych poziomach)
+  const [ta, tb, tc] = losujZ(pula);
+  const maxSkala = stan.poziom === 'hard' ? 3 : stan.poziom === 'medium' ? 2 : 1;
+  const skala = losujInt(1, maxSkala);
+  const a = ta * skala;
+  const b = tb * skala;
+  const c = tc * skala;
+
+  // losuj która wartość jest szukana (0=c przeciwprostokątna, 1=a, 2=b)
+  const szukana = losujInt(0, 2);
+
+  let znane = {}, odpowiedz;
+  if (szukana === 0) { znane = { a, b }; odpowiedz = c; }
+  else if (szukana === 1) { znane = { b, c }; odpowiedz = a; }
+  else { znane = { a, c }; odpowiedz = b; }
+
+  // odpowiedź jest zawsze całkowita — trójki pitagorejskie gwarantują to
+  stan.pytanie = { szukana, znane, odpowiedz, a, b, c };
+  stan.pitaBufor = '';
+
+  domEtykieta.textContent = 'Twierdzenie Pitagorasa';
+  rysujTrojkat(szukana, znane, a, b, c);
+}
+
+function rysujTrojkat(szukana, znane, a, b, c) {
+  const w  = canvasTrojkat.width;
+  const h  = canvasTrojkat.height;
+  ctx.clearRect(0, 0, w, h);
+
+  // kolory ze zmiennych CSS (hardcode bo canvas nie obsługuje var())
+  const kolBialy   = '#dedede';
+  const kolSzary   = '#888888';
+  const kolZielony = '#4ade80';
+  const kolNiebieski = '#60a5fa';
+  const kolTlo     = '#161616';
+
+  // marginesy
+  const mar = 28;
+  const tw = w - mar * 2;
+  const th = h - mar * 2;
+
+  // wierzchołki: kąt prosty w lewym dolnym
+  const P1 = { x: mar,       y: mar + th }; // lewy dół (kąt prosty)
+  const P2 = { x: mar + tw,  y: mar + th }; // prawy dół
+  const P3 = { x: mar,       y: mar      }; // lewy góra
+
+  // narysuj trójkąt
+  ctx.beginPath();
+  ctx.moveTo(P1.x, P1.y);
+  ctx.lineTo(P2.x, P2.y);
+  ctx.lineTo(P3.x, P3.y);
+  ctx.closePath();
+
+  // wypełnienie
+  ctx.fillStyle = 'rgba(200,200,200,0.04)';
+  ctx.fill();
+
+  // krawędź kąta prostego (symbol □)
+  const sym = 12;
+  ctx.strokeStyle = kolorKrawedzi('#484848');
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(P1.x, P1.y - sym, sym, sym);
+
+  // rysuj boki z odpowiednim kolorem
+  const boki = [
+    { od: P1, do: P2, nazwa: 'b', wartosc: b }, // dół (przyprostokątna b)
+    { od: P1, do: P3, nazwa: 'a', wartosc: a }, // lewo (przyprostokątna a)
+    { od: P2, do: P3, nazwa: 'c', wartosc: c }, // przeciwprostokątna
+  ];
+
+  boki.forEach(bok => {
+    const jestSzukany = (bok.nazwa === ['c','a','b'][szukana]);
+    ctx.beginPath();
+    ctx.moveTo(bok.od.x, bok.od.y);
+    ctx.lineTo(bok.do.x, bok.do.y);
+    ctx.strokeStyle = jestSzukany ? kolNiebieski : kolBialy;
+    ctx.lineWidth   = jestSzukany ? 2.5 : 1.8;
+    if (jestSzukany) { ctx.setLineDash([6, 3]); }
+    else ctx.setLineDash([]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // etykiety boków
+    const mx = (bok.od.x + bok.do.x) / 2;
+    const my = (bok.od.y + bok.do.y) / 2;
+    ctx.font = 'bold 13px "DM Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    let ox = 0, oy = 0;
+    if (bok.nazwa === 'b') { ox = 0;   oy = 16;  }  // dół → przesuń w dół
+    if (bok.nazwa === 'a') { ox = -18; oy = 0;   }  // lewo → przesuń w lewo
+    if (bok.nazwa === 'c') { ox = 16;  oy = -10; }  // przekątna → przesuń w prawo-górę
+
+    if (jestSzukany) {
+      // pytajnik w kolorze niebieskim
+      ctx.fillStyle = kolNiebieski;
+      ctx.fillText('?', mx + ox, my + oy);
+    } else {
+      // wartość w kolorze białym
+      ctx.fillStyle = kolBialy;
+      const wyswietlana = Number.isInteger(bok.wartosc) ? bok.wartosc : bok.wartosc.toFixed(2);
+      ctx.fillText(wyswietlana, mx + ox, my + oy);
     }
-  },100);
+  });
 }
-function stopComboTimer(){clearInterval(_cInt);$('ctimerWrap').style.display='none';}
 
-/* ── KEY HANDLERS ── */
-function aKey(v){
-  if(!S.running||S.mode!=='arith')return;
-  if(v==='ok'){submitA();return;}
-  if(v==='skip'){skip();return;}
-  if(v==='clr'){S.abuf='';updArith();return;}
-  if(v==='del'){S.abuf=S.abuf.slice(0,-1);updArith();return;}
-  if(v==='-'){
-    S.abuf=!S.abuf?'-':S.abuf==='-'?'':S.abuf[0]==='-'?S.abuf.slice(1):'-'+S.abuf;
-    updArith();return;
+// canvas nie ma var() więc pomocnik zwraca kolor css bezpośrednio
+function kolorKrawedzi(fallback) { return fallback; }
+
+function aktualizujPitaWyswietlanie() {
+  // nic specjalnego do aktualizacji w karcie — input jest w klawiaturze
+}
+
+function ujawnijPitagoras() {
+  // pokoloruj szukaną wartość na zielono i narysuj jeszcze raz
+  const { szukana, znane, a, b, c, odpowiedz } = stan.pytanie;
+  rysujTrojkatUjawniony(szukana, znane, a, b, c, odpowiedz);
+}
+
+function rysujTrojkatUjawniony(szukana, znane, a, b, c, odpowiedz) {
+  // to samo co rysujTrojkat ale szukany bok w zielonym
+  const w  = canvasTrojkat.width;
+  const h  = canvasTrojkat.height;
+  ctx.clearRect(0, 0, w, h);
+
+  const kolBialy    = '#dedede';
+  const kolZielony  = '#4ade80';
+  const kolNiebieski= '#60a5fa';
+  const mar = 28;
+  const tw = w - mar * 2;
+  const th = h - mar * 2;
+
+  const P1 = { x: mar,       y: mar + th };
+  const P2 = { x: mar + tw,  y: mar + th };
+  const P3 = { x: mar,       y: mar      };
+
+  ctx.beginPath();
+  ctx.moveTo(P1.x, P1.y);
+  ctx.lineTo(P2.x, P2.y);
+  ctx.lineTo(P3.x, P3.y);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(74,222,128,0.06)';
+  ctx.fill();
+
+  const sym = 12;
+  ctx.strokeStyle = '#484848';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([]);
+  ctx.strokeRect(P1.x, P1.y - sym, sym, sym);
+
+  const boki = [
+    { od: P1, do: P2, nazwa: 'b', wartosc: b },
+    { od: P1, do: P3, nazwa: 'a', wartosc: a },
+    { od: P2, do: P3, nazwa: 'c', wartosc: c },
+  ];
+
+  boki.forEach(bok => {
+    const jestSzukany = (bok.nazwa === ['c','a','b'][szukana]);
+    ctx.beginPath();
+    ctx.moveTo(bok.od.x, bok.od.y);
+    ctx.lineTo(bok.do.x, bok.do.y);
+    ctx.strokeStyle = jestSzukany ? kolZielony : kolBialy;
+    ctx.lineWidth   = jestSzukany ? 2.5 : 1.8;
+    ctx.setLineDash([]);
+    ctx.stroke();
+
+    const mx = (bok.od.x + bok.do.x) / 2;
+    const my = (bok.od.y + bok.do.y) / 2;
+    ctx.font = 'bold 13px "DM Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    let ox = 0, oy = 0;
+    if (bok.nazwa === 'b') { ox = 0;   oy = 16;  }
+    if (bok.nazwa === 'a') { ox = -18; oy = 0;   }
+    if (bok.nazwa === 'c') { ox = 16;  oy = -10; }
+
+    ctx.fillStyle = jestSzukany ? kolZielony : kolBialy;
+    const wyswietlana = Number.isInteger(bok.wartosc) ? bok.wartosc : bok.wartosc.toFixed(2);
+    ctx.fillText(wyswietlana, mx + ox, my + oy);
+  });
+}
+
+function sprawdzPitagoras() {
+  if (!stan.trwa) return;
+  const wpisany = parseInt(stan.pitaBufor);
+  if (stan.pitaBufor === '' || isNaN(wpisany)) return;
+
+  // odpowiedź zawsze całkowita — trójki pitagorejskie
+  if (wpisany === stan.pytanie.odpowiedz) {
+    trafiony();
+    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 160);
+  } else {
+    chybiony();
+    ujawnijPitagoras();
+    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 1300);
   }
-  if(S.abuf.replace('-','').length<4){S.abuf+=v;updArith();}
+  stan.pitaBufor = '';
 }
-function qKey(v){
-  if(!S.running||S.mode!=='quad')return;
-  if(v==='ok'){submitQ();return;}
-  if(v==='skip'){skip();return;}
-  const f=S.qfocus;
-  if(v==='clr'){S.qbuf[f]='';updQdisp();return;}
-  if(v==='del'){S.qbuf[f]=S.qbuf[f].slice(0,-1);updQdisp();return;}
-  if(v==='-'){
-    S.qbuf[f]=!S.qbuf[f]?'-':S.qbuf[f]==='-'?'':S.qbuf[f][0]==='-'?S.qbuf[f].slice(1):'-'+S.qbuf[f];
-    updQdisp();return;
+
+function klawiaturaPitagoras(klawisz) {
+  if (!stan.trwa || stan.tryb !== 'pita') return;
+  if (klawisz === 'ok')   { sprawdzPitagoras(); return; }
+  if (klawisz === 'skip') { pominPytanie(); return; }
+  if (klawisz === 'clr')  { stan.pitaBufor = ''; return; }
+  if (klawisz === 'del')  { stan.pitaBufor = stan.pitaBufor.slice(0, -1); return; }
+
+  // max 3 cyfry (c może być max ~250 dla najtrudniejszych)
+  if (stan.pitaBufor.length < 4) {
+    stan.pitaBufor += klawisz;
   }
-  if(S.qbuf[f].replace('-','').length<3){S.qbuf[f]+=v;updQdisp();}
-}
-function fKey(v){
-  if(!S.running||S.mode!=='form')return;
-  if(v==='ok'){submitF();return;}
-  if(v==='skip'){skip();return;}
-  const f=S.ffocus;
-  if(v==='clr'){S.fbuf[f]='';updFdisp();return;}
-  if(v==='del'){S.fbuf[f]=S.fbuf[f].slice(0,-1);updFdisp();return;}
-  if(v==='-')return;
-  if(S.fbuf[f].length<4){S.fbuf[f]+=v;updFdisp();}
 }
 
-/* ── GAME FLOW ── */
-function startGame(){
-  $('sMenu').classList.add('hide');$('sEnd').classList.add('hide');
-  Object.assign(S,{pts:0,streak:0,best:0,ok:0,wrong:0,mul:1,running:true,
-    abuf:'',qbuf:['',''],qfocus:0,fbuf:[],ffocus:0});
-  gPts.textContent='0';
-  DOTS.forEach(d=>d.classList.remove('on'));
-  cmbo.classList.remove('show');
-  stopComboTimer();nextQ();
-}
-function showResults(){
-  S.running=false;stopComboTimer();
-  $('ePts').textContent=S.pts;$('eOk').textContent=S.ok;$('eBest').textContent=S.best;
-  const tot=S.ok+S.wrong;
-  $('eAcc').textContent=tot?Math.round(S.ok/tot*100)+'%':'—';
-  const msgs=[[0,'Ćwicz dalej!'],[80,'Nieźle!'],[200,'Świetnie!'],[450,'Rewelacja!'],[800,'Legenda!']];
-  let m='';for(const[t,msg]of msgs)if(S.pts>=t)m=msg;
-  $('eMsg').textContent=m;
-  $('sEnd').classList.remove('hide');
-}
-function goMenu(){
-  S.running=false;stopComboTimer();
-  $('sEnd').classList.add('hide');$('sMenu').classList.remove('hide');
+
+/* ═══════════════════════════════════════════════════
+   PUNKTACJA I ANIMACJE
+   ═══════════════════════════════════════════════════ */
+function trafiony() {
+  stan.seria++;
+  stan.poprawne++;
+  if (stan.seria > stan.najlepszaSeria) stan.najlepszaSeria = stan.seria;
+
+  // co 5 odpowiedzi rośnie mnożnik
+  stan.mnoznik = Math.floor(stan.seria / 5) + 1;
+  const zysk = (stan.tryb === 'arith' ? 10 : stan.tryb === 'pita' ? 15 : 20) * stan.mnoznik;
+  stan.punkty += zysk;
+
+  domPunkty.textContent = stan.punkty;
+  animujPop('+' + zysk, 'var(--gn)');
+  migniecie('ok');
+  aktualizujSerie();
+  wibracja(22);
+
+  if (stan.seria > 0 && stan.seria % 5 === 0) pokarzToast(`×${stan.mnoznik} combo`);
 }
 
-/* ── EVENTS ── */
-uiA.addEventListener('pointerdown',e=>{
-  const b=e.target.closest('[data-v]');if(!b)return;e.preventDefault();aKey(b.dataset.v);
-});
-uiQ.addEventListener('pointerdown',e=>{
-  const b=e.target.closest('[data-qv]');if(!b)return;e.preventDefault();qKey(b.dataset.qv);
-});
-uiF.addEventListener('pointerdown',e=>{
-  const b=e.target.closest('[data-fv]');if(!b)return;e.preventDefault();fKey(b.dataset.fv);
+function chybiony() {
+  stan.bledne++;
+  stan.seria = 0;
+  stan.mnoznik = 1;
+
+  animujPop('✕', 'var(--rd)');
+  migniecie('err');
+  aktualizujSerie();
+  wibracja([40, 15, 40]);
+}
+
+function pominPytanie() {
+  if (!stan.trwa) return;
+  chybiony();
+
+  // ujawnij odpowiedź
+  if (stan.tryb === 'arith')      ujawnijArith();
+  else if (stan.tryb === 'quad')  ujawnijRozklad();
+  else if (stan.tryb === 'form')  ujawnijWzor();
+  else if (stan.tryb === 'pita')  ujawnijPitagoras();
+
+  setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 1100);
+}
+
+function animujPop(tekst, kolor) {
+  domPop.textContent = tekst;
+  domPop.style.color = kolor;
+  domPop.style.transition = 'none';
+  domPop.style.opacity = '1';
+  domPop.style.transform = 'translate(-50%,-50%) scale(1)';
+  requestAnimationFrame(() => {
+    domPop.style.transition = 'opacity .48s,transform .48s';
+    domPop.style.opacity = '0';
+    domPop.style.transform = 'translate(-50%,-70%) scale(1.3)';
+  });
+}
+
+function migniecie(klasa) {
+  domKarta.classList.remove('ok', 'err');
+  void domKarta.offsetWidth; // reflow żeby animacja działała ponownie
+  domKarta.classList.add(klasa);
+  setTimeout(() => domKarta.classList.remove(klasa), 300);
+}
+
+function aktualizujSerie() {
+  const pozycjaWCyklu = stan.seria % 5;
+  DOTKI.forEach((d, i) =>
+    d.classList.toggle('on', i < (stan.seria > 0 && pozycjaWCyklu === 0 ? 5 : pozycjaWCyklu))
+  );
+
+  if (stan.mnoznik >= 2) {
+    domKombo.textContent = `×${stan.mnoznik}`;
+    domKombo.classList.add('show');
+    startTimerKombo();
+  } else {
+    domKombo.classList.remove('show');
+    stopTimerKombo();
+  }
+}
+
+function pokarzToast(wiadomosc) {
+  domLup.textContent = wiadomosc;
+  domLup.classList.remove('show');
+  void domLup.offsetWidth;
+  domLup.classList.add('show');
+}
+
+function wibracja(wzorzec) {
+  try { if (navigator.vibrate) navigator.vibrate(wzorzec); } catch (_) {}
+}
+
+
+/* ═══════════════════════════════════════════════════
+   TIMER COMBO
+   resetuje mnożnik jeśli gracz długo nie odpowiada
+   ═══════════════════════════════════════════════════ */
+const COMBO_SEKUNDY = 8;
+let timerKomboInterval = null;
+let timerKomboPozostalo = 0;
+
+function startTimerKombo() {
+  clearInterval(timerKomboInterval);
+  timerKomboPozostalo = COMBO_SEKUNDY;
+
+  el('ctimerWrap').style.display = '';
+  const pasek = el('ctimerBar');
+  pasek.classList.remove('low');
+  pasek.style.transition = 'none';
+  pasek.style.width = '100%';
+
+  timerKomboInterval = setInterval(() => {
+    timerKomboPozostalo -= 0.1;
+    pasek.style.transition = 'width .1s linear';
+    pasek.style.width = Math.max(0, timerKomboPozostalo / COMBO_SEKUNDY * 100) + '%';
+
+    if (timerKomboPozostalo <= 2) pasek.classList.add('low');
+
+    if (timerKomboPozostalo <= 0) {
+      clearInterval(timerKomboInterval);
+      el('ctimerWrap').style.display = 'none';
+      // zeruj serię jeśli wciąż w combo
+      if (stan.seria >= 5) {
+        stan.seria = 0;
+        stan.mnoznik = 1;
+        aktualizujSerie();
+      }
+    }
+  }, 100);
+}
+
+function stopTimerKombo() {
+  clearInterval(timerKomboInterval);
+  el('ctimerWrap').style.display = 'none';
+}
+
+
+/* ═══════════════════════════════════════════════════
+   PRZEPŁYW GRY (start / wyniki / menu)
+   ═══════════════════════════════════════════════════ */
+function rozpocznijGre() {
+  el('sMenu').classList.add('hide');
+  el('sEnd').classList.add('hide');
+
+  // reset stanu
+  Object.assign(stan, {
+    punkty: 0, seria: 0, najlepszaSeria: 0, poprawne: 0, bledne: 0, mnoznik: 1, trwa: true,
+    arithBufor: '', quadBufor: ['', ''], quadFokus: 0, formBufor: [], formFokus: 0, pitaBufor: '',
+  });
+
+  domPunkty.textContent = '0';
+  DOTKI.forEach(d => d.classList.remove('on'));
+  domKombo.classList.remove('show');
+  stopTimerKombo();
+  nastepnePytanie();
+}
+
+function pokazWyniki() {
+  stan.trwa = false;
+  stopTimerKombo();
+
+  el('ePts').textContent  = stan.punkty;
+  el('eOk').textContent   = stan.poprawne;
+  el('eBest').textContent = stan.najlepszaSeria;
+
+  const razem = stan.poprawne + stan.bledne;
+  el('eAcc').textContent = razem ? Math.round(stan.poprawne / razem * 100) + '%' : '—';
+
+  // wiadomość końcowa zależna od punktów
+  const wiadomosci = [[0,'Ćwicz dalej!'], [80,'Nieźle!'], [200,'Świetnie!'], [450,'Rewelacja!'], [800,'Legenda!']];
+  let wiad = '';
+  for (const [prog, txt] of wiadomosci) if (stan.punkty >= prog) wiad = txt;
+  el('eMsg').textContent = wiad;
+
+  el('sEnd').classList.remove('hide');
+}
+
+function wrocDoMenu() {
+  stan.trwa = false;
+  stopTimerKombo();
+  el('sEnd').classList.add('hide');
+  el('sMenu').classList.remove('hide');
+}
+
+
+/* ═══════════════════════════════════════════════════
+   OBSŁUGA ZDARZEŃ — przyciski i klawiatura fizyczna
+   ═══════════════════════════════════════════════════ */
+
+// klawiatury numeryczne
+kbA.addEventListener('pointerdown', e => {
+  const b = e.target.closest('[data-v]');
+  if (!b) return;
+  e.preventDefault();
+  klawiaturaDzialania(b.dataset.v);
 });
 
-[0,1].forEach(i=>{
-  QFW[i].addEventListener('pointerdown',e=>{e.preventDefault();S.qfocus=i;updQfocus();});
+kbQ.addEventListener('pointerdown', e => {
+  const b = e.target.closest('[data-qv]');
+  if (!b) return;
+  e.preventDefault();
+  klawiaturaRozkladu(b.dataset.qv);
 });
-document.querySelectorAll('.qtab[data-qf]').forEach((t,i)=>{
-  t.addEventListener('pointerdown',e=>{e.preventDefault();S.qfocus=i;updQfocus();});
+
+kbF.addEventListener('pointerdown', e => {
+  const b = e.target.closest('[data-fv]');
+  if (!b) return;
+  e.preventDefault();
+  klawiaturaWzorow(b.dataset.fv);
 });
-[0,1,2].forEach(i=>{
-  FFW[i].addEventListener('pointerdown',e=>{
-    if(!S.q||i>=S.q.ans.length)return;
-    e.preventDefault();S.ffocus=i;updFfocus();
+
+kbP.addEventListener('pointerdown', e => {
+  const b = e.target.closest('[data-pv]');
+  if (!b) return;
+  e.preventDefault();
+  klawiaturaPitagoras(b.dataset.pv);
+});
+
+// fokus pól rozkładu
+[0, 1].forEach(i => {
+  quadPola[i].addEventListener('pointerdown', e => {
+    e.preventDefault();
+    stan.quadFokus = i;
+    aktualizujQuadFokus();
   });
 });
-document.querySelectorAll('.qtab[data-ff]').forEach((t,i)=>{
-  t.addEventListener('pointerdown',e=>{
-    if(!S.q)return;e.preventDefault();
-    S.ffocus=i%S.q.ans.length;updFfocus();updFdisp();
+document.querySelectorAll('.qtab[data-qf]').forEach((t, i) => {
+  t.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    stan.quadFokus = i;
+    aktualizujQuadFokus();
   });
 });
 
-$('btnStart').addEventListener('click',startGame);
-$('btnAgain').addEventListener('click',startGame);
-$('btnMenu').addEventListener('click',goMenu);
-$('btnBack').addEventListener('click',showResults);
-
-document.querySelectorAll('#diffPills .pl').forEach(b=>{
-  b.addEventListener('click',()=>{
-    document.querySelectorAll('#diffPills .pl').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on');S.diff=b.dataset.d;
+// fokus pól wzorów
+[0, 1, 2].forEach(i => {
+  formPola[i].addEventListener('pointerdown', e => {
+    if (!stan.pytanie || i >= stan.pytanie.odpowiedzi.length) return;
+    e.preventDefault();
+    stan.formFokus = i;
+    aktualizujFormFokus();
   });
 });
-document.querySelectorAll('#opPills .opl').forEach(b=>{
-  b.addEventListener('click',()=>{
+document.querySelectorAll('.qtab[data-ff]').forEach((t, i) => {
+  t.addEventListener('pointerdown', e => {
+    if (!stan.pytanie) return;
+    e.preventDefault();
+    stan.formFokus = i % stan.pytanie.odpowiedzi.length;
+    aktualizujFormFokus();
+    aktualizujFormWyswietlanie();
+  });
+});
+
+// przyciski nawigacyjne
+el('btnStart').addEventListener('click', rozpocznijGre);
+el('btnAgain').addEventListener('click', rozpocznijGre);
+el('btnMenu').addEventListener('click', wrocDoMenu);
+el('btnBack').addEventListener('click', pokazWyniki);
+
+// wybór poziomu
+document.querySelectorAll('#diffPills .pl').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#diffPills .pl').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    stan.poziom = b.dataset.d;
+  });
+});
+
+// wybór operacji
+document.querySelectorAll('#opPills .opl').forEach(b => {
+  b.addEventListener('click', () => {
     b.classList.toggle('on');
-    const a=[...document.querySelectorAll('#opPills .opl.on')].map(x=>x.dataset.op);
-    if(!a.length){b.classList.add('on');return;}S.ops=a;
-  });
-});
-document.querySelectorAll('#modeCards .mitem').forEach(b=>{
-  b.addEventListener('click',()=>{
-    b.classList.toggle('on');
-    const a=[...document.querySelectorAll('#modeCards .mitem.on')].map(x=>x.dataset.m);
-    if(!a.length){b.classList.add('on');return;}S.modes=a;
-    $('arithOpts').classList.toggle('dim',a.every(m=>m!=='arith'));
+    const aktywne = [...document.querySelectorAll('#opPills .opl.on')].map(x => x.dataset.op);
+    if (!aktywne.length) { b.classList.add('on'); return; } // co najmniej jedna
+    stan.operacje = aktywne;
   });
 });
 
-document.addEventListener('keydown',e=>{
-  if(!S.running)return;
-  if(e.key>='0'&&e.key<='9'){
-    S.mode==='arith'?aKey(e.key):S.mode==='quad'?qKey(e.key):fKey(e.key);
-  }else if(e.key==='-'){
-    if(S.mode==='arith')aKey('-');else if(S.mode==='quad')qKey('-');
-  }else if(e.key==='Backspace'){
+// wybór trybów
+document.querySelectorAll('#modeCards .mitem').forEach(b => {
+  b.addEventListener('click', () => {
+    b.classList.toggle('on');
+    const aktywne = [...document.querySelectorAll('#modeCards .mitem.on')].map(x => x.dataset.m);
+    if (!aktywne.length) { b.classList.add('on'); return; } // co najmniej jeden
+    stan.tryby = aktywne;
+    // przyciemn opcje działań jeśli tryb arith nieaktywny
+    el('arithOpts').classList.toggle('dim', aktywne.every(m => m !== 'arith'));
+  });
+});
+
+// klawiatura fizyczna (do testowania na desktopie)
+document.addEventListener('keydown', e => {
+  if (!stan.trwa) return;
+
+  if (e.key >= '0' && e.key <= '9') {
+    if (stan.tryb === 'arith')     klawiaturaDzialania(e.key);
+    else if (stan.tryb === 'quad') klawiaturaRozkladu(e.key);
+    else if (stan.tryb === 'form') klawiaturaWzorow(e.key);
+    else if (stan.tryb === 'pita') klawiaturaPitagoras(e.key);
+  } else if (e.key === '-') {
+    if (stan.tryb === 'arith')     klawiaturaDzialania('-');
+    else if (stan.tryb === 'quad') klawiaturaRozkladu('-');
+  } else if (e.key === 'Backspace') {
     e.preventDefault();
-    S.mode==='arith'?aKey('del'):S.mode==='quad'?qKey('del'):fKey('del');
-  }else if(e.key==='Enter'||e.key===' '){
+    if (stan.tryb === 'arith')     klawiaturaDzialania('del');
+    else if (stan.tryb === 'quad') klawiaturaRozkladu('del');
+    else if (stan.tryb === 'form') klawiaturaWzorow('del');
+    else if (stan.tryb === 'pita') klawiaturaPitagoras('del');
+  } else if (e.key === 'Enter' || e.key === ' ') {
     e.preventDefault();
-    S.mode==='arith'?submitA():S.mode==='quad'?submitQ():submitF();
-  }else if(e.key==='Escape'){
-    if(S.mode==='arith'){S.abuf='';updArith();}
-    else if(S.mode==='quad'){S.qbuf[S.qfocus]='';updQdisp();}
-    else{S.fbuf[S.ffocus]='';updFdisp();}
-  }else if(e.key==='Tab'){
+    if (stan.tryb === 'arith')     sprawdzArith();
+    else if (stan.tryb === 'quad') sprawdzRozklad();
+    else if (stan.tryb === 'form') sprawdzWzor();
+    else if (stan.tryb === 'pita') sprawdzPitagoras();
+  } else if (e.key === 'Escape') {
+    // wyczyść aktualne pole
+    if (stan.tryb === 'arith')     { stan.arithBufor = ''; aktualizujArith(); }
+    else if (stan.tryb === 'quad') { stan.quadBufor[stan.quadFokus] = ''; aktualizujQuadWyswietlanie(); }
+    else if (stan.tryb === 'form') { stan.formBufor[stan.formFokus] = ''; aktualizujFormWyswietlanie(); }
+    else if (stan.tryb === 'pita') { stan.pitaBufor = ''; }
+  } else if (e.key === 'Tab') {
     e.preventDefault();
-    if(S.mode==='quad'){S.qfocus=(S.qfocus+1)%2;updQfocus();}
-    else if(S.mode==='form'&&S.q){S.ffocus=(S.ffocus+1)%S.q.ans.length;updFfocus();updFdisp();}
+    if (stan.tryb === 'quad') {
+      stan.quadFokus = (stan.quadFokus + 1) % 2;
+      aktualizujQuadFokus();
+    } else if (stan.tryb === 'form' && stan.pytanie) {
+      stan.formFokus = (stan.formFokus + 1) % stan.pytanie.odpowiedzi.length;
+      aktualizujFormFokus();
+      aktualizujFormWyswietlanie();
+    }
   }
 });
 
-/* ── PWA ── */
-if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
-document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});
-let _lt=0;
-document.addEventListener('touchend',e=>{
-  const n=Date.now();
-  if(n-_lt<280&&e.target.tagName!=='INPUT')e.preventDefault();
-  _lt=n;
-},{passive:false});
+
+/* ═══════════════════════════════════════════════════
+   PWA — rejestracja service workera i gesty dotykowe
+   ═══════════════════════════════════════════════════ */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+
+// zablokuj zoom pinchem
+document.addEventListener('touchmove', e => {
+  if (e.touches.length > 1) e.preventDefault();
+}, { passive: false });
+
+// zablokuj double-tap zoom
+let ostatniDotyk = 0;
+document.addEventListener('touchend', e => {
+  const teraz = Date.now();
+  if (teraz - ostatniDotyk < 280 && e.target.tagName !== 'INPUT') e.preventDefault();
+  ostatniDotyk = teraz;
+}, { passive: false });
 </script>
 </body>
 </html>
