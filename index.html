@@ -1107,10 +1107,18 @@ function odswiezPolaA() {
     valA[i].textContent = wartosc || '?';
     valA[i].className = 'wartosc-pola' + (wartosc ? '' : ' placeholder');
   });
-  // odśwież też blanki w podpowiedzi (dla rozkładu)
   if (stan.trybGry === 'rozklad' && stan.pytanie) {
     const { r1, r2, wspolczynnik } = stan.pytanie;
     el('podpowiedzIloczynowa').innerHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, false);
+  }
+  // aktualizuj ? w pytaniu Pitagorasa podczas wpisywania
+  if (stan.trybGry === 'pitagoras') {
+    const odpPit = el('odpPit');
+    if (odpPit) {
+      const v = stan.buforDwa[0];
+      odpPit.textContent = v || '?';
+      odpPit.className = 'odpowiedz' + (v ? '' : ' placeholder');
+    }
   }
 }
 
@@ -1309,13 +1317,14 @@ function generujPitagoras() {
 
   etykietaPytania.textContent = 'Twierdzenie Pitagorasa';
 
-  // pokaż pytanie tekstowe
+  // pokaż pytanie tekstowe — ? z id żeby można aktualizować na bieżąco
+  const szukanyBok = dane.szukamy;
   if (szukamy === 0) {
-    el('pytaniePitagoras').innerHTML = `a=${a}, b=${b} ${bDb('→')} c = ?`;
+    el('pytaniePitagoras').innerHTML = `a=${a}, b=${b} ${bDb('→')} ${szukanyBok} = <span class="placeholder odpowiedz" id="odpPit">?</span>`;
   } else if (szukamy === 1) {
-    el('pytaniePitagoras').innerHTML = `a=${a}, c=${c} ${bDb('→')} b = ?`;
+    el('pytaniePitagoras').innerHTML = `a=${a}, c=${c} ${bDb('→')} ${szukanyBok} = <span class="placeholder odpowiedz" id="odpPit">?</span>`;
   } else {
-    el('pytaniePitagoras').innerHTML = `b=${b}, c=${c} ${bDb('→')} a = ?`;
+    el('pytaniePitagoras').innerHTML = `b=${b}, c=${c} ${bDb('→')} ${szukanyBok} = <span class="placeholder odpowiedz" id="odpPit">?</span>`;
   }
 
   // narysuj trójkąt SVG z oznaczeniami
@@ -1361,18 +1370,12 @@ function narysujTrojkat({ a, b, c, szukamy: co }, szukamyIndeks) {
     <polyline points="${x1+12},${y1} ${x1+12},${y1-12} ${x1},${y1-12}"
       fill="none" stroke="var(--tekst3)" stroke-width="1.5"/>
     <!-- etykiety boków -->
-    <text x="${(x1+x2)/2}" y="${y1+16}" text-anchor="middle"
-      font-family="DM Mono,monospace" font-size="13" fill="${kolor('a')}">
-      a=${wartosc('a',a)}
-    </text>
-    <text x="${x1-18}" y="${(y1+y3)/2}" text-anchor="middle"
-      font-family="DM Mono,monospace" font-size="13" fill="${kolor('b')}">
-      b=${wartosc('b',b)}
-    </text>
-    <text x="${(x2+x3)/2+10}" y="${(y2+y3)/2-5}" text-anchor="middle"
-      font-family="DM Mono,monospace" font-size="13" fill="${kolor('c')}">
-      c=${wartosc('c',c)}
-    </text>
+    <text x="${(x1+x2)/2}" y="${y1+18}" text-anchor="middle"
+      font-family="DM Mono,monospace" font-size="13" fill="${kolor('a')}">a=${wartosc('a',a)}</text>
+    <text x="${x3+26}" y="${(y1+y3)/2+5}" text-anchor="start"
+      font-family="DM Mono,monospace" font-size="13" fill="${kolor('b')}">b=${wartosc('b',b)}</text>
+    <text x="${(x2+x3)/2+14}" y="${(y2+y3)/2-6}" text-anchor="start"
+      font-family="DM Mono,monospace" font-size="13" fill="${kolor('c')}">c=${wartosc('c',c)}</text>
   `;
 }
 
@@ -1393,9 +1396,10 @@ function sprawdzDzialanie() {
     if (odp) { odp.textContent = stan.pytanie.odpowiedz; odp.className = 'odpowiedz'; }
   }
 
+  const byloDobrze = (wpisane === stan.pytanie.odpowiedz);
   stan.buforJeden = '';
-  odswiezOdpowiedzArytm();
-  setTimeout(() => { if (stan.gra) nastepnePytanie(); }, wpisane === stan.pytanie.odpowiedz ? 160 : 950);
+  if (byloDobrze) odswiezOdpowiedzArytm();
+  setTimeout(() => { if (stan.gra) nastepnePytanie(); }, byloDobrze ? 160 : 950);
 }
 
 function sprawdzRozklad() {
@@ -1465,8 +1469,9 @@ function sprawdzPitagoras() {
     trafiony();
   } else {
     bledny();
-    // pokaż poprawną odpowiedź w SVG
-    const { a, b, c, szukamy } = stan.pytanie;
+    const odpPit = el('odpPit');
+    if (odpPit) { odpPit.textContent = stan.pytanie.szukanaWartosc; odpPit.className = 'odpowiedz'; }
+    const { a, b, c } = stan.pytanie;
     narysujTrojkatOdpowiedz({ a, b, c });
   }
   setTimeout(() => { if (stan.gra) nastepnePytanie(); }, ok ? 160 : 1100);
