@@ -13,1463 +13,1931 @@
 <title>mat-hub</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#080808;--s1:#161616;--s2:#1e1e1e;--s3:#262626;
-  --b1:#2c2c2c;--b2:#3a3a3a;
-  --t1:#dedede;--t2:#888;--t3:#484848;
-  --ac:#c8c8c8;--gn:#4ade80;--rd:#f87171;--yl:#d4a017;--bl:#60a5fa;
-  --st:env(safe-area-inset-top,0px);
-  --sb:env(safe-area-inset-bottom,0px);
-  --sl:env(safe-area-inset-left,0px);
-  --sr:env(safe-area-inset-right,0px);
-}
-html{background:var(--bg)}
-body{
-  font-family:'DM Sans',sans-serif;color:var(--t1);
-  min-height:100dvh;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-}
+/* reset */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-/* ── EKRANY ── */
-.scr{
-  position:fixed;inset:0;z-index:40;
-  display:flex;flex-direction:column;align-items:center;
-  background:var(--bg);
-  padding-top:calc(var(--st) + 56px);
-  padding-bottom:calc(var(--sb) + 48px);
-  padding-left:calc(var(--sl) + 24px);
-  padding-right:calc(var(--sr) + 24px);
-  overflow-y:auto;
-  justify-content:space-between;
-}
-.scr.hide{display:none}
-
-/* struktura menu */
-.menu-top{width:100%;max-width:340px;text-align:center;padding-bottom:8px}
-.menu-mid{width:100%;max-width:340px;display:flex;flex-direction:column;gap:14px;flex:1;justify-content:center}
-
-/* przycisk Graj trochę wyżej — mniejszy padding-top */
-.menu-bot{width:100%;max-width:340px;padding-top:2px}
-
-.ttl{
-  font-family:'DM Mono',monospace;
-  font-size:clamp(38px,12vw,58px);
-  font-weight:500;line-height:1;letter-spacing:-.03em;
+/* kolory i zmienne */
+:root {
+  --tlo:       #080808;
+  --powierzchnia1: #161616;
+  --powierzchnia2: #1e1e1e;
+  --powierzchnia3: #262626;
+  --ramka1:    #2c2c2c;
+  --ramka2:    #3a3a3a;
+  --tekst1:    #dedede;
+  --tekst2:    #888;
+  --tekst3:    #484848;
+  --akcent:    #c8c8c8;
+  --zielony:   #4ade80;
+  --czerwony:  #f87171;
+  --zolty:     #d4a017;
 }
 
-/* bloki config */
-.blk{display:flex;flex-direction:column;gap:8px;align-items:center}
-.blk-lbl{font-size:10px;color:var(--t3);letter-spacing:.18em;text-transform:uppercase}
-.row{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
+html { background: var(--tlo); }
 
-/* pigułki (poziom) */
-.pl{
-  background:var(--s1);border:1.5px solid var(--b1);border-radius:100px;
-  padding:7px 18px;font-size:13px;color:var(--t2);
-  cursor:pointer;touch-action:manipulation;user-select:none;
-  transition:border-color .12s,color .12s,background .12s;
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--tekst1);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-.pl.on{border-color:var(--ac);color:var(--ac);background:rgba(200,200,200,.07)}
-.pl:active{opacity:.65}
 
-/* pigułki operacji */
-.opl{
-  background:var(--s1);border:1.5px solid var(--b1);border-radius:10px;
-  width:54px;height:46px;font-family:'DM Mono',monospace;font-size:21px;
-  color:var(--t2);cursor:pointer;text-align:center;line-height:46px;
-  touch-action:manipulation;user-select:none;
-  transition:border-color .12s,color .12s,background .12s;
+/* ==========================================
+   EKRANY NAKŁADKOWE (menu, wyniki)
+   ========================================== */
+.ekran {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--tlo);
+  padding: 48px 24px 32px;
+  overflow-y: auto;
+  /* tytuł na górze, środek elastyczny, graj na dole */
+  justify-content: space-between;
 }
-.opl.on{border-color:var(--ac);color:var(--ac);background:rgba(200,200,200,.07)}
-.opl:active{opacity:.65}
-#arithOpts.dim{opacity:.3;pointer-events:none}
+.ekran.ukryty { display: none; }
 
-/* lista trybów */
-.mlist{display:flex;flex-direction:column;gap:8px;width:100%}
-.mitem{
-  display:flex;align-items:center;gap:14px;
-  background:var(--s1);border:1.5px solid var(--b1);border-radius:12px;
-  padding:13px 16px;cursor:pointer;touch-action:manipulation;user-select:none;
-  transition:border-color .12s,background .12s;
+/* tytuł mat-hub */
+.tytul {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(38px, 12vw, 58px);
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: -0.03em;
 }
-.mitem.on{border-color:var(--ac);background:rgba(200,200,200,.06)}
-.mitem:active{opacity:.7}
-.mitem-ico{font-family:'DM Mono',monospace;font-size:15px;width:34px;text-align:center;flex-shrink:0;color:var(--t2)}
-.mitem.on .mitem-ico{color:var(--ac)}
-.mitem-name{font-size:14px;font-weight:600;letter-spacing:.03em;color:var(--t1)}
 
-/* przyciski główne */
-.btn{
-  background:#fff;color:#111;border:none;border-radius:12px;
-  padding:14px 0;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
-  cursor:pointer;touch-action:manipulation;
-  transition:opacity .12s,transform .1s;width:100%;
+/* środkowa część menu (lista trybów + opcje) */
+.menu-srodek {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+  justify-content: center;
+  padding: 16px 0;
 }
-.btn:active{opacity:.82;transform:scale(.98)}
-.btn.ghost{background:none;border:1.5px solid var(--b2);color:var(--t1);font-weight:400}
-.btn.ghost:active{opacity:.6}
 
-/* siatka wyników */
-.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:310px}
-.rbox{background:var(--s1);border:1.5px solid var(--b1);border-radius:12px;padding:14px;text-align:center}
-.rval{font-family:'DM Mono',monospace;font-size:30px;font-weight:500;color:var(--t1);line-height:1}
-.rlbl{font-size:10px;color:var(--t3);letter-spacing:.1em;margin-top:5px;text-transform:uppercase}
-
-/* ekran końca */
-.end-inner{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:310px;flex:1;justify-content:center}
-
-/* ── OBSZAR GRY ── */
-.wrap{
-  width:100%;max-width:440px;
-  display:flex;flex-direction:column;gap:9px;
-  padding:16px;
+/* przycisk Graj na dole */
+.menu-dol {
+  width: 100%;
+  max-width: 340px;
 }
-.hdr{display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.pts{font-family:'DM Mono',monospace;font-size:23px;font-weight:500;color:var(--t1)}
-.mbtn{
-  background:none;border:1.5px solid var(--b1);border-radius:8px;
-  padding:5px 13px;font-size:11px;color:var(--t2);
-  cursor:pointer;touch-action:manipulation;transition:opacity .12s;
+
+/* ==========================================
+   LISTA TRYBÓW GRY
+   ========================================== */
+.lista-trybow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
 }
-.mbtn:active{opacity:.55}
 
-/* pasek serii */
-.srow{display:flex;align-items:center;gap:7px;min-height:18px;flex-shrink:0}
-.sdots{display:flex;gap:4px}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--s2);border:1.5px solid var(--b1);transition:background .18s,border-color .18s}
-.dot.on{background:var(--gn);border-color:var(--gn)}
-.ctimer-wrap{flex:1;height:3px;background:var(--s2);border-radius:2px;overflow:hidden;margin:0 4px}
-.ctimer-bar{height:100%;width:100%;border-radius:2px;background:var(--ac);transition:background .3s}
-.ctimer-bar.low{background:var(--rd)}
-.cmbo{margin-left:auto;font-size:11px;color:var(--ac);opacity:0;transition:opacity .2s;font-family:'DM Mono',monospace}
-.cmbo.show{opacity:1}
-
-/* karta pytania */
-.card{
-  background:var(--s1);border:1.5px solid var(--b1);border-radius:16px;
-  padding:20px 18px 16px;text-align:center;
-  position:relative;overflow:hidden;
-  transition:border-color .18s;
+.tryb {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 12px;
+  padding: 13px 16px;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  transition: border-color 0.12s, background 0.12s;
 }
-.card.ok{border-color:var(--gn)}
-.card.err{border-color:var(--rd);animation:shk .24s}
-@keyframes shk{0%,100%{transform:translateX(0)}30%{transform:translateX(-6px)}70%{transform:translateX(6px)}}
-.qlbl{font-size:10px;color:var(--t3);letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px}
-.qarith{font-family:'DM Mono',monospace;font-size:clamp(28px,9.5vw,50px);font-weight:500;line-height:1;color:var(--t1);letter-spacing:-.02em}
-.qarith .op{color:var(--ac)}
-.qarith .eq{color:var(--t3)}
-.qarith .ans{color:var(--gn);transition:color .15s}
-.qarith .ans.ph{color:var(--t3)}
-.qpoly{font-family:'DM Mono',monospace;font-size:clamp(18px,5.5vw,30px);font-weight:500;color:var(--t1);line-height:1.3;letter-spacing:.01em}
-sup{font-size:.58em;vertical-align:super;line-height:0}
-.qfact{font-family:'DM Mono',monospace;font-size:clamp(13px,4vw,20px);color:var(--t2);margin-top:10px;line-height:1.4}
-.blnk{display:inline-block;min-width:20px;border-bottom:1.5px solid var(--ac);color:var(--ac);text-align:center;padding:0 2px;font-weight:500;letter-spacing:0}
-.pop{position:absolute;font-family:'DM Mono',monospace;font-size:19px;font-weight:500;pointer-events:none;opacity:0;z-index:5;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap}
+.tryb.aktywny { border-color: var(--akcent); background: rgba(200,200,200,0.06); }
+.tryb:active  { opacity: 0.7; }
 
-/* pola odpowiedzi */
-.qrow{display:flex;gap:5px;align-items:stretch;margin-bottom:8px;flex-shrink:0}
-.qtabs{display:flex;gap:6px;margin-bottom:5px;flex-shrink:0}
-.qtab{flex:1;background:var(--s1);border:1.5px solid var(--b1);border-radius:8px;padding:7px 0;font-size:11px;color:var(--t2);cursor:pointer;text-align:center;touch-action:manipulation;user-select:none;transition:all .12s;font-family:'DM Mono',monospace}
-.qtab.act{border-color:var(--ac);color:var(--ac);background:rgba(200,200,200,.07)}
-.qtab:active{opacity:.65}
-.qfld{flex:1;min-width:0;background:var(--s2);border:1.5px solid var(--b1);border-radius:10px;padding:9px 10px;cursor:pointer;touch-action:manipulation;display:flex;flex-direction:column;gap:2px;transition:border-color .15s}
-.qfld.act{border-color:var(--ac)}
-.qflbl{font-size:9px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
-.qfval{font-family:'DM Mono',monospace;font-size:clamp(16px,5vw,22px);font-weight:500;color:var(--t1);text-align:right;min-height:30px;display:flex;align-items:center;justify-content:flex-end}
-.qfval.ph{color:var(--t3)}
-.qsep{align-self:center;color:var(--t3);font-size:13px;flex-shrink:0;padding:0 1px}
-
-/* ── TRYB PITAGORAS ── */
-.pitagoras-trojkat{
-  display:flex;justify-content:center;align-items:center;
-  margin:6px 0;
+.tryb-ikona {
+  font-family: 'DM Mono', monospace;
+  font-size: 15px;
+  width: 34px;
+  text-align: center;
+  flex-shrink: 0;
+  color: var(--tekst2);
 }
-.pitagoras-trojkat canvas{max-width:100%;height:auto;}
+.tryb.aktywny .tryb-ikona { color: var(--akcent); }
+.tryb-nazwa { font-size: 14px; font-weight: 600; color: var(--tekst1); }
 
-/* klawiatura numeryczna */
-.np{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;flex-shrink:0}
-.nk{background:var(--s1);border:1.5px solid var(--b1);border-radius:10px;height:52px;font-family:'DM Mono',monospace;font-size:17px;color:var(--t1);cursor:pointer;text-align:center;line-height:52px;user-select:none;-webkit-user-select:none;touch-action:manipulation;transition:background .07s,transform .07s}
-.nk:active{transform:scale(.9);background:var(--s3)}
-.nk.znak{color:var(--yl)}
-.nk.del{color:var(--rd)}
-.nk.z2{grid-column:span 2}
-.nk.go{background:#fff;color:#111;border-color:#fff;font-size:19px}
-.nk.go:active{background:#ccc;transform:scale(.9)}
-.nk.pomin{font-size:11px;color:var(--t3);letter-spacing:.04em}
-.nk.pomin:active{color:var(--t2);transform:scale(.9)}
+/* ==========================================
+   BLOKI KONFIGURACJI (działania, poziom)
+   ========================================== */
+.blok {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+.blok-etykieta {
+  font-size: 10px;
+  color: var(--tekst3);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.rzad { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
 
-/* powiadomienie */
-.lup{position:fixed;top:24%;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:clamp(16px,5vw,24px);color:var(--ac);opacity:0;pointer-events:none;z-index:60;white-space:nowrap}
-@keyframes la{0%{opacity:0;transform:translateX(-50%) scale(.7)}20%{opacity:1;transform:translateX(-50%) scale(1.05)}70%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(.88)}}
-.lup.show{animation:la 1.1s ease forwards}
+/* pigułki poziomu */
+.pigulka {
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 100px;
+  padding: 7px 18px;
+  font-size: 13px;
+  color: var(--tekst2);
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  transition: border-color 0.12s, color 0.12s;
+}
+.pigulka.aktywny { border-color: var(--akcent); color: var(--akcent); background: rgba(200,200,200,0.07); }
+.pigulka:active  { opacity: 0.65; }
+
+/* przyciski działań (+, −, ×, ÷) */
+.przycisk-dzialania {
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 10px;
+  width: 54px; height: 46px;
+  font-family: 'DM Mono', monospace;
+  font-size: 21px;
+  color: var(--tekst2);
+  cursor: pointer;
+  text-align: center;
+  line-height: 46px;
+  touch-action: manipulation;
+  user-select: none;
+  transition: border-color 0.12s, color 0.12s;
+}
+.przycisk-dzialania.aktywny { border-color: var(--akcent); color: var(--akcent); background: rgba(200,200,200,0.07); }
+.przycisk-dzialania:active   { opacity: 0.65; }
+
+/* gdy tryb działania nie jest wybrany, wyszarz opcje działań */
+#opcje-dzialan.wyszarzony { opacity: 0.3; pointer-events: none; }
+
+/* ==========================================
+   PRZYCISKI OGÓLNE
+   ========================================== */
+.btn {
+  background: #fff;
+  color: #111;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: opacity 0.12s, transform 0.1s;
+  width: 100%;
+}
+.btn:active { opacity: 0.82; transform: scale(0.98); }
+
+.btn.duch {
+  background: none;
+  border: 1.5px solid var(--ramka2);
+  color: var(--tekst1);
+  font-weight: 400;
+}
+.btn.duch:active { opacity: 0.6; }
+
+/* ==========================================
+   EKRAN WYNIKÓW
+   ========================================== */
+.siatka-wynikow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  max-width: 310px;
+}
+.kafelek-wyniku {
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+.wartosc-wyniku {
+  font-family: 'DM Mono', monospace;
+  font-size: 30px;
+  font-weight: 500;
+  color: var(--tekst1);
+  line-height: 1;
+}
+.etykieta-wyniku {
+  font-size: 10px;
+  color: var(--tekst3);
+  letter-spacing: 0.1em;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+.koniec-srodek {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 310px;
+  flex: 1;
+  justify-content: center;
+}
+
+/* ==========================================
+   OBSZAR GRY (wrap)
+   ========================================== */
+.wrap {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 16px;
+}
+
+/* nagłówek gry: punkty | combo | przycisk menu */
+.naglowek {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.punkty {
+  font-family: 'DM Mono', monospace;
+  font-size: 23px;
+  font-weight: 500;
+  color: var(--tekst1);
+}
+.combo {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  color: var(--akcent);
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-family: 'DM Mono', monospace;
+}
+.combo.widoczny { opacity: 1; }
+.przycisk-menu {
+  background: none;
+  border: 1.5px solid var(--ramka1);
+  border-radius: 8px;
+  padding: 5px 13px;
+  font-size: 11px;
+  color: var(--tekst2);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.przycisk-menu:active { opacity: 0.55; }
+
+/* rząd z kropkami streak */
+.rzad-streak {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 18px;
+  flex-shrink: 0;
+}
+.kropki-streak { display: flex; gap: 4px; }
+.kropka {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--powierzchnia2);
+  border: 1.5px solid var(--ramka1);
+  transition: background 0.18s, border-color 0.18s;
+}
+.kropka.aktywna { background: var(--zielony); border-color: var(--zielony); }
+
+/* pasek timera combo */
+.pasek-combo-wrap {
+  flex: 1;
+  height: 3px;
+  background: var(--powierzchnia2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 0 4px;
+}
+.pasek-combo {
+  height: 100%;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--akcent);
+  transition: background 0.3s;
+}
+.pasek-combo.niski { background: var(--czerwony); }
+
+/* ==========================================
+   KARTA PYTANIA
+   ========================================== */
+.karta {
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 16px;
+  padding: 20px 18px 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.18s;
+}
+.karta.trafiony  { border-color: var(--zielony); }
+.karta.bledny    { border-color: var(--czerwony); animation: trząsienie 0.24s; }
+
+@keyframes trząsienie {
+  0%, 100% { transform: translateX(0); }
+  30%       { transform: translateX(-6px); }
+  70%       { transform: translateX(6px); }
+}
+
+.etykieta-pytania {
+  font-size: 10px;
+  color: var(--tekst3);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* pytanie arytmetyczne */
+.pytanie-arytm {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(28px, 9.5vw, 50px);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--tekst1);
+  letter-spacing: -0.02em;
+}
+.pytanie-arytm .operator  { color: var(--akcent); }
+.pytanie-arytm .rowna-sie { color: var(--tekst3); }
+.pytanie-arytm .odpowiedz { color: var(--zielony); transition: color 0.15s; }
+.pytanie-arytm .placeholder { color: var(--tekst3); }
+
+/* pytanie wielomianowe / wzory */
+.pytanie-poly {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(18px, 5.5vw, 30px);
+  font-weight: 500;
+  color: var(--tekst1);
+  line-height: 1.3;
+}
+sup { font-size: 0.58em; vertical-align: super; line-height: 0; }
+
+.podpowiedz-iloczynowa {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(13px, 4vw, 20px);
+  color: var(--tekst2);
+  margin-top: 10px;
+  line-height: 1.4;
+}
+
+/* pole do uzupełnienia w podpowiedzi */
+.blank {
+  display: inline-block;
+  min-width: 20px;
+  border-bottom: 1.5px solid var(--akcent);
+  color: var(--akcent);
+  text-align: center;
+  padding: 0 2px;
+  font-weight: 500;
+}
+
+/* ==========================================
+   TRÓJKĄT PITAGORASA (SVG w karcie)
+   ========================================== */
+.trojkat-svg {
+  width: 100%;
+  max-width: 240px;
+  margin: 8px auto 0;
+  display: block;
+}
+
+/* animacja "pop" przy trafieniu/błędzie */
+.pop-animacja {
+  position: absolute;
+  font-family: 'DM Mono', monospace;
+  font-size: 19px;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 5;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+/* ==========================================
+   POLA ODPOWIEDZI (x₁/x₂, a/b, c)
+   ========================================== */
+.rzad-pol {
+  display: flex;
+  gap: 5px;
+  align-items: stretch;
+  margin-bottom: 8px;
+}
+.taby-pol { display: flex; gap: 6px; margin-bottom: 5px; }
+
+.tab-pola {
+  flex: 1;
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 8px;
+  padding: 7px 0;
+  font-size: 11px;
+  color: var(--tekst2);
+  cursor: pointer;
+  text-align: center;
+  touch-action: manipulation;
+  user-select: none;
+  transition: all 0.12s;
+  font-family: 'DM Mono', monospace;
+}
+.tab-pola.aktywny { border-color: var(--akcent); color: var(--akcent); background: rgba(200,200,200,0.07); }
+.tab-pola:active  { opacity: 0.65; }
+
+.pole-odpowiedzi {
+  flex: 1;
+  min-width: 0;
+  background: var(--powierzchnia2);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 10px;
+  padding: 9px 10px;
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: border-color 0.15s;
+}
+.pole-odpowiedzi.aktywny { border-color: var(--akcent); }
+
+.etykieta-pola { font-size: 9px; color: var(--tekst3); letter-spacing: 0.1em; text-transform: uppercase; }
+
+.wartosc-pola {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(16px, 5vw, 22px);
+  font-weight: 500;
+  color: var(--tekst1);
+  text-align: right;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.wartosc-pola.placeholder { color: var(--tekst3); }
+
+.separator-pol { align-self: center; color: var(--tekst3); font-size: 13px; flex-shrink: 0; padding: 0 1px; }
+
+/* ==========================================
+   KLAWIATURA NUMERYCZNA
+   ========================================== */
+.klawiatura {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.klawisz {
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 10px;
+  height: 52px;
+  font-family: 'DM Mono', monospace;
+  font-size: 17px;
+  color: var(--tekst1);
+  cursor: pointer;
+  text-align: center;
+  line-height: 52px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: background 0.07s, transform 0.07s;
+}
+.klawisz:active { transform: scale(0.9); background: var(--powierzchnia3); }
+
+.klawisz.znak      { color: var(--zolty); }
+.klawisz.kasowanie { color: var(--czerwony); }
+.klawisz.szerokie  { grid-column: span 2; }
+.klawisz.zatwierdz { background: #fff; color: #111; border-color: #fff; font-size: 19px; }
+.klawisz.zatwierdz:active { background: #ccc; transform: scale(0.9); }
+.klawisz.pominij   { font-size: 11px; color: var(--tekst3); letter-spacing: 0.04em; }
+.klawisz.pominij:active { color: var(--tekst2); transform: scale(0.9); }
+
+/* ==========================================
+   TOAST (combo, komunikaty)
+   ========================================== */
+.toast {
+  position: fixed;
+  top: 24%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(16px, 5vw, 24px);
+  color: var(--akcent);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 60;
+  white-space: nowrap;
+}
+@keyframes animacja-toast {
+  0%   { opacity: 0; transform: translateX(-50%) scale(0.7); }
+  20%  { opacity: 1; transform: translateX(-50%) scale(1.05); }
+  70%  { opacity: 1; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) scale(0.88); }
+}
+.toast.widoczny { animation: animacja-toast 1.1s ease forwards; }
 </style>
 </head>
 <body>
 
-<!-- ════ MENU ════ -->
-<div class="scr" id="sMenu">
-  <div class="menu-top">
-    <div class="ttl">mat-hub</div>
+<!-- ==========================================
+     EKRAN MENU GŁÓWNEGO
+     ========================================== -->
+<div class="ekran" id="ekranMenu">
+
+  <div class="tytul">mat-hub</div>
+
+  <div class="menu-srodek">
+
+    <!-- wybór trybów gry -->
+    <div class="lista-trybow" id="listaTrybow">
+      <div class="tryb aktywny" data-tryb="dzialania">
+        <div class="tryb-ikona">±</div>
+        <div class="tryb-nazwa">Działania</div>
+      </div>
+      <div class="tryb aktywny" data-tryb="rozklad">
+        <div class="tryb-ikona">x²</div>
+        <div class="tryb-nazwa">Rozkład</div>
+      </div>
+      <div class="tryb aktywny" data-tryb="wzory">
+        <div class="tryb-ikona">f(x)</div>
+        <div class="tryb-nazwa">Wzory</div>
+      </div>
+      <div class="tryb aktywny" data-tryb="pitagoras">
+        <div class="tryb-ikona">△</div>
+        <div class="tryb-nazwa">Pitagoras</div>
+      </div>
+    </div>
+
+    <!-- opcje działań (widoczne tylko gdy tryb "działania" aktywny) -->
+    <div class="blok" id="opcje-dzialan">
+      <div class="blok-etykieta">Działania</div>
+      <div class="rzad" id="przyciskiDzialan">
+        <div class="przycisk-dzialania aktywny" data-op="+">+</div>
+        <div class="przycisk-dzialania aktywny" data-op="−">−</div>
+        <div class="przycisk-dzialania aktywny" data-op="×">×</div>
+        <div class="przycisk-dzialania aktywny" data-op="÷">÷</div>
+      </div>
+    </div>
+
+    <!-- poziom trudności -->
+    <div class="blok">
+      <div class="blok-etykieta">Poziom</div>
+      <div class="rzad" id="przyciskiPoziomu">
+        <div class="pigulka aktywny" data-poziom="latwy">Łatwy</div>
+        <div class="pigulka" data-poziom="sredni">Średni</div>
+        <div class="pigulka" data-poziom="trudny">Trudny</div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="menu-mid">
-    <div class="mlist" id="modeCards">
-      <div class="mitem on" data-m="arith">
-        <div class="mitem-ico">±</div>
-        <div class="mitem-name">Działania</div>
-      </div>
-      <div class="mitem on" data-m="quad">
-        <div class="mitem-ico">x²</div>
-        <div class="mitem-name">Rozkład</div>
-      </div>
-      <div class="mitem on" data-m="form">
-        <div class="mitem-ico">f(x)</div>
-        <div class="mitem-name">Wzory</div>
-      </div>
-      <div class="mitem on" data-m="pita">
-        <div class="mitem-ico">△</div>
-        <div class="mitem-name">Pitagoras</div>
-      </div>
-    </div>
-
-    <div class="blk" id="arithOpts">
-      <div class="blk-lbl">Działania</div>
-      <div class="row" id="opPills">
-        <div class="opl on" data-op="+">+</div>
-        <div class="opl on" data-op="−">−</div>
-        <div class="opl on" data-op="×">×</div>
-        <div class="opl on" data-op="÷">÷</div>
-      </div>
-    </div>
-
-    <div class="blk">
-      <div class="blk-lbl">Poziom</div>
-      <div class="row" id="diffPills">
-        <div class="pl on" data-d="easy">Łatwy</div>
-        <div class="pl" data-d="medium">Średni</div>
-        <div class="pl" data-d="hard">Trudny</div>
-      </div>
-    </div>
+  <div class="menu-dol">
+    <button class="btn" id="btnGraj">Graj</button>
   </div>
 
-  <div class="menu-bot">
-    <button class="btn" id="btnStart">Graj</button>
+</div>
+
+<!-- ==========================================
+     EKRAN WYNIKÓW
+     ========================================== -->
+<div class="ekran ukryty" id="ekranWyniki">
+  <div class="koniec-srodek">
+    <div class="tytul" style="font-size: clamp(22px,7vw,34px)">wyniki</div>
+    <div class="siatka-wynikow">
+      <div class="kafelek-wyniku"><div class="wartosc-wyniku" id="wynikPunkty">0</div><div class="etykieta-wyniku">Punkty</div></div>
+      <div class="kafelek-wyniku"><div class="wartosc-wyniku" id="wynikTrafinosc">—</div><div class="etykieta-wyniku">Trafność</div></div>
+      <div class="kafelek-wyniku"><div class="wartosc-wyniku" id="wynikPoprawne">0</div><div class="etykieta-wyniku">Poprawne</div></div>
+      <div class="kafelek-wyniku"><div class="wartosc-wyniku" id="wynikKombo">0</div><div class="etykieta-wyniku">Max combo</div></div>
+    </div>
+    <div style="font-size:13px;color:var(--zolty);text-align:center" id="wynikKomunikat"></div>
+    <button class="btn" id="btnJeszczeRaz">Jeszcze raz</button>
+    <button class="btn duch" id="btnDoMenu">← Menu</button>
   </div>
 </div>
 
-<!-- ════ WYNIKI ════ -->
-<div class="scr hide" id="sEnd">
-  <div class="end-inner">
-    <div class="ttl" style="font-size:clamp(22px,7vw,34px)">wyniki</div>
-    <div class="rgrid">
-      <div class="rbox"><div class="rval" id="ePts">0</div><div class="rlbl">Punkty</div></div>
-      <div class="rbox"><div class="rval" id="eAcc">—</div><div class="rlbl">Trafność</div></div>
-      <div class="rbox"><div class="rval" id="eOk">0</div><div class="rlbl">Poprawne</div></div>
-      <div class="rbox"><div class="rval" id="eBest">0</div><div class="rlbl">Max combo</div></div>
-    </div>
-    <div class="sub" id="eMsg" style="color:var(--yl)"></div>
-    <button class="btn" id="btnAgain">Jeszcze raz</button>
-    <button class="btn ghost" id="btnMenu">← Menu</button>
-  </div>
-</div>
+<!-- toast na combo -->
+<div class="toast" id="toast"></div>
 
-<div class="lup" id="lup"></div>
-
-<!-- ════ GRA ════ -->
+<!-- ==========================================
+     OBSZAR GRY
+     ========================================== -->
 <div class="wrap">
-  <div class="hdr">
-    <div class="pts" id="gPts">0</div>
-    <div class="cmbo" id="cmbo" style="flex:1;text-align:center"></div>
-    <button class="mbtn" id="btnBack">Menu</button>
+
+  <!-- nagłówek: punkty / combo / menu -->
+  <div class="naglowek">
+    <div class="punkty" id="licznikPunktow">0</div>
+    <div class="combo" id="wyswietlaczKombo"></div>
+    <button class="przycisk-menu" id="btnMenu">Menu</button>
   </div>
-  <div class="srow">
-    <div class="sdots" id="sdots"></div>
-    <div class="ctimer-wrap" id="ctimerWrap" style="display:none">
-      <div class="ctimer-bar" id="ctimerBar"></div>
+
+  <!-- pasek streak (5 kropek) -->
+  <div class="rzad-streak">
+    <div class="kropki-streak" id="kropkiStreak"></div>
+    <div class="pasek-combo-wrap" id="paselKomboWrap" style="display:none">
+      <div class="pasek-combo" id="pasekKombo"></div>
     </div>
   </div>
 
-  <div class="card" id="card">
-    <div class="qlbl" id="qlbl"></div>
+  <!-- karta z pytaniem -->
+  <div class="karta" id="karta">
+    <div class="etykieta-pytania" id="etykietaPytania"></div>
 
-    <!-- widok: działania -->
-    <div id="vA"><div class="qarith" id="qA"></div></div>
+    <!-- widok: działania arytmetyczne -->
+    <div id="widokDzialania">
+      <div class="pytanie-arytm" id="pytanieArytm"></div>
+    </div>
 
-    <!-- widok: rozkład wielomianu -->
-    <div id="vQ" style="display:none">
-      <div class="qpoly" id="qPoly"></div>
-      <div class="qfact" id="qFact"></div>
+    <!-- widok: rozkład kwadratowy -->
+    <div id="widokRozklad" style="display:none">
+      <div class="pytanie-poly" id="pytanieWielomian"></div>
+      <div class="podpowiedz-iloczynowa" id="podpowiedzIloczynowa"></div>
     </div>
 
     <!-- widok: wzory skróconego mnożenia -->
-    <div id="vF" style="display:none">
-      <div class="qpoly" id="qForm"></div>
-      <div class="qfact" id="qFormFact"></div>
+    <div id="widokWzory" style="display:none">
+      <div class="pytanie-poly" id="pytanieWzor"></div>
+      <div class="podpowiedz-iloczynowa" id="podpowiedzWzor"></div>
     </div>
 
-    <!-- widok: pitagoras -->
-    <div id="vP" style="display:none">
-      <div class="pitagoras-trojkat">
-        <canvas id="trojkatCanvas" width="220" height="160"></canvas>
+    <!-- widok: twierdzenie Pitagorasa -->
+    <div id="widokPitagoras" style="display:none">
+      <div class="pytanie-poly" id="pytaniePitagoras"></div>
+      <!-- SVG trójkąt rysowany dynamicznie -->
+      <svg class="trojkat-svg" id="trojkatSVG" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <!-- animacja pop (np. "+20") -->
+    <div class="pop-animacja" id="popAnimacja"></div>
+  </div>
+
+  <!-- ── KLAWIATURA: działania (jedno pole) ── -->
+  <div id="klawiaturaDzialania">
+    <div class="klawiatura">
+      <div class="klawisz" data-akcja="7">7</div>
+      <div class="klawisz" data-akcja="8">8</div>
+      <div class="klawisz" data-akcja="9">9</div>
+      <div class="klawisz znak" data-akcja="-">±</div>
+      <div class="klawisz" data-akcja="4">4</div>
+      <div class="klawisz" data-akcja="5">5</div>
+      <div class="klawisz" data-akcja="6">6</div>
+      <div class="klawisz kasowanie" data-akcja="del">⌫</div>
+      <div class="klawisz" data-akcja="1">1</div>
+      <div class="klawisz" data-akcja="2">2</div>
+      <div class="klawisz" data-akcja="3">3</div>
+      <div class="klawisz kasowanie" data-akcja="clr">C</div>
+      <div class="klawisz szerokie" data-akcja="0">0</div>
+      <div class="klawisz pominij" data-akcja="skip">skip</div>
+      <div class="klawisz zatwierdz" data-akcja="ok">↵</div>
+    </div>
+  </div>
+
+  <!-- ── KLAWIATURA: dwa pola (rozkład / pitagoras) ── -->
+  <div id="klawiaturaPolaA" style="display:none">
+    <div class="taby-pol" id="tabyA">
+      <div class="tab-pola aktywny" data-pole="0">x₁</div>
+      <div class="tab-pola" data-pole="1">x₂</div>
+    </div>
+    <div class="rzad-pol">
+      <div class="pole-odpowiedzi aktywny" id="poleA0">
+        <div class="etykieta-pola" id="etA0">x₁</div>
+        <div class="wartosc-pola placeholder" id="valA0">?</div>
+      </div>
+      <div class="separator-pol">·</div>
+      <div class="pole-odpowiedzi" id="poleA1">
+        <div class="etykieta-pola" id="etA1">x₂</div>
+        <div class="wartosc-pola placeholder" id="valA1">?</div>
       </div>
     </div>
-
-    <div class="pop" id="pop"></div>
-  </div>
-
-  <!-- klawiatura: działania -->
-  <div id="uiA">
-    <div class="np">
-      <div class="nk" data-v="7">7</div><div class="nk" data-v="8">8</div><div class="nk" data-v="9">9</div><div class="nk znak" data-v="-">±</div>
-      <div class="nk" data-v="4">4</div><div class="nk" data-v="5">5</div><div class="nk" data-v="6">6</div><div class="nk del" data-v="del">⌫</div>
-      <div class="nk" data-v="1">1</div><div class="nk" data-v="2">2</div><div class="nk" data-v="3">3</div><div class="nk del" data-v="clr">C</div>
-      <div class="nk z2" data-v="0">0</div><div class="nk pomin" data-v="skip">skip</div><div class="nk go" data-v="ok">↵</div>
+    <div class="klawiatura">
+      <div class="klawisz" data-b="7">7</div>
+      <div class="klawisz" data-b="8">8</div>
+      <div class="klawisz" data-b="9">9</div>
+      <div class="klawisz znak" data-b="-">±</div>
+      <div class="klawisz" data-b="4">4</div>
+      <div class="klawisz" data-b="5">5</div>
+      <div class="klawisz" data-b="6">6</div>
+      <div class="klawisz kasowanie" data-b="del">⌫</div>
+      <div class="klawisz" data-b="1">1</div>
+      <div class="klawisz" data-b="2">2</div>
+      <div class="klawisz" data-b="3">3</div>
+      <div class="klawisz kasowanie" data-b="clr">C</div>
+      <div class="klawisz szerokie" data-b="0">0</div>
+      <div class="klawisz pominij" data-b="skip">skip</div>
+      <div class="klawisz zatwierdz" data-b="ok">↵</div>
     </div>
   </div>
 
-  <!-- klawiatura: rozkład -->
-  <div id="uiQ" style="display:none">
-    <div class="qtabs">
-      <div class="qtab act" data-qf="0">x₁</div>
-      <div class="qtab" data-qf="1">x₂</div>
+  <!-- ── KLAWIATURA: trzy pola (wzory) ── -->
+  <div id="klawiaturaPolaB" style="display:none">
+    <div class="taby-pol" id="tabyB">
+      <div class="tab-pola aktywny" data-pole="0">b</div>
+      <div class="tab-pola" data-pole="1">b</div>
+      <div class="tab-pola" data-pole="2">b</div>
     </div>
-    <div class="qrow">
-      <div class="qfld act" id="qf0"><div class="qflbl">x₁</div><div class="qfval ph" id="qv0">?</div></div>
-      <div class="qsep">·</div>
-      <div class="qfld" id="qf1"><div class="qflbl">x₂</div><div class="qfval ph" id="qv1">?</div></div>
+    <div class="rzad-pol">
+      <div class="pole-odpowiedzi aktywny" id="poleB0">
+        <div class="etykieta-pola" id="etB0">b</div>
+        <div class="wartosc-pola placeholder" id="valB0">?</div>
+      </div>
+      <div class="separator-pol" id="sepB0">·</div>
+      <div class="pole-odpowiedzi" id="poleB1">
+        <div class="etykieta-pola" id="etB1">b</div>
+        <div class="wartosc-pola placeholder" id="valB1">?</div>
+      </div>
+      <div class="separator-pol" id="sepB1">·</div>
+      <div class="pole-odpowiedzi" id="poleB2">
+        <div class="etykieta-pola" id="etB2">b</div>
+        <div class="wartosc-pola placeholder" id="valB2">?</div>
+      </div>
     </div>
-    <div class="np">
-      <div class="nk" data-qv="7">7</div><div class="nk" data-qv="8">8</div><div class="nk" data-qv="9">9</div><div class="nk znak" data-qv="-">±</div>
-      <div class="nk" data-qv="4">4</div><div class="nk" data-qv="5">5</div><div class="nk" data-qv="6">6</div><div class="nk del" data-qv="del">⌫</div>
-      <div class="nk" data-qv="1">1</div><div class="nk" data-qv="2">2</div><div class="nk" data-qv="3">3</div><div class="nk del" data-qv="clr">C</div>
-      <div class="nk z2" data-qv="0">0</div><div class="nk pomin" data-qv="skip">skip</div><div class="nk go" data-qv="ok">↵</div>
+    <div class="klawiatura">
+      <div class="klawisz" data-c="7">7</div>
+      <div class="klawisz" data-c="8">8</div>
+      <div class="klawisz" data-c="9">9</div>
+      <div class="klawisz znak" data-c="-">±</div>
+      <div class="klawisz" data-c="4">4</div>
+      <div class="klawisz" data-c="5">5</div>
+      <div class="klawisz" data-c="6">6</div>
+      <div class="klawisz kasowanie" data-c="del">⌫</div>
+      <div class="klawisz" data-c="1">1</div>
+      <div class="klawisz" data-c="2">2</div>
+      <div class="klawisz" data-c="3">3</div>
+      <div class="klawisz kasowanie" data-c="clr">C</div>
+      <div class="klawisz szerokie" data-c="0">0</div>
+      <div class="klawisz pominij" data-c="skip">skip</div>
+      <div class="klawisz zatwierdz" data-c="ok">↵</div>
     </div>
   </div>
 
-  <!-- klawiatura: wzory -->
-  <div id="uiF" style="display:none">
-    <div class="qtabs" id="fTabs">
-      <div class="qtab act" data-ff="0">b</div>
-      <div class="qtab" data-ff="1">b</div>
-      <div class="qtab" data-ff="2">b</div>
-    </div>
-    <div class="qrow">
-      <div class="qfld act" id="ff0"><div class="qflbl" id="ffl0">b</div><div class="qfval ph" id="fv0">?</div></div>
-      <div class="qsep" id="fsep0">·</div>
-      <div class="qfld" id="ff1"><div class="qflbl" id="ffl1">b</div><div class="qfval ph" id="fv1">?</div></div>
-      <div class="qsep" id="fsep1">·</div>
-      <div class="qfld" id="ff2"><div class="qflbl" id="ffl2">b</div><div class="qfval ph" id="fv2">?</div></div>
-    </div>
-    <div class="np">
-      <div class="nk" data-fv="7">7</div><div class="nk" data-fv="8">8</div><div class="nk" data-fv="9">9</div><div class="nk znak" data-fv="-">±</div>
-      <div class="nk" data-fv="4">4</div><div class="nk" data-fv="5">5</div><div class="nk" data-fv="6">6</div><div class="nk del" data-fv="del">⌫</div>
-      <div class="nk" data-fv="1">1</div><div class="nk" data-fv="2">2</div><div class="nk" data-fv="3">3</div><div class="nk del" data-fv="clr">C</div>
-      <div class="nk z2" data-fv="0">0</div><div class="nk pomin" data-fv="skip">skip</div><div class="nk go" data-fv="ok">↵</div>
-    </div>
-  </div>
-
-  <!-- klawiatura: pitagoras (jedna liczba) -->
-  <div id="uiP" style="display:none">
-    <div class="np">
-      <div class="nk" data-pv="7">7</div><div class="nk" data-pv="8">8</div><div class="nk" data-pv="9">9</div><div class="nk del" data-pv="del">⌫</div>
-      <div class="nk" data-pv="4">4</div><div class="nk" data-pv="5">5</div><div class="nk" data-pv="6">6</div><div class="nk del" data-pv="clr">C</div>
-      <div class="nk" data-pv="1">1</div><div class="nk" data-pv="2">2</div><div class="nk" data-pv="3">3</div><div class="nk pomin" data-pv="skip">skip</div>
-      <div class="nk z2" data-pv="0">0</div><div class="nk pomin" data-pv="skip">skip</div><div class="nk go" data-pv="ok">↵</div>
-    </div>
-  </div>
-</div>
+</div><!-- koniec .wrap -->
 
 <script>
-/* ═══════════════════════════════════════════════════
-   KONFIGURACJA POZIOMÓW
-   każdy poziom określa zakresy liczb i możliwości
-   ═══════════════════════════════════════════════════ */
+// ===========================================
+// KONFIGURACJA POZIOMÓW TRUDNOŚCI
+// ===========================================
+// Każdy poziom określa zakresy liczb dla poszczególnych trybów.
+
 const POZIOMY = {
-  easy:   { zakresAr: [1,12], zakresM: [1,10],  zakresD: [1,10],  maxQ: 7,  wspolczynniki: [1],         ujemneP: false, podwojne: false },
-  medium: { zakresAr: [1,20], zakresM: [1,12],  zakresD: [1,12],  maxQ: 10, wspolczynniki: [1,2,3],     ujemneP: true,  podwojne: false },
-  hard:   { zakresAr: [1,30], zakresM: [2,15],  zakresD: [2,15],  maxQ: 12, wspolczynniki: [1,2,3,5],   ujemneP: true,  podwojne: true  },
+  latwy: {
+    dzialanieMax: 12,      // max liczba w dodawaniu/odejmowaniu
+    mnozeniMax:   10,      // max liczba w mnożeniu
+    dzielenieMax: 10,      // max dzielnik/wynik w dzieleniu
+    rozkladMax:   7,       // max pierwiastek w rozkładzie
+    wspolczynniki: [1],    // tylko x² (bez 2x², 3x²)
+    ujemneRzerwiastki: false,
+    podwojnyPierwiastek: false,
+    wzoryMax:     7,       // max b we wzorach
+    pitagorasMax: 15,      // max wartość boku w Pitagorasie
+  },
+  sredni: {
+    dzialanieMax: 20,
+    mnozeniMax:   12,
+    dzielenieMax: 12,
+    rozkladMax:   10,
+    wspolczynniki: [1, 2, 3],
+    ujemneRzerwiastki: true,
+    podwojnyPierwiastek: false,
+    wzoryMax:     9,
+    pitagorasMax: 25,
+  },
+  trudny: {
+    dzialanieMax: 30,
+    mnozeniMax:   15,
+    dzielenieMax: 15,
+    rozkladMax:   12,
+    wspolczynniki: [1, 2, 3, 5],
+    ujemneRzerwiastki: true,
+    podwojnyPierwiastek: true,
+    wzoryMax:     9,
+    pitagorasMax: 40,
+  },
 };
 
-/* ═══════════════════════════════════════════════════
-   STAN GRY
-   wszystko co się zmienia w trakcie sesji
-   ═══════════════════════════════════════════════════ */
+// ===========================================
+// STAN GRY
+// ===========================================
+// Tutaj trzymamy wszystko co się zmienia podczas grania.
+
 const stan = {
-  punkty: 0,
-  seria: 0,
-  najlepszaSeria: 0,
-  poprawne: 0,
-  bledne: 0,
-  trwa: false,
+  // wyniki sesji
+  punkty:      0,
+  streak:      0,   // ile z rzędu dobrze
+  maxStreak:   0,   // rekord streaka
+  poprawne:    0,
+  bledne:      0,
+  mnoznikKombo: 1,  // ×1, ×2, ×3... co 5 z rzędu
 
-  poziom: 'easy',
-  operacje: ['+', '−', '×', '÷'],
-  tryby: ['arith', 'quad', 'form', 'pita'],
+  // konfiguracja z menu
+  poziom:      'latwy',
+  aktywneOperatory: ['+', '−', '×', '÷'],
+  aktywneTypy:      ['dzialania', 'rozklad', 'wzory', 'pitagoras'],
 
-  mnoznik: 1,
-  tryb: 'arith',
-  pytanie: null,
+  // bieżące pytanie
+  trybGry:   'dzialania', // który tryb aktualnie
+  pytanie:   null,         // obiekt z danymi pytania
+  gra:       false,        // czy gra trwa
 
-  // bufory wpisywania (każdy tryb ma swój)
-  arithBufor: '',
-  quadBufor: ['', ''],
-  quadFokus: 0,
-  formBufor: [],
-  formFokus: 0,
-  pitaBufor: '',
+  // bufory wpisanych odpowiedzi
+  buforJeden:  '',         // dla trybu z jednym polem (działania)
+  buforDwa:    ['', ''],   // dla trybu z dwoma polami (rozkład, pitagoras)
+  aktywnePoleDwa: 0,
+  buforTrzy:   ['', '', ''],  // dla trybu z trzema polami (wzory)
+  aktywnePoleTrzy: 0,
 };
 
-/* ═══════════════════════════════════════════════════
-   SKRÓTY DOM
-   ═══════════════════════════════════════════════════ */
+// ===========================================
+// SKRÓTY DO ELEMENTÓW DOM
+// ===========================================
+
 const el = id => document.getElementById(id);
 
-const domPunkty   = el('gPts');
-const domKarta    = el('card');
-const domPop      = el('pop');
-const domEtykieta = el('qlbl');
-const domDotki    = el('sdots');
-const domKombo    = el('cmbo');
-const domLup      = el('lup');
+// ekrany
+const ekranMenu   = el('ekranMenu');
+const ekranWyniki = el('ekranWyniki');
 
-// widoki w karcie
-const widokA = el('vA'), widokQ = el('vQ'), widokF = el('vF'), widokP = el('vP');
-const qA     = el('qA'), qPoly  = el('qPoly'), qFact = el('qFact');
-const qForm  = el('qForm'), qFormFact = el('qFormFact');
+// obszar gry
+const karta              = el('karta');
+const etykietaPytania    = el('etykietaPytania');
+const popAnimacja        = el('popAnimacja');
+const licznikPunktow     = el('licznikPunktow');
+const wyswietlaczKombo   = el('wyswietlaczKombo');
+const kropkiStreak       = el('kropkiStreak');
+const paselKomboWrap     = el('paselKomboWrap');
+const pasekKombo         = el('pasekKombo');
+const toastEl            = el('toast');
+
+// widoki pytań
+const widokDzialania     = el('widokDzialania');
+const widokRozklad       = el('widokRozklad');
+const widokWzory         = el('widokWzory');
+const widokPitagoras     = el('widokPitagoras');
 
 // klawiatury
-const kbA = el('uiA'), kbQ = el('uiQ'), kbF = el('uiF'), kbP = el('uiP');
+const klawiaturaDzialania = el('klawiaturaDzialania');
+const klawiaturaPolaA     = el('klawiaturaPolaA');
+const klawiaturaPolaB     = el('klawiaturaPolaB');
 
-// pola rozkładu
-const quadPola   = [el('qf0'), el('qf1')];
-const quadWart   = [el('qv0'), el('qv1')];
+// pola odpowiedzi (dwa pola)
+const polaA = [el('poleA0'), el('poleA1')];
+const valA  = [el('valA0'),  el('valA1')];
+const etA   = [el('etA0'),   el('etA1')];
 
-// pola wzorów
-const formPola   = [el('ff0'), el('ff1'), el('ff2')];
-const formWart   = [el('fv0'), el('fv1'), el('fv2')];
+// pola odpowiedzi (trzy pola)
+const polaB = [el('poleB0'), el('poleB1'), el('poleB2')];
+const valB  = [el('valB0'),  el('valB1'),  el('valB2')];
+const etB   = [el('etB0'),   el('etB1'),   el('etB2')];
 
-// canvas pitagorasa
-const canvasTrojkat = el('trojkatCanvas');
-const ctx           = canvasTrojkat.getContext('2d');
-
-// dotki serii
+// zbuduj 5 kropek streaka
 for (let i = 0; i < 5; i++) {
-  const d = document.createElement('div');
-  d.className = 'dot';
-  domDotki.appendChild(d);
+  const k = document.createElement('div');
+  k.className = 'kropka';
+  kropkiStreak.appendChild(k);
 }
-const DOTKI = [...domDotki.querySelectorAll('.dot')];
+const kropki = [...kropkiStreak.querySelectorAll('.kropka')];
 
+// ===========================================
+// POMOCNICZE FUNKCJE
+// ===========================================
 
-/* ═══════════════════════════════════════════════════
-   POMOCNIKI
-   ═══════════════════════════════════════════════════ */
-const losujInt   = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
-const losujZ     = arr    => arr[Math.floor(Math.random() * arr.length)];
-const abs        = Math.abs;
+// losowa liczba całkowita między a i b (włącznie)
+function losuj(a, b) {
+  return Math.floor(Math.random() * (b - a + 1)) + a;
+}
 
-// kolory do HTML w kartach
-const kolorSzary  = v => `<span style="color:var(--t2)">${v}</span>`;
-const kolorCiemny = v => `<span style="color:var(--t3)">${v}</span>`;
-const kolorZiel   = v => `<span style="color:var(--gn)">${v}</span>`;
-const kolorNieb   = v => `<span style="color:var(--bl)">${v}</span>`;
-const puste       = (v, id) => `<span class="blnk"${id ? ` id="${id}"` : ''}>${v || '?'}</span>`;
+// losowy element z tablicy
+function losujZ(tablica) {
+  return tablica[Math.floor(Math.random() * tablica.length)];
+}
 
+// HTML dla przyciemnionego tekstu (znaki operatorów)
+function szary(tekst) {
+  return `<span style="color:var(--tekst2)">${tekst}</span>`;
+}
 
-/* ═══════════════════════════════════════════════════
-   ROUTING — który tryb gry teraz
-   ═══════════════════════════════════════════════════ */
+// HTML dla jeszcze ciemniejszego tekstu (= 0 itp.)
+function bDb(tekst) {
+  return `<span style="color:var(--tekst3)">${tekst}</span>`;
+}
+
+// HTML dla zielonego tekstu (poprawna odpowiedź)
+function zielony(tekst) {
+  return `<span style="color:var(--zielony)">${tekst}</span>`;
+}
+
+// HTML dla podkreślonego blanka do uzupełnienia
+function blank(wartosc, id) {
+  return `<span class="blank"${id ? ` id="${id}"` : ''}>${wartosc || '?'}</span>`;
+}
+
+// ===========================================
+// WYBÓR NASTĘPNEGO PYTANIA
+// ===========================================
+
 function nastepnePytanie() {
-  const pula = stan.tryby.length ? stan.tryby : ['arith'];
-  stan.tryb = losujZ(pula);
+  // losuj tryb z aktywnych
+  const dostepne = stan.aktywneTypy.length ? stan.aktywneTypy : ['dzialania'];
+  stan.trybGry = losujZ(dostepne);
 
-  // pokaż odpowiedni widok i klawiaturę
-  widokA.style.display = stan.tryb === 'arith' ? '' : 'none';
-  widokQ.style.display = stan.tryb === 'quad'  ? '' : 'none';
-  widokF.style.display = stan.tryb === 'form'  ? '' : 'none';
-  widokP.style.display = stan.tryb === 'pita'  ? '' : 'none';
-  kbA.style.display    = stan.tryb === 'arith' ? '' : 'none';
-  kbQ.style.display    = stan.tryb === 'quad'  ? '' : 'none';
-  kbF.style.display    = stan.tryb === 'form'  ? '' : 'none';
-  kbP.style.display    = stan.tryb === 'pita'  ? '' : 'none';
+  // pokaż/ukryj odpowiednie widoki i klawiatury
+  widokDzialania.style.display  = stan.trybGry === 'dzialania'  ? '' : 'none';
+  widokRozklad.style.display    = stan.trybGry === 'rozklad'    ? '' : 'none';
+  widokWzory.style.display      = stan.trybGry === 'wzory'      ? '' : 'none';
+  widokPitagoras.style.display  = stan.trybGry === 'pitagoras'  ? '' : 'none';
 
-  if (stan.tryb === 'arith') generujDzialanie();
-  else if (stan.tryb === 'quad')  generujRozklad();
-  else if (stan.tryb === 'form')  generujWzor();
-  else if (stan.tryb === 'pita')  generujPitagoras();
+  klawiaturaDzialania.style.display = stan.trybGry === 'dzialania'  ? '' : 'none';
+  klawiaturaPolaA.style.display     = (stan.trybGry === 'rozklad' || stan.trybGry === 'pitagoras') ? '' : 'none';
+  klawiaturaPolaB.style.display     = stan.trybGry === 'wzory'      ? '' : 'none';
+
+  // wygeneruj pytanie odpowiedniego trybu
+  if      (stan.trybGry === 'dzialania')  generujDzialanie();
+  else if (stan.trybGry === 'rozklad')    generujRozklad();
+  else if (stan.trybGry === 'wzory')      generujWzory();
+  else if (stan.trybGry === 'pitagoras')  generujPitagoras();
 }
 
+// ===========================================
+// TRYB 1: DZIAŁANIA ARYTMETYCZNE
+// ===========================================
+// Losujemy dwie liczby i operator, gracz wpisuje wynik.
 
-/* ═══════════════════════════════════════════════════
-   TRYB: DZIAŁANIA ARYTMETYCZNE
-   ═══════════════════════════════════════════════════ */
 function generujDzialanie() {
   const cfg = POZIOMY[stan.poziom];
-  const ops = stan.operacje.length ? stan.operacje : ['+'];
-  const op  = losujZ(ops);
+  const ops = stan.aktywneOperatory.length ? stan.aktywneOperatory : ['+'];
+  const operator = losujZ(ops);
 
   let a, b, odpowiedz;
 
-  if (op === '+') {
-    a = losujInt(...cfg.zakresAr);
-    b = losujInt(...cfg.zakresAr);
+  if (operator === '+') {
+    a = losuj(1, cfg.dzialanieMax);
+    b = losuj(1, cfg.dzialanieMax);
     odpowiedz = a + b;
-  } else if (op === '−') {
-    a = losujInt(...cfg.zakresAr);
-    b = losujInt(...cfg.zakresAr);
-    if (b > a) [a, b] = [b, a]; // żeby nie wyszło ujemne na łatwym
+  } else if (operator === '−') {
+    a = losuj(1, cfg.dzialanieMax);
+    b = losuj(1, cfg.dzialanieMax);
+    if (b > a) [a, b] = [b, a]; // żeby wynik był nieujemny
     odpowiedz = a - b;
-  } else if (op === '×') {
-    a = losujInt(...cfg.zakresM);
-    b = losujInt(...cfg.zakresM);
+  } else if (operator === '×') {
+    a = losuj(1, cfg.mnozeniMax);
+    b = losuj(1, cfg.mnozeniMax);
     odpowiedz = a * b;
-  } else { // ÷
-    b = losujInt(2, cfg.zakresD[1]);
-    odpowiedz = losujInt(1, cfg.zakresD[1]);
-    a = b * odpowiedz; // zagwarantuj dzielenie całkowite
+  } else {
+    // dzielenie — zawsze całkowite, bo najpierw losujemy wynik
+    b = losuj(2, cfg.dzielenieMax);
+    odpowiedz = losuj(1, cfg.dzielenieMax);
+    a = b * odpowiedz;
   }
 
   stan.pytanie = { odpowiedz };
-  stan.arithBufor = '';
+  stan.buforJeden = '';
 
-  const nazwaOp = { '+': 'Dodawanie', '−': 'Odejmowanie', '×': 'Mnożenie', '÷': 'Dzielenie' }[op];
-  domEtykieta.textContent = nazwaOp;
-  qA.innerHTML = `${a}<span class="op"> ${op} </span>${b}<span class="eq"> = </span><span class="ans ph" id="qAns">?</span>`;
+  const nazwyOperatorow = { '+': 'Dodawanie', '−': 'Odejmowanie', '×': 'Mnożenie', '÷': 'Dzielenie' };
+  etykietaPytania.textContent = nazwyOperatorow[operator];
+
+  // wyświetl pytanie z ? po znaku równości
+  el('pytanieArytm').innerHTML =
+    `${a}<span class="operator"> ${operator} </span>${b}` +
+    `<span class="rowna-sie"> = </span>` +
+    `<span class="placeholder odpowiedz" id="odp">?</span>`;
 }
 
-function aktualizujArith() {
-  const elAns = el('qAns');
-  if (!elAns) return;
-  elAns.textContent = stan.arithBufor || '?';
-  elAns.className   = 'ans' + (stan.arithBufor ? '' : ' ph');
+// aktualizuje ? w pytaniu arytmetycznym na bieżąco podczas wpisywania
+function odswiezOdpowiedzArytm() {
+  const odp = el('odp');
+  if (!odp) return;
+  odp.textContent = stan.buforJeden || '?';
+  odp.className = 'odpowiedz' + (stan.buforJeden ? '' : ' placeholder');
 }
 
-function ujawnijArith() {
-  const elAns = el('qAns');
-  if (elAns) { elAns.textContent = stan.pytanie.odpowiedz; elAns.className = 'ans'; }
-}
+// ===========================================
+// TRYB 2: ROZKŁAD KWADRATOWY
+// ===========================================
+// Gracz widzi trójmian ax²+bx+c=0 i wpisuje miejsca zerowe.
+// Wartości bezwzględne pierwiastków — znaki są już pokazane w nawiasach.
 
-function sprawdzArith() {
-  if (!stan.trwa) return;
-  const wart = parseInt(stan.arithBufor);
-  if (stan.arithBufor === '' || stan.arithBufor === '-' || isNaN(wart)) return;
-
-  if (wart === stan.pytanie.odpowiedz) {
-    trafiony();
-    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 160);
-  } else {
-    chybiony();
-    ujawnijArith();
-    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 950);
-  }
-  stan.arithBufor = '';
-  aktualizujArith();
-}
-
-function klawiaturaDzialania(klawisz) {
-  if (!stan.trwa || stan.tryb !== 'arith') return;
-
-  if (klawisz === 'ok')   { sprawdzArith(); return; }
-  if (klawisz === 'skip') { pominPytanie(); return; }
-  if (klawisz === 'clr')  { stan.arithBufor = ''; aktualizujArith(); return; }
-  if (klawisz === 'del')  { stan.arithBufor = stan.arithBufor.slice(0, -1); aktualizujArith(); return; }
-
-  if (klawisz === '-') {
-    // przełącz znak
-    if (!stan.arithBufor) stan.arithBufor = '-';
-    else if (stan.arithBufor === '-') stan.arithBufor = '';
-    else if (stan.arithBufor[0] === '-') stan.arithBufor = stan.arithBufor.slice(1);
-    else stan.arithBufor = '-' + stan.arithBufor;
-    aktualizujArith();
-    return;
-  }
-
-  // cyfra — max 4 cyfry
-  if (stan.arithBufor.replace('-', '').length < 4) {
-    stan.arithBufor += klawisz;
-    aktualizujArith();
-  }
-}
-
-
-/* ═══════════════════════════════════════════════════
-   TRYB: ROZKŁAD TRÓJMIANU (miejsca zerowe)
-   ═══════════════════════════════════════════════════ */
 function generujRozklad() {
   const cfg = POZIOMY[stan.poziom];
-  const wsp = losujZ(cfg.wspolczynniki);
+  const wspolczynnik = losujZ(cfg.wspolczynniki);
 
-  // losuj dwa pierwiastki
-  let p1 = losujInt(1, cfg.maxQ) * (cfg.ujemneP && Math.random() < .5 ? -1 : 1);
-  let p2 = cfg.podwojne && Math.random() < .2 ? p1 : losujInt(1, cfg.maxQ) * (cfg.ujemneP && Math.random() < .5 ? -1 : 1);
-  if (!p1) p1 = 1;
-  if (!p2) p2 = 1;
-
-  // oblicz współczynniki trójmianu
-  const B = -wsp * (p1 + p2);
-  const C = wsp * p1 * p2;
-
-  stan.pytanie = { p1, p2, wsp };
-  stan.quadBufor = ['', ''];
-  stan.quadFokus = 0;
-
-  domEtykieta.textContent = 'Miejsca zerowe';
-  qPoly.innerHTML = zbudujTrojmian(wsp, B, C);
-  qFact.innerHTML = zbudujCzynniki(p1, p2, wsp, false);
-
-  aktualizujQuadFokus();
-  aktualizujQuadWyswietlanie();
-}
-
-function zbudujTrojmian(wsp, B, C) {
-  let s = wsp === 1 ? `x<sup>2</sup>` : wsp === -1 ? `−x<sup>2</sup>` : `${wsp}x<sup>2</sup>`;
-  if (B) {
-    const sg = B > 0 ? '+' : '−';
-    s += ` ${kolorSzary(sg)} ${abs(B) === 1 ? 'x' : `${abs(B)}x`}`;
-  }
-  if (C) s += ` ${kolorSzary(C > 0 ? '+' : '−')} ${abs(C)}`;
-  return s + ` ${kolorCiemny('= 0')}`;
-}
-
-function zbudujCzynniki(p1, p2, wsp, ujawnij) {
-  const prefix = wsp === 1 ? '' : `${wsp}`;
-
-  const czlon = (p, idx) => {
-    if (!abs(p)) return '(x)';
-    const term = ` ${kolorSzary(p > 0 ? '−' : '+')} `;
-    return ujawnij
-      ? `(x${term}${kolorZiel(abs(p))})`
-      : `(x${term}${puste(stan.quadBufor[idx] || '?', `fb${idx}`)})`;
+  // losujemy pierwiastki (ze znakiem jeśli poziom to pozwala)
+  const losujPierwiastek = () => {
+    const wartosc = losuj(1, cfg.rozkladMax);
+    const znak = cfg.ujemneRzerwiastki && Math.random() < 0.5 ? -1 : 1;
+    return wartosc * znak;
   };
 
-  if (p1 === p2 && ujawnij)
-    return `${prefix}(x ${kolorSzary(p1 > 0 ? '−' : '+')} ${kolorZiel(abs(p1))})<sup>2</sup> ${kolorCiemny('= 0')}`;
+  let r1 = losujPierwiastek();
+  let r2 = cfg.podwojnyPierwiastek && Math.random() < 0.2
+    ? r1  // podwójny pierwiastek (x-r)²
+    : losujPierwiastek();
 
-  return `${prefix}${czlon(p1, 0)}${czlon(p2, 1)} ${kolorCiemny('= 0')}`;
+  // współczynniki po rozwinięciu: w·x² + B·x + C = 0
+  const B = -wspolczynnik * (r1 + r2);
+  const C =  wspolczynnik * r1 * r2;
+
+  stan.pytanie = { r1, r2, wspolczynnik };
+  stan.buforDwa = ['', ''];
+  stan.aktywnePoleDwa = 0;
+
+  etykietaPytania.textContent = 'Miejsca zerowe';
+
+  el('pytanieWielomian').innerHTML = zbudujWielomian(wspolczynnik, B, C);
+  el('podpowiedzIloczynowa').innerHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, false);
+
+  odswiezTabyA(['x₁', 'x₂']);
+  odswiezPolaA();
 }
 
-function aktualizujQuadWyswietlanie() {
-  for (let i = 0; i < 2; i++) {
-    const v = stan.quadBufor[i];
-    quadWart[i].textContent = v || '?';
-    quadWart[i].className   = 'qfval' + (v ? '' : ' ph');
+// buduje HTML wielomianu w·x² + B·x + C = 0
+function zbudujWielomian(w, B, C) {
+  let html = w === 1 ? `x<sup>2</sup>` : `${w}x<sup>2</sup>`;
+  if (B !== 0) {
+    html += ` ${szary(B > 0 ? '+' : '−')} ${Math.abs(B) === 1 ? 'x' : `${Math.abs(B)}x`}`;
   }
-  if (stan.pytanie) qFact.innerHTML = zbudujCzynniki(stan.pytanie.p1, stan.pytanie.p2, stan.pytanie.wsp, false);
-}
-
-function aktualizujQuadFokus() {
-  for (let i = 0; i < 2; i++)
-    quadPola[i].className = 'qfld' + (stan.quadFokus === i ? ' act' : '');
-  document.querySelectorAll('.qtab[data-qf]').forEach((t, i) =>
-    t.classList.toggle('act', i === stan.quadFokus)
-  );
-}
-
-function ujawnijRozklad() {
-  qFact.innerHTML = zbudujCzynniki(stan.pytanie.p1, stan.pytanie.p2, stan.pytanie.wsp, true);
-}
-
-function sprawdzRozklad() {
-  if (!stan.trwa) return;
-  const v0 = parseInt(stan.quadBufor[0]);
-  const v1 = parseInt(stan.quadBufor[1]);
-  if (isNaN(v0) || isNaN(v1)) return;
-
-  const { p1, p2 } = stan.pytanie;
-  const a0 = abs(p1), a1 = abs(p2);
-
-  // kolejność p1/p2 może być dowolna
-  if ((v0 === a0 && v1 === a1) || (v0 === a1 && v1 === a0)) {
-    trafiony();
-    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 160);
-  } else {
-    chybiony();
-    ujawnijRozklad();
-    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 1200);
+  if (C !== 0) {
+    html += ` ${szary(C > 0 ? '+' : '−')} ${Math.abs(C)}`;
   }
+  return html + ` ${bDb('= 0')}`;
 }
 
-function klawiaturaRozkladu(klawisz) {
-  if (!stan.trwa || stan.tryb !== 'quad') return;
-  if (klawisz === 'ok')   { sprawdzRozklad(); return; }
-  if (klawisz === 'skip') { pominPytanie(); return; }
+// buduje HTML postaci iloczynowej (x ± |r1|)(x ± |r2|) = 0
+// jeśli ujawnij=true, pokazuje zielone liczby zamiast blanków
+function zbudujPostacIloczynowa(r1, r2, wspolczynnik, ujawnij) {
+  const przedrostek = wspolczynnik === 1 ? '' : `${wspolczynnik}`;
 
-  const f = stan.quadFokus;
-  if (klawisz === 'clr') { stan.quadBufor[f] = ''; aktualizujQuadWyswietlanie(); return; }
-  if (klawisz === 'del') { stan.quadBufor[f] = stan.quadBufor[f].slice(0, -1); aktualizujQuadWyswietlanie(); return; }
+  const nawias = (r, indeks) => {
+    if (r === 0) return '(x)';
+    const znak = r > 0 ? '−' : '+'; // jeśli r>0 to (x-r), jeśli r<0 to (x+|r|)
+    const wartosc = Math.abs(r);
+    if (ujawnij) {
+      return `(x ${szary(znak)} ${zielony(wartosc)})`;
+    }
+    const wpisane = stan.buforDwa[indeks] || '?';
+    return `(x ${szary(znak)} ${blank(wpisane, `b${indeks}`)})`;
+  };
 
-  if (klawisz === '-') {
-    const b = stan.quadBufor[f];
-    if (!b) stan.quadBufor[f] = '-';
-    else if (b === '-') stan.quadBufor[f] = '';
-    else if (b[0] === '-') stan.quadBufor[f] = b.slice(1);
-    else stan.quadBufor[f] = '-' + b;
-    aktualizujQuadWyswietlanie();
-    return;
+  // podwójny pierwiastek
+  if (r1 === r2 && ujawnij) {
+    return `${przedrostek}(x ${szary(r1 > 0 ? '−' : '+')} ${zielony(Math.abs(r1))})<sup>2</sup> ${bDb('= 0')}`;
   }
 
-  if (stan.quadBufor[f].replace('-', '').length < 3) {
-    stan.quadBufor[f] += klawisz;
-    aktualizujQuadWyswietlanie();
+  return `${przedrostek}${nawias(r1, 0)}${nawias(r2, 1)} ${bDb('= 0')}`;
+}
+
+function odswiezPolaA() {
+  stan.buforDwa.forEach((wartosc, i) => {
+    valA[i].textContent = wartosc || '?';
+    valA[i].className = 'wartosc-pola' + (wartosc ? '' : ' placeholder');
+  });
+  // odśwież też blanki w podpowiedzi (dla rozkładu)
+  if (stan.trybGry === 'rozklad' && stan.pytanie) {
+    const { r1, r2, wspolczynnik } = stan.pytanie;
+    el('podpowiedzIloczynowa').innerHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, false);
   }
 }
 
+function odswiezTabyA(etykiety) {
+  etykiety.forEach((et, i) => {
+    etA[i].textContent = et;
+    polaA[i].className = 'pole-odpowiedzi' + (i === stan.aktywnePoleDwa ? ' aktywny' : '');
+  });
+  const taby = el('tabyA').querySelectorAll('.tab-pola');
+  taby.forEach((t, i) => {
+    t.textContent = etykiety[i];
+    t.classList.toggle('aktywny', i === stan.aktywnePoleDwa);
+  });
+}
 
-/* ═══════════════════════════════════════════════════
-   TRYB: WZORY SKRÓCONEGO MNOŻENIA
-   Typy: 0=(ax+b)²  1=(ax-b)²  2=(ax+b)(ax-b)  3=(x+b)³ (hard)
-   Kierunek: 0=złóż(podaj składniki)  1=rozpisz(podaj rozwinięcie)
-   ═══════════════════════════════════════════════════ */
-function generujWzor() {
-  const cfg = POZIOMY[stan.poziom];
-  const maxB = Math.min(cfg.maxQ, 9);
-  const b    = losujInt(2, maxB);
-  const typ  = losujInt(0, stan.poziom === 'hard' ? 3 : 2);
-  const kier = losujInt(0, 1); // 0=złóż, 1=rozpisz
+// ===========================================
+// TRYB 3: WZORY SKRÓCONEGO MNOŻENIA
+// ===========================================
+// Typ wzoru losowany jest spośród czterech:
+//   0 → (ax+b)²  złóż lub rozpisz
+//   1 → (ax−b)²
+//   2 → (ax+b)(ax−b)
+//   3 → (x+b)³ (tylko trudny)
+//
+// Kierunek: złóż = widzisz rozwinięcie, wpisujesz składniki
+//           rozpisz = widzisz postać skróconą, wpisujesz rozwinięcie
 
-  // współczynnik a (tylko dla wyższych poziomów)
-  const a = kier === 0 && typ <= 2 && stan.poziom !== 'easy' ? losujZ([1, 1, 2, 3]) : 1;
+function generujWzory() {
+  const cfg  = POZIOMY[stan.poziom];
+  const b    = losuj(2, Math.min(cfg.wzoryMax, 9));
+  const typ  = losuj(0, stan.poziom === 'trudny' ? 3 : 2);
+  const kier = losuj(0, 1); // 0=złóż, 1=rozpisz
+
+  // czy a > 1 (tylko dla złożenia, na średnim/trudnym)
+  const mozliwoscA = (kier === 0) && (typ <= 2) && (stan.poziom !== 'latwy');
+  const a = mozliwoscA ? losujZ([1, 1, 2, 3]) : 1;
 
   const a2   = a * a;
   const b2   = b * b;
   const ab2  = 2 * a * b;
   const ax   = a === 1 ? 'x' : `${a}x`;
 
-  let rozwiniety, rozlozony, etykieta, odpowiedzi;
+  // buduj HTML rozwinięcia i postaci skróconej
+  let rozniecie, skrocona, etykieta, odpowiedzi;
 
-  if (typ === 0) { // (ax+b)²
-    rozwiniety = `${a2 === 1 ? 'x' : a2 + 'x'}<sup>2</sup> ${kolorSzary('+')} ${ab2}x ${kolorSzary('+')} ${b2}`;
-    rozlozony  = `(${ax} ${kolorSzary('+')} ${b})<sup>2</sup>`;
-    etykieta   = '(ax+b)²';
+  if (typ === 0) {
+    // (ax+b)² = a²x² + 2abx + b²
+    rozniecie = `${a2 === 1 ? 'x' : a2 + 'x'}<sup>2</sup> ${szary('+')} ${ab2}x ${szary('+')} ${b2}`;
+    skrocona  = `(${ax} ${szary('+')} ${b})<sup>2</sup>`;
+    etykieta  = '(ax+b)²';
     odpowiedzi = kier === 0 ? (a === 1 ? [b] : [a, b]) : [a2, ab2, b2];
-  } else if (typ === 1) { // (ax-b)²
-    rozwiniety = `${a2 === 1 ? 'x' : a2 + 'x'}<sup>2</sup> ${kolorSzary('−')} ${ab2}x ${kolorSzary('+')} ${b2}`;
-    rozlozony  = `(${ax} ${kolorSzary('−')} ${b})<sup>2</sup>`;
-    etykieta   = '(ax−b)²';
+  } else if (typ === 1) {
+    // (ax−b)² = a²x² − 2abx + b²
+    rozniecie = `${a2 === 1 ? 'x' : a2 + 'x'}<sup>2</sup> ${szary('−')} ${ab2}x ${szary('+')} ${b2}`;
+    skrocona  = `(${ax} ${szary('−')} ${b})<sup>2</sup>`;
+    etykieta  = '(ax−b)²';
     odpowiedzi = kier === 0 ? (a === 1 ? [b] : [a, b]) : [a2, ab2, b2];
-  } else if (typ === 2) { // (ax+b)(ax-b)
-    rozwiniety = `${a2 === 1 ? 'x' : a2 + 'x'}<sup>2</sup> ${kolorSzary('−')} ${b2}`;
-    rozlozony  = `(${ax} ${kolorSzary('+')} ${b})(${ax} ${kolorSzary('−')} ${b})`;
-    etykieta   = '(ax+b)(ax−b)';
+  } else if (typ === 2) {
+    // (ax+b)(ax−b) = a²x² − b²
+    rozniecie = `${a2 === 1 ? 'x' : a2 + 'x'}<sup>2</sup> ${szary('−')} ${b2}`;
+    skrocona  = `(${ax} ${szary('+')} ${b})(${ax} ${szary('−')} ${b})`;
+    etykieta  = '(ax+b)(ax−b)';
     odpowiedzi = kier === 0 ? (a === 1 ? [b] : [a, b]) : [a2, b2];
-  } else { // (x+b)³
-    const _3b  = 3 * b;
-    const _3b2 = 3 * b2;
-    const b3   = b2 * b;
-    rozwiniety = `x<sup>3</sup> ${kolorSzary('+')} ${_3b}x<sup>2</sup> ${kolorSzary('+')} ${_3b2}x ${kolorSzary('+')} ${b3}`;
-    rozlozony  = `(x ${kolorSzary('+')} ${b})<sup>3</sup>`;
-    etykieta   = '(x+b)³';
+  } else {
+    // (x+b)³ = x³ + 3bx² + 3b²x + b³
+    const _3b = 3*b, _3b2 = 3*b2, b3 = b2*b;
+    rozniecie = `x<sup>3</sup> ${szary('+')} ${_3b}x<sup>2</sup> ${szary('+')} ${_3b2}x ${szary('+')} ${b3}`;
+    skrocona  = `(x ${szary('+')} ${b})<sup>3</sup>`;
+    etykieta  = '(x+b)³';
     odpowiedzi = kier === 0 ? [b] : [_3b, _3b2, b3];
   }
 
-  // nazwy pól do wpisania
-  const nazwyPol = kier === 0
+  // etykiety pól do uzupełnienia
+  const etPol = kier === 0
     ? (odpowiedzi.length === 1 ? ['b'] : ['a', 'b'])
     : (odpowiedzi.length === 2 ? ['a²', 'b²'] : (typ === 3 ? ['3b', '3b²', 'b³'] : ['a²', '2ab', 'b²']));
 
-  stan.pytanie = { a, b, typ, kier, odpowiedzi, nazwyPol };
-  stan.formBufor = odpowiedzi.map(() => '');
-  stan.formFokus = 0;
+  stan.pytanie = { a, b, typ, kier, odpowiedzi, etPol };
+  stan.buforTrzy = odpowiedzi.map(() => '');
+  stan.aktywnePoleTrzy = 0;
 
-  domEtykieta.textContent = kier === 0 ? `złóż → ${etykieta}` : `rozpisz ${etykieta}`;
-  qForm.innerHTML = (kier === 0 ? rozwiniety : rozlozony) + ` ${kolorCiemny('= ?')}`;
+  etykietaPytania.textContent = kier === 0 ? `złóż → ${etykieta}` : `rozpisz ${etykieta}`;
 
-  // pokaż odpowiednią liczbę pól
+  // co pokazujemy w karcie: przy złożeniu → rozwinięcie, przy rozpisaniu → postać skrócona
+  el('pytanieWzor').innerHTML = (kier === 0 ? rozniecie : skrocona) + ` ${bDb('= ?')}`;
+
+  // skonfiguruj pola
   const n = odpowiedzi.length;
-  [0, 1, 2].forEach(i => {
-    const widoczne = i < n;
-    formPola[i].style.display = widoczne ? '' : 'none';
-    if (widoczne) formPola[i].querySelector('.qflbl').textContent = nazwyPol[i];
+  polaB.forEach((p, i) => { p.style.display = i < n ? '' : 'none'; });
+  el('sepB0').style.display = n >= 2 ? '' : 'none';
+  el('sepB1').style.display = n >= 3 ? '' : 'none';
+
+  const tabyB = el('tabyB').querySelectorAll('.tab-pola');
+  tabyB.forEach((t, i) => { t.style.display = i < n ? '' : 'none'; t.textContent = etPol[i] || ''; });
+
+  etPol.forEach((et, i) => { if (i < n) etB[i].textContent = et; });
+
+  odswiezPolaB();
+}
+
+function odswiezPolaB() {
+  const { odpowiedzi, etPol, a, b, typ, kier } = stan.pytanie;
+  const n = odpowiedzi.length;
+
+  valB.forEach((v, i) => {
+    if (i >= n) return;
+    const wartosc = stan.buforTrzy[i];
+    v.textContent = wartosc || '?';
+    v.className = 'wartosc-pola' + (wartosc ? '' : ' placeholder');
   });
 
-  el('fsep0').style.display = n >= 2 ? '' : 'none';
-  el('fsep1').style.display = n >= 3 ? '' : 'none';
+  // odśwież blanki w podpowiedzi wzoru
+  const bv = i => stan.buforTrzy[i] || '?';
+  const ax = a === 1 ? 'x' : `${a}x`;
 
-  const tabki = el('fTabs').querySelectorAll('.qtab');
-  tabki.forEach((t, i) => { t.style.display = i < n ? '' : 'none'; t.textContent = nazwyPol[i] || ''; });
-
-  aktualizujFormFokus();
-  aktualizujFormWyswietlanie();
-}
-
-function aktualizujFormWyswietlanie() {
-  if (!stan.pytanie || stan.tryb !== 'form') return;
-  const { odpowiedzi, nazwyPol, kier, typ, a, b } = stan.pytanie;
-  const n   = odpowiedzi.length;
-  const bv  = i => stan.formBufor[i] || '?';
-  const ax  = a === 1 ? 'x' : `${a}x`;
-
-  for (let i = 0; i < n; i++) {
-    const v = stan.formBufor[i];
-    formWart[i].textContent = v || '?';
-    formWart[i].className   = 'qfval' + (v ? '' : ' ph');
-  }
-
-  // live update blanków w karcie
   if (kier === 0) {
-    const polB = n === 1 ? puste(bv(0), 'fb0') : puste(bv(1), 'fb1');
-    const polX = n >= 2  ? `${puste(bv(0), 'fb0')}x` : 'x';
-    if (typ === 0)      qFormFact.innerHTML = `(${polX} ${kolorSzary('+')} ${polB})<sup>2</sup>`;
-    else if (typ === 1) qFormFact.innerHTML = `(${polX} ${kolorSzary('−')} ${polB})<sup>2</sup>`;
-    else if (typ === 2) qFormFact.innerHTML = `(${polX} ${kolorSzary('+')} ${polB})(${polX} ${kolorSzary('−')} ${polB})`;
-    else                qFormFact.innerHTML = `(x ${kolorSzary('+')} ${puste(bv(0), 'fb0')})<sup>3</sup>`;
+    // złóż: blanki to a i b w postaci skróconej
+    const bVal = n === 1 ? blank(bv(0), 'wz0') : blank(bv(1), 'wz1');
+    const xPart = n >= 2 ? `${blank(bv(0), 'wz0')}x` : 'x';
+    if      (typ === 0) el('podpowiedzWzor').innerHTML = `(${xPart} ${szary('+')} ${bVal})<sup>2</sup>`;
+    else if (typ === 1) el('podpowiedzWzor').innerHTML = `(${xPart} ${szary('−')} ${bVal})<sup>2</sup>`;
+    else if (typ === 2) el('podpowiedzWzor').innerHTML = `(${xPart} ${szary('+')} ${bVal})(${xPart} ${szary('−')} ${bVal})`;
+    else                el('podpowiedzWzor').innerHTML = `(x ${szary('+')} ${blank(bv(0), 'wz0')})<sup>3</sup>`;
   } else {
+    // rozpisz: blanki to współczynniki rozwinięcia
     if (typ === 0 || typ === 1) {
       const sg = typ === 0 ? '+' : '−';
-      qFormFact.innerHTML = `${puste(bv(0),'fb0')}x<sup>2</sup> ${kolorSzary(sg)} ${puste(bv(1),'fb1')}x ${kolorSzary('+')} ${puste(bv(2),'fb2')}`;
+      el('podpowiedzWzor').innerHTML = `${blank(bv(0),'wz0')}x<sup>2</sup> ${szary(sg)} ${blank(bv(1),'wz1')}x ${szary('+')} ${blank(bv(2),'wz2')}`;
     } else if (typ === 2) {
-      qFormFact.innerHTML = `${puste(bv(0),'fb0')}x<sup>2</sup> ${kolorSzary('−')} ${puste(bv(1),'fb1')}`;
+      el('podpowiedzWzor').innerHTML = `${blank(bv(0),'wz0')}x<sup>2</sup> ${szary('−')} ${blank(bv(1),'wz1')}`;
     } else {
-      qFormFact.innerHTML = `x<sup>3</sup> ${kolorSzary('+')} ${puste(bv(0),'fb0')}x<sup>2</sup> ${kolorSzary('+')} ${puste(bv(1),'fb1')}x ${kolorSzary('+')} ${puste(bv(2),'fb2')}`;
+      el('podpowiedzWzor').innerHTML = `x<sup>3</sup> ${szary('+')} ${blank(bv(0),'wz0')}x<sup>2</sup> ${szary('+')} ${blank(bv(1),'wz1')}x ${szary('+')} ${blank(bv(2),'wz2')}`;
     }
   }
+
+  // podświetl aktywne pole i tab
+  polaB.forEach((p, i) => {
+    p.className = 'pole-odpowiedzi' + (i === stan.aktywnePoleTrzy ? ' aktywny' : '');
+  });
+  el('tabyB').querySelectorAll('.tab-pola').forEach((t, i) => {
+    t.classList.toggle('aktywny', i === stan.aktywnePoleTrzy);
+  });
 }
 
-function aktualizujFormFokus() {
-  const n = stan.pytanie ? stan.pytanie.odpowiedzi.length : 1;
-  [0, 1, 2].forEach(i => { if (i < n) formPola[i].className = 'qfld' + (i === stan.formFokus ? ' act' : ''); });
-  el('fTabs').querySelectorAll('.qtab').forEach((t, i) => t.classList.toggle('act', i === stan.formFokus));
-}
+// ===========================================
+// TRYB 4: TWIERDZENIE PITAGORASA
+// ===========================================
+// Trójkąt prostokątny: a² + b² = c²
+// Losujemy jedną z konfiguracji:
+//   - znamy a i b, liczymy c
+//   - znamy a i c, liczymy b (b = przyprostokątna)
+//   - znamy b i c, liczymy a (a = przyprostokątna)
+//
+// Używamy trójek pitagorejskich żeby wyniki były całkowite.
 
-function ujawnijWzor() {
-  const { a, b, typ, kier, odpowiedzi } = stan.pytanie;
-  const ax = a === 1 ? 'x' : `${kolorZiel(a)}x`;
-  if (kier === 0) {
-    if (typ === 0)      qFormFact.innerHTML = `(${ax} ${kolorSzary('+')} ${kolorZiel(b)})<sup>2</sup>`;
-    else if (typ === 1) qFormFact.innerHTML = `(${ax} ${kolorSzary('−')} ${kolorZiel(b)})<sup>2</sup>`;
-    else if (typ === 2) qFormFact.innerHTML = `(${ax} ${kolorSzary('+')} ${kolorZiel(b)})(${ax} ${kolorSzary('−')} ${kolorZiel(b)})`;
-    else                qFormFact.innerHTML = `(x ${kolorSzary('+')} ${kolorZiel(b)})<sup>3</sup>`;
-  } else {
-    if (typ === 0 || typ === 1) {
-      const sg = typ === 0 ? '+' : '−';
-      qFormFact.innerHTML = `${kolorZiel(odpowiedzi[0])}x<sup>2</sup> ${kolorSzary(sg)} ${kolorZiel(odpowiedzi[1])}x ${kolorSzary('+')} ${kolorZiel(odpowiedzi[2])}`;
-    } else if (typ === 2) {
-      qFormFact.innerHTML = `${kolorZiel(odpowiedzi[0])}x<sup>2</sup> ${kolorSzary('−')} ${kolorZiel(odpowiedzi[1])}`;
-    } else {
-      qFormFact.innerHTML = `x<sup>3</sup> ${kolorSzary('+')} ${kolorZiel(odpowiedzi[0])}x<sup>2</sup> ${kolorSzary('+')} ${kolorZiel(odpowiedzi[1])}x ${kolorSzary('+')} ${kolorZiel(odpowiedzi[2])}`;
-    }
-  }
-}
-
-function sprawdzWzor() {
-  if (!stan.trwa) return;
-  const { odpowiedzi } = stan.pytanie;
-  const n = odpowiedzi.length;
-  const wpisane = [];
-  for (let i = 0; i < n; i++) {
-    const v = parseInt(stan.formBufor[i]);
-    if (isNaN(v)) return; // coś nie wypełnione
-    wpisane.push(v);
-  }
-  if (odpowiedzi.every((a, i) => wpisane[i] === a)) {
-    trafiony();
-    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 160);
-  } else {
-    chybiony();
-    ujawnijWzor();
-    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 1400);
-  }
-}
-
-function klawiaturaWzorow(klawisz) {
-  if (!stan.trwa || stan.tryb !== 'form') return;
-  if (klawisz === 'ok')   { sprawdzWzor(); return; }
-  if (klawisz === 'skip') { pominPytanie(); return; }
-
-  const f = stan.formFokus;
-  if (klawisz === 'clr') { stan.formBufor[f] = ''; aktualizujFormWyswietlanie(); return; }
-  if (klawisz === 'del') { stan.formBufor[f] = stan.formBufor[f].slice(0, -1); aktualizujFormWyswietlanie(); return; }
-  if (klawisz === '-') return; // wzory nie mają ujemnych odpowiedzi
-
-  if (stan.formBufor[f].length < 4) {
-    stan.formBufor[f] += klawisz;
-    aktualizujFormWyswietlanie();
-  }
-}
-
-
-/* ═══════════════════════════════════════════════════
-   TRYB: PITAGORAS
-   Trójkąt prostokątny — różne konfiguracje nieznanych boków
-   Konfiguracje: 0=szukaj przeciwprostokatnej(c)  1=szukaj przyprostokatnej(a)  2=szukaj przyprostokatnej(b)
-   Zawsze używamy trójek pitagorejskich — wyniki są ZAWSZE całkowite, bez żadnych pierwiastków.
-   ═══════════════════════════════════════════════════ */
-
-// wszystkie popularne trójki pitagorejskie pogrupowane po poziomie
-const TROJKI_EASY   = [[3,4,5],[6,8,10],[5,12,13],[8,15,17]];
-const TROJKI_MEDIUM = [[3,4,5],[5,12,13],[8,15,17],[7,24,25],[9,12,15],[10,24,26],[12,16,20]];
-const TROJKI_HARD   = [[3,4,5],[5,12,13],[8,15,17],[7,24,25],[20,21,29],[9,40,41],[12,35,37],[11,60,61],[13,84,85],[6,8,10],[9,12,15],[15,20,25]];
+// lista trójek pitagorejskich (a, b, c) gdzie a²+b²=c²
+const TROJKI_PITAGOREJSKIE = [
+  [3,4,5], [5,12,13], [6,8,10], [8,15,17], [7,24,25],
+  [9,12,15], [10,24,26], [12,16,20], [15,20,25], [20,21,29],
+  [9,40,41], [12,35,37], [11,60,61], [13,84,85], [6,8,10],
+];
 
 function generujPitagoras() {
-  // dobierz pulę trójek do aktualnego poziomu
-  const pula = stan.poziom === 'easy' ? TROJKI_EASY
-             : stan.poziom === 'medium' ? TROJKI_MEDIUM
-             : TROJKI_HARD;
+  const cfg = POZIOMY[stan.poziom];
 
-  // wybierz trójkę i ewentualnie przeskaluj (na wyższych poziomach)
-  const [ta, tb, tc] = losujZ(pula);
-  const maxSkala = stan.poziom === 'hard' ? 3 : stan.poziom === 'medium' ? 2 : 1;
-  const skala = losujInt(1, maxSkala);
-  const a = ta * skala;
-  const b = tb * skala;
-  const c = tc * skala;
+  // filtruj trójki pasujące do poziomu
+  const pasujace = TROJKI_PITAGOREJSKIE.filter(([a, b, c]) => c <= cfg.pitagorasMax);
+  const trojka = losujZ(pasujace.length ? pasujace : TROJKI_PITAGOREJSKIE);
+  const [a, b, c] = trojka;
 
-  // losuj która wartość jest szukana (0=c przeciwprostokątna, 1=a, 2=b)
-  const szukana = losujInt(0, 2);
+  // losuj co szukamy: 0=szukamy c, 1=szukamy b, 2=szukamy a
+  const szukamy = losuj(0, 2);
 
-  let znane = {}, odpowiedz;
-  if (szukana === 0) { znane = { a, b }; odpowiedz = c; }
-  else if (szukana === 1) { znane = { b, c }; odpowiedz = a; }
-  else { znane = { a, c }; odpowiedz = b; }
+  let dane, szukanaWartosc, etykietyPol;
 
-  // odpowiedź jest zawsze całkowita — trójki pitagorejskie gwarantują to
-  stan.pytanie = { szukana, znane, odpowiedz, a, b, c };
-  stan.pitaBufor = '';
+  if (szukamy === 0) {
+    // znamy a i b, szukamy c (przeciwprostokątna)
+    dane = { a, b, c, szukamy: 'c' };
+    szukanaWartosc = c;
+    etykietyPol = ['c'];
+  } else if (szukamy === 1) {
+    // znamy a i c, szukamy b
+    dane = { a, b, c, szukamy: 'b' };
+    szukanaWartosc = b;
+    etykietyPol = ['b'];
+  } else {
+    // znamy b i c, szukamy a
+    dane = { a, b, c, szukamy: 'a' };
+    szukanaWartosc = a;
+    etykietyPol = ['a'];
+  }
 
-  domEtykieta.textContent = 'Twierdzenie Pitagorasa';
-  rysujTrojkat(szukana, znane, a, b, c);
+  stan.pytanie = { ...dane, szukanaWartosc };
+  stan.buforDwa = ['', ''];
+  stan.aktywnePoleDwa = 0;
+
+  etykietaPytania.textContent = 'Twierdzenie Pitagorasa';
+
+  // pokaż pytanie tekstowe
+  if (szukamy === 0) {
+    el('pytaniePitagoras').innerHTML = `a=${a}, b=${b} ${bDb('→')} c = ?`;
+  } else if (szukamy === 1) {
+    el('pytaniePitagoras').innerHTML = `a=${a}, c=${c} ${bDb('→')} b = ?`;
+  } else {
+    el('pytaniePitagoras').innerHTML = `b=${b}, c=${c} ${bDb('→')} a = ?`;
+  }
+
+  // narysuj trójkąt SVG z oznaczeniami
+  narysujTrojkat(dane, szukamy);
+
+  // dla Pitagorasa używamy klawiatury z jednym polem (klawiaturaPolaA z jedną kolumną)
+  // ale pytanie ma tylko jedną odpowiedź, więc ukrywamy drugie pole
+  polaA[0].style.display = '';
+  polaA[1].style.display = 'none';
+  el('tabyA').querySelectorAll('.tab-pola').forEach((t, i) => {
+    t.style.display = i === 0 ? '' : 'none';
+  });
+  el('tabyA').querySelector('[data-pole="0"]').textContent = etykietyPol[0];
+  etA[0].textContent = etykietyPol[0];
+
+  // separator też chowamy
+  const sep = document.querySelector('#klawiaturaPolaA .separator-pol');
+  if (sep) sep.style.display = 'none';
+
+  stan.buforDwa = ['', ''];
+  stan.aktywnePoleDwa = 0;
+  odswiezPolaA();
 }
 
-function rysujTrojkat(szukana, znane, a, b, c) {
-  const w  = canvasTrojkat.width;
-  const h  = canvasTrojkat.height;
-  ctx.clearRect(0, 0, w, h);
+// rysuje trójkąt prostokątny SVG z oznaczeniami boków
+function narysujTrojkat({ a, b, c, szukamy: co }, szukamyIndeks) {
+  const svg = el('trojkatSVG');
+  // trójkąt prostokątny: kąt prosty w lewym dolnym rogu
+  // wierzchołki: lewy dół (20,120), prawy dół (170,120), lewy góra (20,20)
+  const x1=20, y1=120; // kąt prosty
+  const x2=170, y2=120; // prawy dół
+  const x3=20, y3=20;  // lewy góra
 
-  // kolory ze zmiennych CSS (hardcode bo canvas nie obsługuje var())
-  const kolBialy   = '#dedede';
-  const kolSzary   = '#888888';
-  const kolZielony = '#4ade80';
-  const kolNiebieski = '#60a5fa';
-  const kolTlo     = '#161616';
+  const kolor = (bok) => bok === co ? 'var(--akcent)' : 'var(--tekst2)';
+  const wartosc = (bok, val) => bok === co ? '?' : val;
 
-  // marginesy
-  const mar = 28;
-  const tw = w - mar * 2;
-  const th = h - mar * 2;
+  svg.innerHTML = `
+    <!-- linie trójkąta -->
+    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${kolor('a')}" stroke-width="2"/>
+    <line x1="${x1}" y1="${y1}" x2="${x3}" y2="${y3}" stroke="${kolor('b')}" stroke-width="2"/>
+    <line x1="${x2}" y1="${y2}" x2="${x3}" y2="${y3}" stroke="${kolor('c')}" stroke-width="2"/>
+    <!-- znacznik kąta prostego -->
+    <polyline points="${x1+12},${y1} ${x1+12},${y1-12} ${x1},${y1-12}"
+      fill="none" stroke="var(--tekst3)" stroke-width="1.5"/>
+    <!-- etykiety boków -->
+    <text x="${(x1+x2)/2}" y="${y1+16}" text-anchor="middle"
+      font-family="DM Mono,monospace" font-size="13" fill="${kolor('a')}">
+      a=${wartosc('a',a)}
+    </text>
+    <text x="${x1-18}" y="${(y1+y3)/2}" text-anchor="middle"
+      font-family="DM Mono,monospace" font-size="13" fill="${kolor('b')}">
+      b=${wartosc('b',b)}
+    </text>
+    <text x="${(x2+x3)/2+10}" y="${(y2+y3)/2-5}" text-anchor="middle"
+      font-family="DM Mono,monospace" font-size="13" fill="${kolor('c')}">
+      c=${wartosc('c',c)}
+    </text>
+  `;
+}
 
-  // wierzchołki: kąt prosty w lewym dolnym
-  const P1 = { x: mar,       y: mar + th }; // lewy dół (kąt prosty)
-  const P2 = { x: mar + tw,  y: mar + th }; // prawy dół
-  const P3 = { x: mar,       y: mar      }; // lewy góra
+// ===========================================
+// SPRAWDZANIE ODPOWIEDZI
+// ===========================================
 
-  // narysuj trójkąt
-  ctx.beginPath();
-  ctx.moveTo(P1.x, P1.y);
-  ctx.lineTo(P2.x, P2.y);
-  ctx.lineTo(P3.x, P3.y);
-  ctx.closePath();
+function sprawdzDzialanie() {
+  const wpisane = parseInt(stan.buforJeden);
+  if (isNaN(wpisane) || stan.buforJeden === '' || stan.buforJeden === '-') return;
 
-  // wypełnienie
-  ctx.fillStyle = 'rgba(200,200,200,0.04)';
-  ctx.fill();
+  if (wpisane === stan.pytanie.odpowiedz) {
+    trafiony();
+  } else {
+    bledny();
+    // pokaż poprawną odpowiedź w miejscu ?
+    const odp = el('odp');
+    if (odp) { odp.textContent = stan.pytanie.odpowiedz; odp.className = 'odpowiedz'; }
+  }
 
-  // krawędź kąta prostego (symbol □)
-  const sym = 12;
-  ctx.strokeStyle = kolorKrawedzi('#484848');
-  ctx.lineWidth = 1.5;
-  ctx.strokeRect(P1.x, P1.y - sym, sym, sym);
+  stan.buforJeden = '';
+  odswiezOdpowiedzArytm();
+  setTimeout(() => { if (stan.gra) nastepnePytanie(); }, wpisane === stan.pytanie.odpowiedz ? 160 : 950);
+}
 
-  // rysuj boki z odpowiednim kolorem
-  const boki = [
-    { od: P1, do: P2, nazwa: 'b', wartosc: b }, // dół (przyprostokątna b)
-    { od: P1, do: P3, nazwa: 'a', wartosc: a }, // lewo (przyprostokątna a)
-    { od: P2, do: P3, nazwa: 'c', wartosc: c }, // przeciwprostokątna
-  ];
+function sprawdzRozklad() {
+  const v0 = parseInt(stan.buforDwa[0]);
+  const v1 = parseInt(stan.buforDwa[1]);
+  if (isNaN(v0) || isNaN(v1)) return;
 
-  boki.forEach(bok => {
-    const jestSzukany = (bok.nazwa === ['c','a','b'][szukana]);
-    ctx.beginPath();
-    ctx.moveTo(bok.od.x, bok.od.y);
-    ctx.lineTo(bok.do.x, bok.do.y);
-    ctx.strokeStyle = jestSzukany ? kolNiebieski : kolBialy;
-    ctx.lineWidth   = jestSzukany ? 2.5 : 1.8;
-    if (jestSzukany) { ctx.setLineDash([6, 3]); }
-    else ctx.setLineDash([]);
-    ctx.stroke();
-    ctx.setLineDash([]);
+  const { r1, r2, wspolczynnik } = stan.pytanie;
+  // gracz wpisuje wartości bezwzględne — znaki są już w nawiasach
+  const abs1 = Math.abs(r1), abs2 = Math.abs(r2);
+  const ok = (v0 === abs1 && v1 === abs2) || (v0 === abs2 && v1 === abs1);
 
-    // etykiety boków
-    const mx = (bok.od.x + bok.do.x) / 2;
-    const my = (bok.od.y + bok.do.y) / 2;
-    ctx.font = 'bold 13px "DM Mono", monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+  if (ok) {
+    trafiony();
+  } else {
+    bledny();
+    el('podpowiedzIloczynowa').innerHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, true);
+  }
+  setTimeout(() => { if (stan.gra) nastepnePytanie(); }, ok ? 160 : 1200);
+}
 
-    let ox = 0, oy = 0;
-    if (bok.nazwa === 'b') { ox = 0;   oy = 16;  }  // dół → przesuń w dół
-    if (bok.nazwa === 'a') { ox = -18; oy = 0;   }  // lewo → przesuń w lewo
-    if (bok.nazwa === 'c') { ox = 16;  oy = -10; }  // przekątna → przesuń w prawo-górę
+function sprawdzWzory() {
+  const { odpowiedzi } = stan.pytanie;
+  const wpisane = odpowiedzi.map((_, i) => parseInt(stan.buforTrzy[i]));
+  if (wpisane.some(isNaN)) return;
 
-    if (jestSzukany) {
-      // pytajnik w kolorze niebieskim
-      ctx.fillStyle = kolNiebieski;
-      ctx.fillText('?', mx + ox, my + oy);
+  const ok = odpowiedzi.every((oczekiwane, i) => wpisane[i] === oczekiwane);
+
+  if (ok) {
+    trafiony();
+  } else {
+    bledny();
+    ujawnijWzory();
+  }
+  setTimeout(() => { if (stan.gra) nastepnePytanie(); }, ok ? 160 : 1400);
+}
+
+// pokazuje poprawną odpowiedź dla wzorów na zielono
+function ujawnijWzory() {
+  const { a, b, typ, kier, odpowiedzi } = stan.pytanie;
+  const ax = a === 1 ? 'x' : `${zielony(a)}x`;
+
+  if (kier === 0) {
+    if      (typ === 0) el('podpowiedzWzor').innerHTML = `(${ax} ${szary('+')} ${zielony(b)})<sup>2</sup>`;
+    else if (typ === 1) el('podpowiedzWzor').innerHTML = `(${ax} ${szary('−')} ${zielony(b)})<sup>2</sup>`;
+    else if (typ === 2) el('podpowiedzWzor').innerHTML = `(${ax} ${szary('+')} ${zielony(b)})(${ax} ${szary('−')} ${zielony(b)})`;
+    else                el('podpowiedzWzor').innerHTML = `(x ${szary('+')} ${zielony(b)})<sup>3</sup>`;
+  } else {
+    const [w0, w1, w2] = odpowiedzi;
+    if (typ === 0 || typ === 1) {
+      const sg = typ === 0 ? '+' : '−';
+      el('podpowiedzWzor').innerHTML = `${zielony(w0)}x<sup>2</sup> ${szary(sg)} ${zielony(w1)}x ${szary('+')} ${zielony(w2)}`;
+    } else if (typ === 2) {
+      el('podpowiedzWzor').innerHTML = `${zielony(w0)}x<sup>2</sup> ${szary('−')} ${zielony(w1)}`;
     } else {
-      // wartość w kolorze białym
-      ctx.fillStyle = kolBialy;
-      const wyswietlana = Number.isInteger(bok.wartosc) ? bok.wartosc : bok.wartosc.toFixed(2);
-      ctx.fillText(wyswietlana, mx + ox, my + oy);
+      el('podpowiedzWzor').innerHTML = `x<sup>3</sup> ${szary('+')} ${zielony(w0)}x<sup>2</sup> ${szary('+')} ${zielony(w1)}x ${szary('+')} ${zielony(w2)}`;
     }
-  });
-}
-
-// canvas nie ma var() więc pomocnik zwraca kolor css bezpośrednio
-function kolorKrawedzi(fallback) { return fallback; }
-
-function aktualizujPitaWyswietlanie() {
-  // nic specjalnego do aktualizacji w karcie — input jest w klawiaturze
-}
-
-function ujawnijPitagoras() {
-  // pokoloruj szukaną wartość na zielono i narysuj jeszcze raz
-  const { szukana, znane, a, b, c, odpowiedz } = stan.pytanie;
-  rysujTrojkatUjawniony(szukana, znane, a, b, c, odpowiedz);
-}
-
-function rysujTrojkatUjawniony(szukana, znane, a, b, c, odpowiedz) {
-  // to samo co rysujTrojkat ale szukany bok w zielonym
-  const w  = canvasTrojkat.width;
-  const h  = canvasTrojkat.height;
-  ctx.clearRect(0, 0, w, h);
-
-  const kolBialy    = '#dedede';
-  const kolZielony  = '#4ade80';
-  const kolNiebieski= '#60a5fa';
-  const mar = 28;
-  const tw = w - mar * 2;
-  const th = h - mar * 2;
-
-  const P1 = { x: mar,       y: mar + th };
-  const P2 = { x: mar + tw,  y: mar + th };
-  const P3 = { x: mar,       y: mar      };
-
-  ctx.beginPath();
-  ctx.moveTo(P1.x, P1.y);
-  ctx.lineTo(P2.x, P2.y);
-  ctx.lineTo(P3.x, P3.y);
-  ctx.closePath();
-  ctx.fillStyle = 'rgba(74,222,128,0.06)';
-  ctx.fill();
-
-  const sym = 12;
-  ctx.strokeStyle = '#484848';
-  ctx.lineWidth = 1.5;
-  ctx.setLineDash([]);
-  ctx.strokeRect(P1.x, P1.y - sym, sym, sym);
-
-  const boki = [
-    { od: P1, do: P2, nazwa: 'b', wartosc: b },
-    { od: P1, do: P3, nazwa: 'a', wartosc: a },
-    { od: P2, do: P3, nazwa: 'c', wartosc: c },
-  ];
-
-  boki.forEach(bok => {
-    const jestSzukany = (bok.nazwa === ['c','a','b'][szukana]);
-    ctx.beginPath();
-    ctx.moveTo(bok.od.x, bok.od.y);
-    ctx.lineTo(bok.do.x, bok.do.y);
-    ctx.strokeStyle = jestSzukany ? kolZielony : kolBialy;
-    ctx.lineWidth   = jestSzukany ? 2.5 : 1.8;
-    ctx.setLineDash([]);
-    ctx.stroke();
-
-    const mx = (bok.od.x + bok.do.x) / 2;
-    const my = (bok.od.y + bok.do.y) / 2;
-    ctx.font = 'bold 13px "DM Mono", monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    let ox = 0, oy = 0;
-    if (bok.nazwa === 'b') { ox = 0;   oy = 16;  }
-    if (bok.nazwa === 'a') { ox = -18; oy = 0;   }
-    if (bok.nazwa === 'c') { ox = 16;  oy = -10; }
-
-    ctx.fillStyle = jestSzukany ? kolZielony : kolBialy;
-    const wyswietlana = Number.isInteger(bok.wartosc) ? bok.wartosc : bok.wartosc.toFixed(2);
-    ctx.fillText(wyswietlana, mx + ox, my + oy);
-  });
+  }
 }
 
 function sprawdzPitagoras() {
-  if (!stan.trwa) return;
-  const wpisany = parseInt(stan.pitaBufor);
-  if (stan.pitaBufor === '' || isNaN(wpisany)) return;
+  const v = parseInt(stan.buforDwa[0]);
+  if (isNaN(v)) return;
 
-  // odpowiedź zawsze całkowita — trójki pitagorejskie
-  if (wpisany === stan.pytanie.odpowiedz) {
+  const ok = v === stan.pytanie.szukanaWartosc;
+  if (ok) {
     trafiony();
-    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 160);
   } else {
-    chybiony();
-    ujawnijPitagoras();
-    setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 1300);
+    bledny();
+    // pokaż poprawną odpowiedź w SVG
+    const { a, b, c, szukamy } = stan.pytanie;
+    narysujTrojkatOdpowiedz({ a, b, c });
   }
-  stan.pitaBufor = '';
+  setTimeout(() => { if (stan.gra) nastepnePytanie(); }, ok ? 160 : 1100);
 }
 
-function klawiaturaPitagoras(klawisz) {
-  if (!stan.trwa || stan.tryb !== 'pita') return;
-  if (klawisz === 'ok')   { sprawdzPitagoras(); return; }
-  if (klawisz === 'skip') { pominPytanie(); return; }
-  if (klawisz === 'clr')  { stan.pitaBufor = ''; return; }
-  if (klawisz === 'del')  { stan.pitaBufor = stan.pitaBufor.slice(0, -1); return; }
-
-  // max 3 cyfry (c może być max ~250 dla najtrudniejszych)
-  if (stan.pitaBufor.length < 4) {
-    stan.pitaBufor += klawisz;
-  }
+// rysuje trójkąt z wszystkimi wartościami na zielono dla szukanego boku
+function narysujTrojkatOdpowiedz({ a, b, c }) {
+  const svg = el('trojkatSVG');
+  const x1=20, y1=120, x2=170, y2=120, x3=20, y3=20;
+  svg.innerHTML = `
+    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--tekst2)" stroke-width="2"/>
+    <line x1="${x1}" y1="${y1}" x2="${x3}" y2="${y3}" stroke="var(--tekst2)" stroke-width="2"/>
+    <line x1="${x2}" y1="${y2}" x2="${x3}" y2="${y3}" stroke="var(--tekst2)" stroke-width="2"/>
+    <polyline points="${x1+12},${y1} ${x1+12},${y1-12} ${x1},${y1-12}"
+      fill="none" stroke="var(--tekst3)" stroke-width="1.5"/>
+    <text x="${(x1+x2)/2}" y="${y1+16}" text-anchor="middle"
+      font-family="DM Mono,monospace" font-size="13" fill="var(--zielony)">a=${a}</text>
+    <text x="${x1-18}" y="${(y1+y3)/2}" text-anchor="middle"
+      font-family="DM Mono,monospace" font-size="13" fill="var(--zielony)">b=${b}</text>
+    <text x="${(x2+x3)/2+10}" y="${(y2+y3)/2-5}" text-anchor="middle"
+      font-family="DM Mono,monospace" font-size="13" fill="var(--zielony)">c=${c}</text>
+  `;
 }
 
-
-/* ═══════════════════════════════════════════════════
-   PUNKTACJA I ANIMACJE
-   ═══════════════════════════════════════════════════ */
-function trafiony() {
-  stan.seria++;
-  stan.poprawne++;
-  if (stan.seria > stan.najlepszaSeria) stan.najlepszaSeria = stan.seria;
-
-  // co 5 odpowiedzi rośnie mnożnik
-  stan.mnoznik = Math.floor(stan.seria / 5) + 1;
-  const zysk = (stan.tryb === 'arith' ? 10 : stan.tryb === 'pita' ? 15 : 20) * stan.mnoznik;
-  stan.punkty += zysk;
-
-  domPunkty.textContent = stan.punkty;
-  animujPop('+' + zysk, 'var(--gn)');
-  migniecie('ok');
-  aktualizujSerie();
-  wibracja(22);
-
-  if (stan.seria > 0 && stan.seria % 5 === 0) pokarzToast(`×${stan.mnoznik} combo`);
-}
-
-function chybiony() {
-  stan.bledne++;
-  stan.seria = 0;
-  stan.mnoznik = 1;
-
-  animujPop('✕', 'var(--rd)');
-  migniecie('err');
-  aktualizujSerie();
-  wibracja([40, 15, 40]);
-}
+// ===========================================
+// POMIŃ PYTANIE
+// ===========================================
 
 function pominPytanie() {
-  if (!stan.trwa) return;
-  chybiony();
+  if (!stan.gra) return;
+  bledny();
 
   // ujawnij odpowiedź
-  if (stan.tryb === 'arith')      ujawnijArith();
-  else if (stan.tryb === 'quad')  ujawnijRozklad();
-  else if (stan.tryb === 'form')  ujawnijWzor();
-  else if (stan.tryb === 'pita')  ujawnijPitagoras();
+  if (stan.trybGry === 'dzialania') {
+    const odp = el('odp');
+    if (odp) { odp.textContent = stan.pytanie.odpowiedz; odp.className = 'odpowiedz'; }
+  } else if (stan.trybGry === 'rozklad') {
+    const { r1, r2, wspolczynnik } = stan.pytanie;
+    el('podpowiedzIloczynowa').innerHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, true);
+  } else if (stan.trybGry === 'wzory') {
+    ujawnijWzory();
+  } else if (stan.trybGry === 'pitagoras') {
+    const { a, b, c } = stan.pytanie;
+    narysujTrojkatOdpowiedz({ a, b, c });
+  }
 
-  setTimeout(() => { if (stan.trwa) nastepnePytanie(); }, 1100);
+  setTimeout(() => { if (stan.gra) nastepnePytanie(); }, 1100);
 }
 
-function animujPop(tekst, kolor) {
-  domPop.textContent = tekst;
-  domPop.style.color = kolor;
-  domPop.style.transition = 'none';
-  domPop.style.opacity = '1';
-  domPop.style.transform = 'translate(-50%,-50%) scale(1)';
+// ===========================================
+// TRAFIONY / BŁĘDNY
+// ===========================================
+
+function trafiony() {
+  stan.streak++;
+  stan.poprawne++;
+  if (stan.streak > stan.maxStreak) stan.maxStreak = stan.streak;
+
+  // co 5 z rzędu rośnie mnożnik
+  stan.mnoznikKombo = Math.floor(stan.streak / 5) + 1;
+
+  // działania dają 10 pkt, reszta 20 pkt (trudniejsze)
+  const bazowePunkty = stan.trybGry === 'dzialania' ? 10 : 20;
+  const zdobyte = bazowePunkty * stan.mnoznikKombo;
+
+  stan.punkty += zdobyte;
+  licznikPunktow.textContent = stan.punkty;
+
+  animacjaPop(`+${zdobyte}`, 'var(--zielony)');
+  migniecie('trafiony');
+  odswiezStreak();
+
+  if (navigator.vibrate) navigator.vibrate(22);
+  if (stan.streak > 0 && stan.streak % 5 === 0) pokazToast(`×${stan.mnoznikKombo} combo`);
+  if (stan.mnoznikKombo >= 2) startujTimerKombo();
+}
+
+function bledny() {
+  stan.bledne++;
+  stan.streak = 0;
+  stan.mnoznikKombo = 1;
+
+  animacjaPop('✕', 'var(--czerwony)');
+  migniecie('bledny');
+  odswiezStreak();
+  zatrzymajTimerKombo();
+
+  if (navigator.vibrate) navigator.vibrate([40, 15, 40]);
+}
+
+// ===========================================
+// WIZUALNE EFEKTY
+// ===========================================
+
+function animacjaPop(tekst, kolor) {
+  popAnimacja.textContent = tekst;
+  popAnimacja.style.color = kolor;
+  popAnimacja.style.transition = 'none';
+  popAnimacja.style.opacity = '1';
+  popAnimacja.style.transform = 'translate(-50%, -50%) scale(1)';
+
   requestAnimationFrame(() => {
-    domPop.style.transition = 'opacity .48s,transform .48s';
-    domPop.style.opacity = '0';
-    domPop.style.transform = 'translate(-50%,-70%) scale(1.3)';
+    popAnimacja.style.transition = 'opacity 0.48s, transform 0.48s';
+    popAnimacja.style.opacity = '0';
+    popAnimacja.style.transform = 'translate(-50%, -70%) scale(1.3)';
   });
 }
 
 function migniecie(klasa) {
-  domKarta.classList.remove('ok', 'err');
-  void domKarta.offsetWidth; // reflow żeby animacja działała ponownie
-  domKarta.classList.add(klasa);
-  setTimeout(() => domKarta.classList.remove(klasa), 300);
+  karta.classList.remove('trafiony', 'bledny');
+  void karta.offsetWidth; // wymusz reflow żeby animacja się zresetowała
+  karta.classList.add(klasa);
+  setTimeout(() => karta.classList.remove(klasa), 300);
 }
 
-function aktualizujSerie() {
-  const pozycjaWCyklu = stan.seria % 5;
-  DOTKI.forEach((d, i) =>
-    d.classList.toggle('on', i < (stan.seria > 0 && pozycjaWCyklu === 0 ? 5 : pozycjaWCyklu))
-  );
+function odswiezStreak() {
+  const pozycja = stan.streak % 5;
+  const ile = stan.streak > 0 && pozycja === 0 ? 5 : pozycja;
+  kropki.forEach((k, i) => k.classList.toggle('aktywna', i < ile));
 
-  if (stan.mnoznik >= 2) {
-    domKombo.textContent = `×${stan.mnoznik}`;
-    domKombo.classList.add('show');
-    startTimerKombo();
+  if (stan.mnoznikKombo >= 2) {
+    wyswietlaczKombo.textContent = `×${stan.mnoznikKombo}`;
+    wyswietlaczKombo.classList.add('widoczny');
   } else {
-    domKombo.classList.remove('show');
-    stopTimerKombo();
+    wyswietlaczKombo.classList.remove('widoczny');
   }
 }
 
-function pokarzToast(wiadomosc) {
-  domLup.textContent = wiadomosc;
-  domLup.classList.remove('show');
-  void domLup.offsetWidth;
-  domLup.classList.add('show');
+function pokazToast(komunikat) {
+  toastEl.textContent = komunikat;
+  toastEl.classList.remove('widoczny');
+  void toastEl.offsetWidth;
+  toastEl.classList.add('widoczny');
 }
 
-function wibracja(wzorzec) {
-  try { if (navigator.vibrate) navigator.vibrate(wzorzec); } catch (_) {}
-}
+// ===========================================
+// TIMER COMBO (pasek który się wypełnia)
+// ===========================================
+// Gdy masz combo ×2 lub więcej, masz 8 sekund na kolejne trafienie.
+// Po wygaśnięciu streak spada do zera.
 
+const CZAS_KOMBO = 8; // sekund
+let timerKombo = null;
+let pozostalyCzasKombo = 0;
 
-/* ═══════════════════════════════════════════════════
-   TIMER COMBO
-   resetuje mnożnik jeśli gracz długo nie odpowiada
-   ═══════════════════════════════════════════════════ */
-const COMBO_SEKUNDY = 8;
-let timerKomboInterval = null;
-let timerKomboPozostalo = 0;
+function startujTimerKombo() {
+  zatrzymajTimerKombo();
+  pozostalyCzasKombo = CZAS_KOMBO;
+  paselKomboWrap.style.display = '';
+  pasekKombo.classList.remove('niski');
+  pasekKombo.style.transition = 'none';
+  pasekKombo.style.width = '100%';
 
-function startTimerKombo() {
-  clearInterval(timerKomboInterval);
-  timerKomboPozostalo = COMBO_SEKUNDY;
-
-  el('ctimerWrap').style.display = '';
-  const pasek = el('ctimerBar');
-  pasek.classList.remove('low');
-  pasek.style.transition = 'none';
-  pasek.style.width = '100%';
-
-  timerKomboInterval = setInterval(() => {
-    timerKomboPozostalo -= 0.1;
-    pasek.style.transition = 'width .1s linear';
-    pasek.style.width = Math.max(0, timerKomboPozostalo / COMBO_SEKUNDY * 100) + '%';
-
-    if (timerKomboPozostalo <= 2) pasek.classList.add('low');
-
-    if (timerKomboPozostalo <= 0) {
-      clearInterval(timerKomboInterval);
-      el('ctimerWrap').style.display = 'none';
-      // zeruj serię jeśli wciąż w combo
-      if (stan.seria >= 5) {
-        stan.seria = 0;
-        stan.mnoznik = 1;
-        aktualizujSerie();
+  timerKombo = setInterval(() => {
+    pozostalyCzasKombo -= 0.1;
+    const procent = Math.max(0, pozostalyCzasKombo / CZAS_KOMBO * 100);
+    pasekKombo.style.transition = 'width 0.1s linear';
+    pasekKombo.style.width = procent + '%';
+    if (pozostalyCzasKombo <= 2) pasekKombo.classList.add('niski');
+    if (pozostalyCzasKombo <= 0) {
+      zatrzymajTimerKombo();
+      // combo wygasło
+      if (stan.streak >= 5) {
+        stan.streak = 0;
+        stan.mnoznikKombo = 1;
+        odswiezStreak();
       }
     }
   }, 100);
 }
 
-function stopTimerKombo() {
-  clearInterval(timerKomboInterval);
-  el('ctimerWrap').style.display = 'none';
+function zatrzymajTimerKombo() {
+  clearInterval(timerKombo);
+  paselKomboWrap.style.display = 'none';
 }
 
+// ===========================================
+// OBSŁUGA KLAWIATURY NUMERYCZNEJ
+// ===========================================
+// Każda z trzech klawiatur obsługuje wpisywanie cyfr,
+// kasowanie, zmianę znaku i zatwierdzenie.
 
-/* ═══════════════════════════════════════════════════
-   PRZEPŁYW GRY (start / wyniki / menu)
-   ═══════════════════════════════════════════════════ */
-function rozpocznijGre() {
-  el('sMenu').classList.add('hide');
-  el('sEnd').classList.add('hide');
+// --- klawiatura dla jednego pola (działania) ---
+el('klawiaturaDzialania').addEventListener('pointerdown', e => {
+  const klawisz = e.target.closest('[data-akcja]');
+  if (!klawisz || !stan.gra) return;
+  e.preventDefault();
+  const akcja = klawisz.dataset.akcja;
 
-  // reset stanu
-  Object.assign(stan, {
-    punkty: 0, seria: 0, najlepszaSeria: 0, poprawne: 0, bledne: 0, mnoznik: 1, trwa: true,
-    arithBufor: '', quadBufor: ['', ''], quadFokus: 0, formBufor: [], formFokus: 0, pitaBufor: '',
+  if      (akcja === 'ok')   sprawdzDzialanie();
+  else if (akcja === 'skip') pominPytanie();
+  else if (akcja === 'clr')  { stan.buforJeden = ''; odswiezOdpowiedzArytm(); }
+  else if (akcja === 'del')  { stan.buforJeden = stan.buforJeden.slice(0,-1); odswiezOdpowiedzArytm(); }
+  else if (akcja === '-')    { stan.buforJeden = zmienZnak(stan.buforJeden); odswiezOdpowiedzArytm(); }
+  else if (stan.buforJeden.replace('-','').length < 4) { stan.buforJeden += akcja; odswiezOdpowiedzArytm(); }
+});
+
+// --- klawiatura dla dwóch pól (rozkład, pitagoras) ---
+el('klawiaturaPolaA').addEventListener('pointerdown', e => {
+  const klawisz = e.target.closest('[data-b]');
+  if (!klawisz || !stan.gra) return;
+  e.preventDefault();
+  const akcja = klawisz.dataset.b;
+  const f = stan.aktywnePoleDwa;
+
+  if (akcja === 'ok') {
+    if (stan.trybGry === 'rozklad')    sprawdzRozklad();
+    else if (stan.trybGry === 'pitagoras') sprawdzPitagoras();
+    return;
+  }
+  if (akcja === 'skip') { pominPytanie(); return; }
+  if (akcja === 'clr')  { stan.buforDwa[f] = ''; odswiezPolaA(); return; }
+  if (akcja === 'del')  { stan.buforDwa[f] = stan.buforDwa[f].slice(0,-1); odswiezPolaA(); return; }
+  if (akcja === '-' && stan.trybGry === 'rozklad') {
+    stan.buforDwa[f] = zmienZnak(stan.buforDwa[f]);
+    odswiezPolaA();
+    return;
+  }
+  // cyfry — max 3 cyfry
+  if (stan.buforDwa[f].replace('-','').length < 3) {
+    stan.buforDwa[f] += akcja;
+    odswiezPolaA();
+  }
+});
+
+// --- klawiatura dla trzech pól (wzory) ---
+el('klawiaturaPolaB').addEventListener('pointerdown', e => {
+  const klawisz = e.target.closest('[data-c]');
+  if (!klawisz || !stan.gra) return;
+  e.preventDefault();
+  const akcja = klawisz.dataset.c;
+  const f = stan.aktywnePoleTrzy;
+
+  if (akcja === 'ok')   { sprawdzWzory(); return; }
+  if (akcja === 'skip') { pominPytanie(); return; }
+  if (akcja === 'clr')  { stan.buforTrzy[f] = ''; odswiezPolaB(); return; }
+  if (akcja === 'del')  { stan.buforTrzy[f] = stan.buforTrzy[f].slice(0,-1); odswiezPolaB(); return; }
+  if (akcja === '-') return; // wzory — wartości zawsze dodatnie
+  if (stan.buforTrzy[f].length < 4) { stan.buforTrzy[f] += akcja; odswiezPolaB(); }
+});
+
+// zmiana znaku liczby (np. 3 → -3 → 3)
+function zmienZnak(bufor) {
+  if (!bufor)          return '-';
+  if (bufor === '-')   return '';
+  if (bufor[0] === '-') return bufor.slice(1);
+  return '-' + bufor;
+}
+
+// --- fokus na polach A (rozkład/pitagoras) ---
+polaA.forEach((pole, i) => {
+  pole.addEventListener('pointerdown', e => {
+    if (!stan.gra) return;
+    e.preventDefault();
+    stan.aktywnePoleDwa = i;
+    odswiezPolaA();
+    // odśwież taby
+    if (stan.trybGry === 'rozklad') odswiezTabyA(['x₁', 'x₂']);
   });
+});
+el('tabyA').querySelectorAll('.tab-pola').forEach((tab, i) => {
+  tab.addEventListener('pointerdown', e => {
+    if (!stan.gra) return;
+    e.preventDefault();
+    stan.aktywnePoleDwa = i;
+    if (stan.trybGry === 'rozklad') odswiezTabyA(['x₁', 'x₂']);
+    odswiezPolaA();
+  });
+});
 
-  domPunkty.textContent = '0';
-  DOTKI.forEach(d => d.classList.remove('on'));
-  domKombo.classList.remove('show');
-  stopTimerKombo();
+// --- fokus na polach B (wzory) ---
+polaB.forEach((pole, i) => {
+  pole.addEventListener('pointerdown', e => {
+    if (!stan.gra || !stan.pytanie || i >= stan.pytanie.odpowiedzi.length) return;
+    e.preventDefault();
+    stan.aktywnePoleTrzy = i;
+    odswiezPolaB();
+  });
+});
+el('tabyB').querySelectorAll('.tab-pola').forEach((tab, i) => {
+  tab.addEventListener('pointerdown', e => {
+    if (!stan.gra || !stan.pytanie) return;
+    e.preventDefault();
+    stan.aktywnePoleTrzy = i % stan.pytanie.odpowiedzi.length;
+    odswiezPolaB();
+  });
+});
+
+// ===========================================
+// FIZYCZNA KLAWIATURA (desktop)
+// ===========================================
+
+document.addEventListener('keydown', e => {
+  if (!stan.gra) return;
+
+  // cyfry
+  if (e.key >= '0' && e.key <= '9') {
+    wcisnietoCyfre(e.key);
+  } else if (e.key === '-') {
+    wcisnietoMinus();
+  } else if (e.key === 'Backspace') {
+    e.preventDefault();
+    wcisnietoKasuj();
+  } else if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    wcisnietoZatwierdz();
+  } else if (e.key === 'Escape') {
+    wcisniętoCzysc();
+  } else if (e.key === 'Tab') {
+    e.preventDefault();
+    wcisnietoTab();
+  }
+});
+
+function wcisnietoCyfre(cyfra) {
+  if (stan.trybGry === 'dzialania') {
+    if (stan.buforJeden.replace('-','').length < 4) { stan.buforJeden += cyfra; odswiezOdpowiedzArytm(); }
+  } else if (stan.trybGry === 'rozklad' || stan.trybGry === 'pitagoras') {
+    const f = stan.aktywnePoleDwa;
+    if (stan.buforDwa[f].replace('-','').length < 3) { stan.buforDwa[f] += cyfra; odswiezPolaA(); }
+  } else if (stan.trybGry === 'wzory') {
+    const f = stan.aktywnePoleTrzy;
+    if (stan.buforTrzy[f].length < 4) { stan.buforTrzy[f] += cyfra; odswiezPolaB(); }
+  }
+}
+
+function wcisnietoMinus() {
+  if (stan.trybGry === 'dzialania') { stan.buforJeden = zmienZnak(stan.buforJeden); odswiezOdpowiedzArytm(); }
+  else if (stan.trybGry === 'rozklad') { stan.buforDwa[stan.aktywnePoleDwa] = zmienZnak(stan.buforDwa[stan.aktywnePoleDwa]); odswiezPolaA(); }
+}
+
+function wcisnietoKasuj() {
+  if (stan.trybGry === 'dzialania') { stan.buforJeden = stan.buforJeden.slice(0,-1); odswiezOdpowiedzArytm(); }
+  else if (stan.trybGry === 'rozklad' || stan.trybGry === 'pitagoras') { const f=stan.aktywnePoleDwa; stan.buforDwa[f]=stan.buforDwa[f].slice(0,-1); odswiezPolaA(); }
+  else if (stan.trybGry === 'wzory') { const f=stan.aktywnePoleTrzy; stan.buforTrzy[f]=stan.buforTrzy[f].slice(0,-1); odswiezPolaB(); }
+}
+
+function wcisnietoZatwierdz() {
+  if      (stan.trybGry === 'dzialania')  sprawdzDzialanie();
+  else if (stan.trybGry === 'rozklad')    sprawdzRozklad();
+  else if (stan.trybGry === 'wzory')      sprawdzWzory();
+  else if (stan.trybGry === 'pitagoras')  sprawdzPitagoras();
+}
+
+function wcisniętoCzysc() {
+  if (stan.trybGry === 'dzialania') { stan.buforJeden = ''; odswiezOdpowiedzArytm(); }
+  else if (stan.trybGry === 'rozklad' || stan.trybGry === 'pitagoras') { stan.buforDwa[stan.aktywnePoleDwa]=''; odswiezPolaA(); }
+  else if (stan.trybGry === 'wzory') { stan.buforTrzy[stan.aktywnePoleTrzy]=''; odswiezPolaB(); }
+}
+
+function wcisnietoTab() {
+  if (stan.trybGry === 'rozklad') { stan.aktywnePoleDwa=(stan.aktywnePoleDwa+1)%2; odswiezTabyA(['x₁','x₂']); odswiezPolaA(); }
+  else if (stan.trybGry === 'wzory' && stan.pytanie) { stan.aktywnePoleTrzy=(stan.aktywnePoleTrzy+1)%stan.pytanie.odpowiedzi.length; odswiezPolaB(); }
+}
+
+// ===========================================
+// FLOW GRY (start, wyniki, menu)
+// ===========================================
+
+function rozpocznijGre() {
+  // reset statystyk
+  stan.punkty = 0;
+  stan.streak = 0;
+  stan.maxStreak = 0;
+  stan.poprawne = 0;
+  stan.bledne = 0;
+  stan.mnoznikKombo = 1;
+  stan.gra = true;
+
+  licznikPunktow.textContent = '0';
+  kropki.forEach(k => k.classList.remove('aktywna'));
+  wyswietlaczKombo.classList.remove('widoczny');
+  zatrzymajTimerKombo();
+
+  ekranMenu.classList.add('ukryty');
+  ekranWyniki.classList.add('ukryty');
+
   nastepnePytanie();
 }
 
 function pokazWyniki() {
-  stan.trwa = false;
-  stopTimerKombo();
+  stan.gra = false;
+  zatrzymajTimerKombo();
 
-  el('ePts').textContent  = stan.punkty;
-  el('eOk').textContent   = stan.poprawne;
-  el('eBest').textContent = stan.najlepszaSeria;
+  el('wynikPunkty').textContent   = stan.punkty;
+  el('wynikPoprawne').textContent  = stan.poprawne;
+  el('wynikKombo').textContent     = stan.maxStreak;
 
-  const razem = stan.poprawne + stan.bledne;
-  el('eAcc').textContent = razem ? Math.round(stan.poprawne / razem * 100) + '%' : '—';
+  const wszystkie = stan.poprawne + stan.bledne;
+  el('wynikTrafinosc').textContent = wszystkie
+    ? Math.round(stan.poprawne / wszystkie * 100) + '%'
+    : '—';
 
-  // wiadomość końcowa zależna od punktów
-  const wiadomosci = [[0,'Ćwicz dalej!'], [80,'Nieźle!'], [200,'Świetnie!'], [450,'Rewelacja!'], [800,'Legenda!']];
-  let wiad = '';
-  for (const [prog, txt] of wiadomosci) if (stan.punkty >= prog) wiad = txt;
-  el('eMsg').textContent = wiad;
+  const komunikaty = [
+    [0,   'Ćwicz dalej!'],
+    [80,  'Nieźle!'],
+    [200, 'Świetnie!'],
+    [450, 'Rewelacja!'],
+    [800, 'Legenda!'],
+  ];
+  let komunikat = '';
+  for (const [prog, tekst] of komunikaty) {
+    if (stan.punkty >= prog) komunikat = tekst;
+  }
+  el('wynikKomunikat').textContent = komunikat;
 
-  el('sEnd').classList.remove('hide');
+  ekranWyniki.classList.remove('ukryty');
+  if (navigator.vibrate) navigator.vibrate([50, 30, 50, 30, 80]);
 }
 
 function wrocDoMenu() {
-  stan.trwa = false;
-  stopTimerKombo();
-  el('sEnd').classList.add('hide');
-  el('sMenu').classList.remove('hide');
+  stan.gra = false;
+  zatrzymajTimerKombo();
+  ekranWyniki.classList.add('ukryty');
+  ekranMenu.classList.remove('ukryty');
 }
 
+// ===========================================
+// EVENTY MENU
+// ===========================================
 
-/* ═══════════════════════════════════════════════════
-   OBSŁUGA ZDARZEŃ — przyciski i klawiatura fizyczna
-   ═══════════════════════════════════════════════════ */
-
-// klawiatury numeryczne
-kbA.addEventListener('pointerdown', e => {
-  const b = e.target.closest('[data-v]');
-  if (!b) return;
-  e.preventDefault();
-  klawiaturaDzialania(b.dataset.v);
-});
-
-kbQ.addEventListener('pointerdown', e => {
-  const b = e.target.closest('[data-qv]');
-  if (!b) return;
-  e.preventDefault();
-  klawiaturaRozkladu(b.dataset.qv);
-});
-
-kbF.addEventListener('pointerdown', e => {
-  const b = e.target.closest('[data-fv]');
-  if (!b) return;
-  e.preventDefault();
-  klawiaturaWzorow(b.dataset.fv);
-});
-
-kbP.addEventListener('pointerdown', e => {
-  const b = e.target.closest('[data-pv]');
-  if (!b) return;
-  e.preventDefault();
-  klawiaturaPitagoras(b.dataset.pv);
-});
-
-// fokus pól rozkładu
-[0, 1].forEach(i => {
-  quadPola[i].addEventListener('pointerdown', e => {
-    e.preventDefault();
-    stan.quadFokus = i;
-    aktualizujQuadFokus();
-  });
-});
-document.querySelectorAll('.qtab[data-qf]').forEach((t, i) => {
-  t.addEventListener('pointerdown', e => {
-    e.preventDefault();
-    stan.quadFokus = i;
-    aktualizujQuadFokus();
-  });
-});
-
-// fokus pól wzorów
-[0, 1, 2].forEach(i => {
-  formPola[i].addEventListener('pointerdown', e => {
-    if (!stan.pytanie || i >= stan.pytanie.odpowiedzi.length) return;
-    e.preventDefault();
-    stan.formFokus = i;
-    aktualizujFormFokus();
-  });
-});
-document.querySelectorAll('.qtab[data-ff]').forEach((t, i) => {
-  t.addEventListener('pointerdown', e => {
-    if (!stan.pytanie) return;
-    e.preventDefault();
-    stan.formFokus = i % stan.pytanie.odpowiedzi.length;
-    aktualizujFormFokus();
-    aktualizujFormWyswietlanie();
-  });
-});
-
-// przyciski nawigacyjne
-el('btnStart').addEventListener('click', rozpocznijGre);
-el('btnAgain').addEventListener('click', rozpocznijGre);
-el('btnMenu').addEventListener('click', wrocDoMenu);
-el('btnBack').addEventListener('click', pokazWyniki);
+el('btnGraj').addEventListener('click', rozpocznijGre);
+el('btnJeszczeRaz').addEventListener('click', rozpocznijGre);
+el('btnDoMenu').addEventListener('click', wrocDoMenu);
+el('btnMenu').addEventListener('click', pokazWyniki);
 
 // wybór poziomu
-document.querySelectorAll('#diffPills .pl').forEach(b => {
-  b.addEventListener('click', () => {
-    document.querySelectorAll('#diffPills .pl').forEach(x => x.classList.remove('on'));
-    b.classList.add('on');
-    stan.poziom = b.dataset.d;
+el('przyciskiPoziomu').querySelectorAll('.pigulka').forEach(btn => {
+  btn.addEventListener('click', () => {
+    el('przyciskiPoziomu').querySelectorAll('.pigulka').forEach(b => b.classList.remove('aktywny'));
+    btn.classList.add('aktywny');
+    stan.poziom = btn.dataset.poziom;
   });
 });
 
-// wybór operacji
-document.querySelectorAll('#opPills .opl').forEach(b => {
-  b.addEventListener('click', () => {
-    b.classList.toggle('on');
-    const aktywne = [...document.querySelectorAll('#opPills .opl.on')].map(x => x.dataset.op);
-    if (!aktywne.length) { b.classList.add('on'); return; } // co najmniej jedna
-    stan.operacje = aktywne;
+// wybór operatorów
+el('przyciskiDzialan').querySelectorAll('.przycisk-dzialania').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('aktywny');
+    const aktywne = [...el('przyciskiDzialan').querySelectorAll('.przycisk-dzialania.aktywny')].map(b => b.dataset.op);
+    if (!aktywne.length) { btn.classList.add('aktywny'); return; } // min 1 operator
+    stan.aktywneOperatory = aktywne;
   });
 });
 
-// wybór trybów
-document.querySelectorAll('#modeCards .mitem').forEach(b => {
-  b.addEventListener('click', () => {
-    b.classList.toggle('on');
-    const aktywne = [...document.querySelectorAll('#modeCards .mitem.on')].map(x => x.dataset.m);
-    if (!aktywne.length) { b.classList.add('on'); return; } // co najmniej jeden
-    stan.tryby = aktywne;
-    // przyciemn opcje działań jeśli tryb arith nieaktywny
-    el('arithOpts').classList.toggle('dim', aktywne.every(m => m !== 'arith'));
+// wybór trybów gry
+el('listaTrybow').querySelectorAll('.tryb').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('aktywny');
+    const aktywne = [...el('listaTrybow').querySelectorAll('.tryb.aktywny')].map(b => b.dataset.tryb);
+    if (!aktywne.length) { btn.classList.add('aktywny'); return; } // min 1 tryb
+    stan.aktywneTypy = aktywne;
+    // wyszarz opcje działań jeśli tryb działania nie jest wybrany
+    el('opcje-dzialan').classList.toggle('wyszarzony', !aktywne.includes('dzialania'));
   });
 });
 
-// klawiatura fizyczna (do testowania na desktopie)
-document.addEventListener('keydown', e => {
-  if (!stan.trwa) return;
+// ===========================================
+// PWA — service worker
+// ===========================================
 
-  if (e.key >= '0' && e.key <= '9') {
-    if (stan.tryb === 'arith')     klawiaturaDzialania(e.key);
-    else if (stan.tryb === 'quad') klawiaturaRozkladu(e.key);
-    else if (stan.tryb === 'form') klawiaturaWzorow(e.key);
-    else if (stan.tryb === 'pita') klawiaturaPitagoras(e.key);
-  } else if (e.key === '-') {
-    if (stan.tryb === 'arith')     klawiaturaDzialania('-');
-    else if (stan.tryb === 'quad') klawiaturaRozkladu('-');
-  } else if (e.key === 'Backspace') {
-    e.preventDefault();
-    if (stan.tryb === 'arith')     klawiaturaDzialania('del');
-    else if (stan.tryb === 'quad') klawiaturaRozkladu('del');
-    else if (stan.tryb === 'form') klawiaturaWzorow('del');
-    else if (stan.tryb === 'pita') klawiaturaPitagoras('del');
-  } else if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault();
-    if (stan.tryb === 'arith')     sprawdzArith();
-    else if (stan.tryb === 'quad') sprawdzRozklad();
-    else if (stan.tryb === 'form') sprawdzWzor();
-    else if (stan.tryb === 'pita') sprawdzPitagoras();
-  } else if (e.key === 'Escape') {
-    // wyczyść aktualne pole
-    if (stan.tryb === 'arith')     { stan.arithBufor = ''; aktualizujArith(); }
-    else if (stan.tryb === 'quad') { stan.quadBufor[stan.quadFokus] = ''; aktualizujQuadWyswietlanie(); }
-    else if (stan.tryb === 'form') { stan.formBufor[stan.formFokus] = ''; aktualizujFormWyswietlanie(); }
-    else if (stan.tryb === 'pita') { stan.pitaBufor = ''; }
-  } else if (e.key === 'Tab') {
-    e.preventDefault();
-    if (stan.tryb === 'quad') {
-      stan.quadFokus = (stan.quadFokus + 1) % 2;
-      aktualizujQuadFokus();
-    } else if (stan.tryb === 'form' && stan.pytanie) {
-      stan.formFokus = (stan.formFokus + 1) % stan.pytanie.odpowiedzi.length;
-      aktualizujFormFokus();
-      aktualizujFormWyswietlanie();
-    }
-  }
-});
-
-
-/* ═══════════════════════════════════════════════════
-   PWA — rejestracja service workera i gesty dotykowe
-   ═══════════════════════════════════════════════════ */
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
 
-// zablokuj zoom pinchem
+// blokuj zoom na dotyk (wielopalcowy)
 document.addEventListener('touchmove', e => {
   if (e.touches.length > 1) e.preventDefault();
 }, { passive: false });
 
-// zablokuj double-tap zoom
+// blokuj double-tap zoom
 let ostatniDotyk = 0;
 document.addEventListener('touchend', e => {
   const teraz = Date.now();
