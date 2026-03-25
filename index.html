@@ -81,7 +81,7 @@ body {
   gap: 14px;
   flex: 1;
   justify-content: center;
-  padding: 16px 0;
+  padding: 8px 0 4px;
 }
 
 /* przycisk Graj na dole */
@@ -630,7 +630,7 @@ sup { font-size: 0.58em; vertical-align: super; line-height: 0; }
     </div>
     <div style="font-size:13px;color:var(--zolty);text-align:center" id="wynikKomunikat"></div>
     <button class="btn" id="btnJeszczeRaz">Jeszcze raz</button>
-    <button class="btn duch" id="btnDoMenu">← Menu</button>
+    <button class="btn duch" id="btnDoMenu">←  Menu</button>
   </div>
 </div>
 
@@ -1111,14 +1111,16 @@ function odswiezPolaA() {
     const { r1, r2, wspolczynnik } = stan.pytanie;
     el('podpowiedzIloczynowa').innerHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, false);
   }
-  // aktualizuj ? w pytaniu Pitagorasa podczas wpisywania
-  if (stan.trybGry === 'pitagoras') {
+  // aktualizuj pytanie i SVG w Pitagorasie podczas wpisywania
+  if (stan.trybGry === 'pitagoras' && stan.pytanie) {
     const odpPit = el('odpPit');
+    const v = stan.buforDwa[0];
     if (odpPit) {
-      const v = stan.buforDwa[0];
       odpPit.textContent = v || '?';
       odpPit.className = 'odpowiedz' + (v ? '' : ' placeholder');
     }
+    // odśwież też SVG żeby wpisywana liczba pojawiała się na trójkącie
+    rysujTrojkat(stan.pytanie, v, false);
   }
 }
 
@@ -1328,7 +1330,7 @@ function generujPitagoras() {
   }
 
   // narysuj trójkąt SVG z oznaczeniami
-  narysujTrojkat(dane, szukamy);
+  rysujTrojkat(dane, null, false);
 
   // dla Pitagorasa używamy klawiatury z jednym polem (klawiaturaPolaA z jedną kolumną)
   // ale pytanie ma tylko jedną odpowiedź, więc ukrywamy drugie pole
@@ -1349,33 +1351,59 @@ function generujPitagoras() {
   odswiezPolaA();
 }
 
-// rysuje trójkąt prostokątny SVG z oznaczeniami boków
-function narysujTrojkat({ a, b, c, szukamy: co }, szukamyIndeks) {
-  const svg = el('trojkatSVG');
-  // trójkąt prostokątny: kąt prosty w lewym dolnym rogu
-  // wierzchołki: lewy dół (20,120), prawy dół (170,120), lewy góra (20,20)
-  const x1=20, y1=120; // kąt prosty
-  const x2=170, y2=120; // prawy dół
-  const x3=20, y3=20;  // lewy góra
 
-  const kolor = (bok) => bok === co ? 'var(--akcent)' : 'var(--tekst2)';
-  const wartosc = (bok, val) => bok === co ? '?' : val;
+// ─────────────────────────────────────────────
+// Rysowanie trójkąta prostokątnego
+// Kąt prosty: lewy-dół. Bok a = podstawa, b = pionowy, c = przekątna.
+// Parametry:
+//   dane    — {a, b, c, szukamy} gdzie szukamy to 'a'/'b'/'c'
+//   wpisane — aktualnie wpisana przez gracza liczba (string) lub null
+//   ujawnij — jeśli true, pokaż wszystkie boki na zielono
+// ─────────────────────────────────────────────
+function rysujTrojkat(dane, wpisane, ujawnij) {
+  const svg = el('trojkatSVG');
+  const { a, b, c, szukamy } = dane;
+
+  // stałe pozycje wierzchołków
+  const X_LEWY = 30, Y_DOL = 125;   // kąt prosty (lewy dół)
+  const X_PRAWY = 190, Y_DOL2 = 125; // prawy dół
+  const X_LEWY2 = 30, Y_GORA = 20;  // lewy góra
+
+  // kolor boku: szukany = akcent, znany = szary
+  const kolorBoku = (bok) => {
+    if (ujawnij) return 'var(--zielony)';
+    return bok === szukamy ? 'var(--akcent)' : 'var(--tekst2)';
+  };
+
+  // tekst etykiety boku: szukany = wpisana wartość lub ?, znane = wartość
+  const etykietaBoku = (bok, wartosc) => {
+    if (ujawnij) return String(wartosc);
+    if (bok !== szukamy) return String(wartosc);
+    // szukany bok: pokaż co wpisał gracz (lub ?)
+    return (wpisane && wpisane !== '-') ? wpisane : '?';
+  };
 
   svg.innerHTML = `
-    <!-- linie trójkąta -->
-    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${kolor('a')}" stroke-width="2"/>
-    <line x1="${x1}" y1="${y1}" x2="${x3}" y2="${y3}" stroke="${kolor('b')}" stroke-width="2"/>
-    <line x1="${x2}" y1="${y2}" x2="${x3}" y2="${y3}" stroke="${kolor('c')}" stroke-width="2"/>
-    <!-- znacznik kąta prostego -->
-    <polyline points="${x1+12},${y1} ${x1+12},${y1-12} ${x1},${y1-12}"
+    <line x1="${X_LEWY}" y1="${Y_DOL}" x2="${X_PRAWY}" y2="${Y_DOL2}"
+      stroke="${kolorBoku('a')}" stroke-width="2.5"/>
+    <line x1="${X_LEWY}" y1="${Y_DOL}" x2="${X_LEWY2}" y2="${Y_GORA}"
+      stroke="${kolorBoku('b')}" stroke-width="2.5"/>
+    <line x1="${X_PRAWY}" y1="${Y_DOL2}" x2="${X_LEWY2}" y2="${Y_GORA}"
+      stroke="${kolorBoku('c')}" stroke-width="2.5"/>
+    <polyline points="${X_LEWY+13},${Y_DOL} ${X_LEWY+13},${Y_DOL-13} ${X_LEWY},${Y_DOL-13}"
       fill="none" stroke="var(--tekst3)" stroke-width="1.5"/>
-    <!-- etykiety boków -->
-    <text x="${(x1+x2)/2}" y="${y1+18}" text-anchor="middle"
-      font-family="DM Mono,monospace" font-size="13" fill="${kolor('a')}">a=${wartosc('a',a)}</text>
-    <text x="${x3+26}" y="${(y1+y3)/2+5}" text-anchor="start"
-      font-family="DM Mono,monospace" font-size="13" fill="${kolor('b')}">b=${wartosc('b',b)}</text>
-    <text x="${(x2+x3)/2+14}" y="${(y2+y3)/2-6}" text-anchor="start"
-      font-family="DM Mono,monospace" font-size="13" fill="${kolor('c')}">c=${wartosc('c',c)}</text>
+    <text x="${(X_LEWY+X_PRAWY)/2}" y="${Y_DOL+18}" text-anchor="middle"
+      font-family="DM Mono,monospace" font-size="14" fill="${kolorBoku('a')}">
+      a=${etykietaBoku('a',a)}
+    </text>
+    <text x="${X_LEWY+28}" y="${(Y_DOL+Y_GORA)/2+5}" text-anchor="start"
+      font-family="DM Mono,monospace" font-size="14" fill="${kolorBoku('b')}">
+      b=${etykietaBoku('b',b)}
+    </text>
+    <text x="${(X_PRAWY+X_LEWY2)/2+8}" y="${(Y_DOL2+Y_GORA)/2-8}" text-anchor="start"
+      font-family="DM Mono,monospace" font-size="14" fill="${kolorBoku('c')}">
+      c=${etykietaBoku('c',c)}
+    </text>
   `;
 }
 
@@ -1472,28 +1500,9 @@ function sprawdzPitagoras() {
     const odpPit = el('odpPit');
     if (odpPit) { odpPit.textContent = stan.pytanie.szukanaWartosc; odpPit.className = 'odpowiedz'; }
     const { a, b, c } = stan.pytanie;
-    narysujTrojkatOdpowiedz({ a, b, c });
+    rysujTrojkat(stan.pytanie, null, true);
   }
   setTimeout(() => { if (stan.gra) nastepnePytanie(); }, ok ? 160 : 1100);
-}
-
-// rysuje trójkąt z wszystkimi wartościami na zielono dla szukanego boku
-function narysujTrojkatOdpowiedz({ a, b, c }) {
-  const svg = el('trojkatSVG');
-  const x1=20, y1=120, x2=170, y2=120, x3=20, y3=20;
-  svg.innerHTML = `
-    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--tekst2)" stroke-width="2"/>
-    <line x1="${x1}" y1="${y1}" x2="${x3}" y2="${y3}" stroke="var(--tekst2)" stroke-width="2"/>
-    <line x1="${x2}" y1="${y2}" x2="${x3}" y2="${y3}" stroke="var(--tekst2)" stroke-width="2"/>
-    <polyline points="${x1+12},${y1} ${x1+12},${y1-12} ${x1},${y1-12}"
-      fill="none" stroke="var(--tekst3)" stroke-width="1.5"/>
-    <text x="${(x1+x2)/2}" y="${y1+16}" text-anchor="middle"
-      font-family="DM Mono,monospace" font-size="13" fill="var(--zielony)">a=${a}</text>
-    <text x="${x1-18}" y="${(y1+y3)/2}" text-anchor="middle"
-      font-family="DM Mono,monospace" font-size="13" fill="var(--zielony)">b=${b}</text>
-    <text x="${(x2+x3)/2+10}" y="${(y2+y3)/2-5}" text-anchor="middle"
-      font-family="DM Mono,monospace" font-size="13" fill="var(--zielony)">c=${c}</text>
-  `;
 }
 
 // ===========================================
@@ -1515,7 +1524,7 @@ function pominPytanie() {
     ujawnijWzory();
   } else if (stan.trybGry === 'pitagoras') {
     const { a, b, c } = stan.pytanie;
-    narysujTrojkatOdpowiedz({ a, b, c });
+    rysujTrojkat(stan.pytanie, null, true);
   }
 
   setTimeout(() => { if (stan.gra) nastepnePytanie(); }, 1100);
