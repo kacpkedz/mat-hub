@@ -102,4 +102,4 @@ mat-hub/
 
 ---
 
-*mat-hub — ćwicz bo się nie nauczysz inaczej*
+*mat-hub — ucz się, ucz - bo nauka to potęgi klucz stary koniu*
