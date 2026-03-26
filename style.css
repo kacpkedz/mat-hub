@@ -1,0 +1,544 @@
+/* RESET */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+/* KOLORY I ZMIENNE */
+:root {
+  --tlo:       #080808;
+  --powierzchnia1: #161616;
+  --powierzchnia2: #1e1e1e;
+  --powierzchnia3: #262626;
+  --ramka1:    #2c2c2c;
+  --ramka2:    #3a3a3a;
+  --tekst1:    #dedede;
+  --tekst2:    #888;
+  --tekst3:    #484848;
+  --akcent:    #c8c8c8;
+  --zielony:   #4ade80;
+  --czerwony:  #f87171;
+  --zolty:     #d4a017;
+}
+
+html { background: var(--tlo); }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--tekst1);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ==========================================
+   EKRANY NAKŁADKOWE (MENU, WYNIKI)
+   ========================================== */
+.ekran {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--tlo);
+  padding: 48px 24px 32px;
+  overflow-y: auto;
+  /* Wyśrodkowanie elementów w pionie na mobilkach PWA */
+  justify-content: center;
+  gap: 36px;
+}
+.ekran.ukryty { display: none; }
+
+/* Tytuł gry */
+.tytul {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(38px, 12vw, 58px);
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: -0.03em;
+}
+
+/* Środkowa część menu (lista trybów + opcje) */
+.menu-srodek {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  justify-content: center;
+}
+
+/* Przycisk Graj na dole */
+.menu-dol {
+  width: 100%;
+  max-width: 340px;
+}
+
+/* ==========================================
+   LISTA TRYBÓW GRY
+   ========================================== */
+.lista-trybow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.tryb {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 12px;
+  padding: 13px 16px;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  transition: border-color 0.12s, background 0.12s;
+}
+.tryb.aktywny { border-color: var(--akcent); background: rgba(200,200,200,0.06); }
+.tryb:active  { opacity: 0.7; }
+
+.tryb-ikona {
+  font-family: 'DM Mono', monospace;
+  font-size: 15px;
+  width: 34px;
+  text-align: center;
+  flex-shrink: 0;
+  color: var(--tekst2);
+}
+.tryb.aktywny .tryb-ikona { color: var(--akcent); }
+.tryb-nazwa { font-size: 14px; font-weight: 600; color: var(--tekst1); }
+
+/* ==========================================
+   BLOKI KONFIGURACJI (DZIAŁANIA, POZIOM)
+   ========================================== */
+.blok {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+.blok-etykieta {
+  font-size: 10px;
+  color: var(--tekst3);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.rzad { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
+
+/* Opcje poziomów trudności */
+.pigulka {
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 100px;
+  padding: 7px 18px;
+  font-size: 13px;
+  color: var(--tekst2);
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  transition: border-color 0.12s, color 0.12s;
+}
+.pigulka.aktywny { border-color: var(--akcent); color: var(--akcent); background: rgba(200,200,200,0.07); }
+.pigulka:active  { opacity: 0.65; }
+
+/* Przyciski operacji arytmetycznych */
+.przycisk-dzialania {
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 10px;
+  width: 54px; height: 46px;
+  font-family: 'DM Mono', monospace;
+  font-size: 21px;
+  color: var(--tekst2);
+  cursor: pointer;
+  text-align: center;
+  line-height: 46px;
+  touch-action: manipulation;
+  user-select: none;
+  transition: border-color 0.12s, color 0.12s;
+}
+.przycisk-dzialania.aktywny { border-color: var(--akcent); color: var(--akcent); background: rgba(200,200,200,0.07); }
+.przycisk-dzialania:active   { opacity: 0.65; }
+
+/* Wyszarzenie, gdy tryb działań jest wyłączony */
+#opcje-dzialan.wyszarzony { opacity: 0.3; pointer-events: none; }
+
+/* ==========================================
+   PRZYCISKI OGÓLNE
+   ========================================== */
+.btn {
+  background: #fff;
+  color: #111;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: opacity 0.12s, transform 0.1s;
+  width: 100%;
+}
+.btn:active { opacity: 0.82; transform: scale(0.98); }
+
+.btn.duch {
+  background: none;
+  border: 1.5px solid var(--ramka2);
+  color: var(--tekst1);
+  font-weight: 400;
+}
+.btn.duch:active { opacity: 0.6; }
+
+/* ==========================================
+   EKRAN WYNIKÓW
+   ========================================== */
+.siatka-wynikow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  max-width: 310px;
+}
+.kafelek-wyniku {
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+.wartosc-wyniku {
+  font-family: 'DM Mono', monospace;
+  font-size: 30px;
+  font-weight: 500;
+  color: var(--tekst1);
+  line-height: 1;
+}
+.etykieta-wyniku {
+  font-size: 10px;
+  color: var(--tekst3);
+  letter-spacing: 0.1em;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+.koniec-srodek {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 310px;
+  justify-content: center;
+}
+
+/* ==========================================
+   OBSZAR GRY (GŁÓWNY INTERFEJS)
+   ========================================== */
+.wrap {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 16px;
+}
+
+/* Nagłówek gry (punkty, bonus kombo, powrót do menu) */
+.naglowek {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.punkty {
+  font-family: 'DM Mono', monospace;
+  font-size: 23px;
+  font-weight: 500;
+  color: var(--tekst1);
+}
+.combo {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  color: var(--akcent);
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-family: 'DM Mono', monospace;
+}
+.combo.widoczny { opacity: 1; }
+.przycisk-menu {
+  background: none;
+  border: 1.5px solid var(--ramka1);
+  border-radius: 8px;
+  padding: 5px 13px;
+  font-size: 11px;
+  color: var(--tekst2);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.przycisk-menu:active { opacity: 0.55; }
+
+/* Kropki passy (streak) */
+.rzad-streak {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 18px;
+  flex-shrink: 0;
+}
+.kropki-streak { display: flex; gap: 4px; }
+.kropka {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--powierzchnia2);
+  border: 1.5px solid var(--ramka1);
+  transition: background 0.18s, border-color 0.18s;
+}
+.kropka.aktywna { background: var(--zielony); border-color: var(--zielony); }
+
+/* Pasek czasu na przedłużenie kombo */
+.pasek-combo-wrap {
+  flex: 1;
+  height: 3px;
+  background: var(--powierzchnia2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 0 4px;
+}
+.pasek-combo {
+  height: 100%;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--akcent);
+  transition: background 0.3s;
+}
+.pasek-combo.niski { background: var(--czerwony); }
+
+/* ==========================================
+   KARTA Z PYTANIEM
+   ========================================== */
+.karta {
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 16px;
+  padding: 20px 18px 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.18s;
+}
+.karta.trafiony  { border-color: var(--zielony); }
+.karta.bledny    { border-color: var(--czerwony); animation: trzasienie 0.24s; }
+
+@keyframes trzasienie {
+  0%, 100% { transform: translateX(0); }
+  30%       { transform: translateX(-6px); }
+  70%       { transform: translateX(6px); }
+}
+
+.etykieta-pytania {
+  font-size: 10px;
+  color: var(--tekst3);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* Style równań arytmetycznych */
+.pytanie-arytm {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(28px, 9.5vw, 50px);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--tekst1);
+  letter-spacing: -0.02em;
+}
+.pytanie-arytm .operator  { color: var(--akcent); }
+.pytanie-arytm .rowna-sie { color: var(--tekst3); }
+.pytanie-arytm .odpowiedz { color: var(--zielony); transition: color 0.15s; }
+.pytanie-arytm .placeholder { color: var(--tekst3); }
+
+/* Style równań wielomianowych i wzorów */
+.pytanie-poly {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(18px, 5.5vw, 30px);
+  font-weight: 500;
+  color: var(--tekst1);
+  line-height: 1.3;
+}
+sup { font-size: 0.58em; vertical-align: super; line-height: 0; }
+
+/* Podpowiedzi/wzory iloczynowe */
+.podpowiedz-iloczynowa {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(13px, 4vw, 20px);
+  color: var(--tekst2);
+  margin-top: 10px;
+  line-height: 1.4;
+}
+
+/* Miejsce do wpisania brakującej wartości */
+.blank {
+  display: inline-block;
+  min-width: 20px;
+  border-bottom: 1.5px solid var(--akcent);
+  color: var(--akcent);
+  text-align: center;
+  padding: 0 2px;
+  font-weight: 500;
+}
+
+/* ==========================================
+   TRÓJKĄT PITAGORASA (Rysowany w SVG)
+   ========================================== */
+.trojkat-svg {
+  width: 100%;
+  max-width: 240px;
+  margin: 8px auto 0;
+  display: block;
+}
+
+/* Animacja wyskakiwania bonusowych punktów (+20) */
+.pop-animacja {
+  position: absolute;
+  font-family: 'DM Mono', monospace;
+  font-size: 19px;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 5;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+/* ==========================================
+   POLA NA ODPOWIEDZI (NP. X1, X2 LUB BOK A, B)
+   ========================================== */
+.rzad-pol {
+  display: flex;
+  gap: 5px;
+  align-items: stretch;
+  margin-bottom: 8px;
+}
+.taby-pol { display: flex; gap: 6px; margin-bottom: 5px; }
+
+/* Zakładki aktywnych pól */
+.tab-pola {
+  flex: 1;
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 8px;
+  padding: 7px 0;
+  font-size: 11px;
+  color: var(--tekst2);
+  cursor: pointer;
+  text-align: center;
+  touch-action: manipulation;
+  user-select: none;
+  transition: all 0.12s;
+  font-family: 'DM Mono', monospace;
+}
+.tab-pola.aktywny { border-color: var(--akcent); color: var(--akcent); background: rgba(200,200,200,0.07); }
+.tab-pola:active  { opacity: 0.65; }
+
+/* Pola wprowadzania wartości */
+.pole-odpowiedzi {
+  flex: 1;
+  min-width: 0;
+  background: var(--powierzchnia2);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 10px;
+  padding: 9px 10px;
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: border-color 0.15s;
+}
+.pole-odpowiedzi.aktywny { border-color: var(--akcent); }
+
+.etykieta-pola { font-size: 9px; color: var(--tekst3); letter-spacing: 0.1em; text-transform: uppercase; }
+
+.wartosc-pola {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(16px, 5vw, 22px);
+  font-weight: 500;
+  color: var(--tekst1);
+  text-align: right;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.wartosc-pola.placeholder { color: var(--tekst3); }
+
+.separator-pol { align-self: center; color: var(--tekst3); font-size: 13px; flex-shrink: 0; padding: 0 1px; }
+
+/* ==========================================
+   KLAWIATURA NUMERYCZNA (EKRANOWA)
+   ========================================== */
+.klawiatura {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.klawisz {
+  background: var(--powierzchnia1);
+  border: 1.5px solid var(--ramka1);
+  border-radius: 10px;
+  height: 52px;
+  font-family: 'DM Mono', monospace;
+  font-size: 17px;
+  color: var(--tekst1);
+  cursor: pointer;
+  text-align: center;
+  line-height: 52px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: background 0.07s, transform 0.07s;
+}
+.klawisz:active { transform: scale(0.9); background: var(--powierzchnia3); }
+
+.klawisz.znak      { color: var(--zolty); }
+.klawisz.kasowanie { color: var(--czerwony); }
+.klawisz.szerokie  { grid-column: span 2; }
+.klawisz.zatwierdz { background: #fff; color: #111; border-color: #fff; font-size: 19px; }
+.klawisz.zatwierdz:active { background: #ccc; transform: scale(0.9); }
+.klawisz.pominij   { font-size: 11px; color: var(--tekst3); letter-spacing: 0.04em; }
+.klawisz.pominij:active { color: var(--tekst2); transform: scale(0.9); }
+
+/* ==========================================
+   POWIADOMIENIA (TOAST)
+   ========================================== */
+.toast {
+  position: fixed;
+  top: 24%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(16px, 5vw, 24px);
+  color: var(--akcent);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 60;
+  white-space: nowrap;
+}
+@keyframes animacja-toast {
+  0%   { opacity: 0; transform: translateX(-50%) scale(0.7); }
+  20%  { opacity: 1; transform: translateX(-50%) scale(1.05); }
+  70%  { opacity: 1; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) scale(0.88); }
+}
+.toast.widoczny { animation: animacja-toast 1.1s ease forwards; }
