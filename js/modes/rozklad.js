@@ -1,50 +1,4 @@
-// ===========================================
-// TRYB 2: ROZKŁAD KWADRATOWY
-// ===========================================
-// Gracz widzi trójmian (ax² + bx + c = 0) i wyciąga dwa miejsca zerowe
 
-function generujRozklad() {
-  const cfg = POZIOMY[stan.poziom];
-  const wspolczynnik = losujZ(cfg.wspolczynniki);
-
-  const losujPierwiastek = () => {
-    const wartosc = losuj(1, cfg.rozkladMax);
-    const znak = cfg.ujemneRzerwiastki && Math.random() < 0.5 ? -1 : 1;
-    return wartosc * znak;
-  };
-
-  let r1 = losujPierwiastek();
-  let r2 = cfg.podwojnyPierwiastek && Math.random() < 0.2
-    ? r1  // Szansa na podwójny pierwiastek w trudnym poziomie
-    : losujPierwiastek();
-
-  const B = -wspolczynnik * (r1 + r2);
-  const C =  wspolczynnik * r1 * r2;
-
-  stan.pytanie = { r1, r2, wspolczynnik };
-  stan.buforDwa = ['', ''];
-  stan.aktywnePoleDwa = 0;
-
-  // Ukazuje obydwa pola kluczowe (x1, x2) – bo Pitagoras korzysta częściowo z układu
-  polaA[0].style.display = '';
-  polaA[1].style.display = '';
-  
-  const taby = el('tabyA').querySelectorAll('.tab-pola');
-  taby.forEach(t => t.style.display = '');
-
-  const sep = el('klawiaturaPolaA').querySelector('.separator-pol');
-  if (sep) sep.style.display = '';
-
-  etykietaPytania.textContent = 'Miejsca zerowe';
-
-  el('pytanieWielomian').innerHTML = zbudujWielomian(wspolczynnik, B, C);
-  el('podpowiedzIloczynowa').innerHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, false);
-
-  odswiezTabyA(['x₁', 'x₂']);
-  odswiezPolaA();
-}
-
-// Konstrukcja równania typu (w·x² + B·x + C = 0)
 function zbudujWielomian(w, B, C) {
   let html = w === 1 ? `x<sup>2</sup>` : `${w}x<sup>2</sup>`;
   if (B !== 0) {
@@ -56,8 +10,6 @@ function zbudujWielomian(w, B, C) {
   return html + ` ${bDb('= 0')}`;
 }
 
-// Konstrukcja podpowiedzi wpisanej (x - x1)(x - x2) = 0
-// 'ujawnij' - decyduje w zależności czy był błąd wyświetla zielone wartości, czy tylko zarys
 function zbudujPostacIloczynowa(r1, r2, wspolczynnik, ujawnij) {
   const przedrostek = wspolczynnik === 1 ? '' : `${wspolczynnik}`;
 
@@ -79,33 +31,6 @@ function zbudujPostacIloczynowa(r1, r2, wspolczynnik, ujawnij) {
   return `${przedrostek}${nawias(r1, 0)}${nawias(r2, 1)} ${bDb('= 0')}`;
 }
 
-// Globalnie na input values z dwóch tabów
-function odswiezPolaA() {
-  stan.buforDwa.forEach((wartosc, i) => {
-    valA[i].textContent = wartosc || '?';
-    valA[i].className = 'wartosc-pola' + (wartosc ? '' : ' placeholder');
-  });
-  
-  if (stan.trybGry === 'rozklad' && stan.pytanie) {
-    const { r1, r2, wspolczynnik } = stan.pytanie;
-    el('podpowiedzIloczynowa').innerHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, false);
-  }
-  
-  if (stan.trybGry === 'pitagoras' && stan.pytanie) {
-    const odpPit = el('odpPit');
-    const v = stan.buforDwa[0];
-    if (odpPit) {
-      odpPit.textContent = v || '?';
-      odpPit.className = 'odpowiedz' + (v ? '' : ' placeholder');
-    }
-    // Rysowanie dynamicznego SVG wyabstrahowane z plików pitagorasa
-    if(typeof rysujTrojkat === 'function'){
-      rysujTrojkat(stan.pytanie, v, false);
-    }
-  }
-}
-
-// Taby do wprowadzania pól
 function odswiezTabyA(etykiety) {
   etykiety.forEach((et, i) => {
     etA[i].textContent = et;
@@ -118,21 +43,107 @@ function odswiezTabyA(etykiety) {
   });
 }
 
-// Weryfikacja
-function sprawdzRozklad() {
-  const v0 = parseInt(stan.buforDwa[0]);
-  const v1 = parseInt(stan.buforDwa[1]);
-  if (isNaN(v0) || isNaN(v1)) return;
+const modeRozklad = {
+  generuj: function() {
+    const cfg = POZIOMY[stan.poziom];
+    const wspolczynnik = losujZ(cfg.wspolczynniki);
 
-  const { r1, r2, wspolczynnik } = stan.pytanie;
-  const abs1 = Math.abs(r1), abs2 = Math.abs(r2);
-  const ok = (v0 === abs1 && v1 === abs2) || (v0 === abs2 && v1 === abs1); // Dowolna kolejność wprowadzania ok
+    const losujPierwiastek = () => {
+      const wartosc = losuj(1, cfg.rozkladMax);
+      const znak = cfg.ujemneRzerwiastki && Math.random() < 0.5 ? -1 : 1;
+      return wartosc * znak;
+    };
 
-  if (ok) {
-    trafiony();
-  } else {
-    bledny();
-    el('podpowiedzIloczynowa').innerHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, true);
+    let r1 = losujPierwiastek();
+    let r2 = cfg.podwojnyPierwiastek && Math.random() < 0.2 ? r1 : losujPierwiastek();
+
+    const B = -wspolczynnik * (r1 + r2);
+    const C =  wspolczynnik * r1 * r2;
+
+    const rownanieHtml = zbudujWielomian(wspolczynnik, B, C);
+    stan.pytanie = { 
+      r1, r2, wspolczynnik, 
+      text: rownanieHtml.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ') 
+    };
+    stan.buforDwa = ['', ''];
+    stan.aktywnePoleDwa = 0;
+
+    polaA[0].style.display = '';
+    polaA[1].style.display = '';
+    
+    el('tabyA').querySelectorAll('.tab-pola').forEach(t => t.style.display = '');
+
+    const sep = el('klawiaturaPolaA').querySelector('.separator-pol');
+    if (sep) sep.style.display = '';
+
+    etykietaPytania.textContent = 'Miejsca zerowe';
+
+    el('pytanieWielomian').innerHTML = rownanieHtml;
+    el('podpowiedzIloczynowa').innerHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, false);
+
+    odswiezTabyA(['x₁', 'x₂']);
+    this.odswiez();
+  },
+
+  odswiez: function() {
+    stan.buforDwa.forEach((wartosc, i) => {
+      valA[i].textContent = wartosc || '?';
+      valA[i].className = 'wartosc-pola' + (wartosc ? '' : ' placeholder');
+    });
+    
+    if (stan.pytanie) {
+      const { r1, r2, wspolczynnik } = stan.pytanie;
+      el('podpowiedzIloczynowa').innerHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, false);
+    }
+  },
+
+  sprawdz: function() {
+    const v0 = parseInt(stan.buforDwa[0]);
+    const v1 = parseInt(stan.buforDwa[1]);
+    if (isNaN(v0) || isNaN(v1)) return;
+
+    const { r1, r2, wspolczynnik } = stan.pytanie;
+    const abs1 = Math.abs(r1), abs2 = Math.abs(r2);
+    const ok = (v0 === abs1 && v1 === abs2) || (v0 === abs2 && v1 === abs1);
+
+    if (ok) {
+      trafiony();
+    } else {
+      const dobraOdpHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, true);
+      bledny(stan.pytanie.text, dobraOdpHTML.replace(/<[^>]*>?/gm, ''));
+      el('podpowiedzIloczynowa').innerHTML = dobraOdpHTML;
+    }
+    setTimeout(() => { if (stan.gra) nastepnePytanie(); }, ok ? 160 : 1200);
+  },
+
+  ujawnij: function() {
+    const { r1, r2, wspolczynnik } = stan.pytanie;
+    const odp = zbudujPostacIloczynowa(r1, r2, wspolczynnik, true);
+    el('podpowiedzIloczynowa').innerHTML = odp;
+    return { q: stan.pytanie.text, a: odp.replace(/<[^>]*>?/gm, '') };
+  },
+
+  wcisnieto: function(akcja) {
+    const f = stan.aktywnePoleDwa;
+    if (akcja === 'ok') {
+      this.sprawdz();
+    } else if (akcja === 'skip') {
+      pominPytanie();
+    } else if (akcja === 'clr') {
+      stan.buforDwa[f] = ''; this.odswiez();
+    } else if (akcja === 'del') {
+      stan.buforDwa[f] = stan.buforDwa[f].slice(0, -1); this.odswiez();
+    } else if (akcja === '-') {
+      stan.buforDwa[f] = zmienZnak(stan.buforDwa[f]); this.odswiez();
+    } else if (stan.buforDwa[f].replace('-', '').length < 3) {
+      stan.buforDwa[f] += akcja;
+      this.odswiez();
+    }
+  },
+  
+  tab: function() {
+    stan.aktywnePoleDwa = (stan.aktywnePoleDwa + 1) % 2; 
+    odswiezTabyA(['x₁', 'x₂']); 
+    this.odswiez();
   }
-  setTimeout(() => { if (stan.gra) nastepnePytanie(); }, ok ? 160 : 1200);
-}
+};

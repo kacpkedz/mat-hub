@@ -1,102 +1,109 @@
-// ===========================================
-// LOSOWANIE NASTĘPNEGO PYTANIA
-// ===========================================
+
+
+const modyGry = {
+  dzialania: modeDzialania,
+  rozklad: modeRozklad,
+  wzory: modeWzory,
+  pitagoras: modePitagoras,
+  ulamki: modeUlamki,
+  procenty: modeProcenty
+};
+
+const getActiveMode = () => modyGry[stan.trybGry];
 
 function nastepnePytanie() {
-  // Losowanie trybu na podstawie odznaczonych kart
   const dostepne = stan.aktywneTypy.length ? stan.aktywneTypy : ['dzialania'];
   stan.trybGry = losujZ(dostepne);
 
-  // Manipulacja stylami poszczególnych widoków dla wybranego trybu
   widokDzialania.style.display  = stan.trybGry === 'dzialania'  ? '' : 'none';
   widokRozklad.style.display    = stan.trybGry === 'rozklad'    ? '' : 'none';
   widokWzory.style.display      = stan.trybGry === 'wzory'      ? '' : 'none';
   widokPitagoras.style.display  = stan.trybGry === 'pitagoras'  ? '' : 'none';
+  widokUlamki.style.display     = stan.trybGry === 'ulamki'     ? '' : 'none';
+  widokProcenty.style.display   = stan.trybGry === 'procenty'   ? '' : 'none';
 
-  klawiaturaDzialania.style.display = stan.trybGry === 'dzialania'  ? '' : 'none';
-  klawiaturaPolaA.style.display     = (stan.trybGry === 'rozklad' || stan.trybGry === 'pitagoras') ? '' : 'none';
+  klawiaturaDzialania.style.display = (stan.trybGry === 'dzialania' || stan.trybGry === 'procenty') ? '' : 'none';
+  klawiaturaPolaA.style.display     = (stan.trybGry === 'rozklad' || stan.trybGry === 'pitagoras' || stan.trybGry === 'ulamki') ? '' : 'none';
   klawiaturaPolaB.style.display     = stan.trybGry === 'wzory'      ? '' : 'none';
 
-  // Inicjalizacja wybranego trybu z zaimportowanych plików z katalogu "modes/"
-  if      (stan.trybGry === 'dzialania')  generujDzialanie();
-  else if (stan.trybGry === 'rozklad')    generujRozklad();
-  else if (stan.trybGry === 'wzory')      generujWzory();
-  else if (stan.trybGry === 'pitagoras')  generujPitagoras();
+  getActiveMode().generuj();
 }
 
-// ===========================================
-// PODSUMOWANIE POZA KLAWIATURAMI / POMIJANIE
-// ===========================================
-
-// Klawisz "Skip" do ominięcia pytania bez pkt 
 function pominPytanie() {
   if (!stan.gra) return;
-  bledny();
+  const aktywny = getActiveMode();
+  let ujawnione = null;
 
-  // Odsłonięcie poprawnego wzoru
-  if (stan.trybGry === 'dzialania') {
-    const odp = el('odp');
-    if (odp) { odp.textContent = stan.pytanie.odpowiedz; odp.className = 'odpowiedz'; }
-  } else if (stan.trybGry === 'rozklad') {
-    const { r1, r2, wspolczynnik } = stan.pytanie;
-    el('podpowiedzIloczynowa').innerHTML = zbudujPostacIloczynowa(r1, r2, wspolczynnik, true);
-  } else if (stan.trybGry === 'wzory') {
-    ujawnijWzory();
-  } else if (stan.trybGry === 'pitagoras') {
-    const odpPit = el('odpPit');
-    if (odpPit) {
-      odpPit.innerHTML = zielony(stan.pytanie.szukanaWartosc);
-      odpPit.classList.remove('placeholder');
-    }
-    rysujTrojkat(stan.pytanie, null, true);
-  }
+  if (aktywny.ujawnij) ujawnione = aktywny.ujawnij();
 
-  // Wymuszone opóźnienie dla pokazania rozwiązania
+  let uq = ujawnione ? ujawnione.q : "Pominięto pytanie";
+  let ua = ujawnione ? ujawnione.a : "-";
+  
+  bledny(uq, ua);
   setTimeout(() => { if (stan.gra) nastepnePytanie(); }, 1100);
 }
 
-// Punktacja za pozytywny sygnał od wywołanego trybu gry
 function trafiony() {
   stan.streak++;
   stan.poprawne++;
   if (stan.streak > stan.maxStreak) stan.maxStreak = stan.streak;
+  
+  if (stan.maxStreak > stan.maxComboZapisane) {
+    stan.maxComboZapisane = stan.maxStreak;
+    try { zapiszProfil(); } catch(e){}
+  }
 
   stan.mnoznikKombo = Math.floor(stan.streak / 5) + 1;
 
-  // Nagroda różniąca się zależnie od stopnia trudności trybu gry
-  const bazowePunkty = stan.trybGry === 'dzialania' ? 10 : 20;
+  let bazowePunkty = 10;
+  if (stan.trybGry === 'pitagoras' || stan.trybGry === 'rozklad') bazowePunkty = 20;
+  if (stan.trybGry === 'wzory') bazowePunkty = 30;
+  
   const zdobyte = bazowePunkty * stan.mnoznikKombo;
-
   stan.punkty += zdobyte;
+  
+  if (stan.punkty > stan.maxPunktyZapisane) {
+    stan.maxPunktyZapisane = stan.punkty;
+    try { zapiszProfil(); } catch(e){}
+  }
+
   licznikPunktow.textContent = stan.punkty;
 
   animacjaPop(`+${zdobyte}`, 'var(--zielony)');
   migniecie('trafiony');
   odswiezStreak();
+  playSound('pop');
 
-  // Wibracje zarezerwowane na urządzenia dotykowe
   if (navigator.vibrate) navigator.vibrate(22);
-  if (stan.streak > 0 && stan.streak % 5 === 0) pokazToast(`×${stan.mnoznikKombo} combo`);
+  if (stan.streak > 0 && stan.streak % 5 === 0) {
+    pokazToast(`×${stan.mnoznikKombo} combo`);
+    playSound('combo');
+  }
   if (stan.mnoznikKombo >= 2) startujTimerKombo();
 }
 
-// Skasowanie mnożnika kombo za błędną logikę od wywołanego trybu gry
-function bledny() {
+function bledny(pytanieInfo, podpowiedzInfo) {
+  if (!stan.gra) return;
   stan.bledne++;
   stan.streak = 0;
   stan.mnoznikKombo = 1;
 
+  if (pytanieInfo && podpowiedzInfo) {
+    stan.historiaBledow.push({ 
+      pytanie: pytanieInfo, 
+      poprawnie: (podpowiedzInfo !== '-' && podpowiedzInfo) ? podpowiedzInfo : null 
+    });
+    if (stan.historiaBledow.length > 12) stan.historiaBledow.shift();
+  }
+
+  zatrzymajTimerKombo();
   animacjaPop('✕', 'var(--czerwony)');
   migniecie('bledny');
   odswiezStreak();
-  zatrzymajTimerKombo();
+  playSound('error');
 
   if (navigator.vibrate) navigator.vibrate([40, 15, 40]);
 }
-
-// ===========================================
-// START, PODSUMOWANI WYNIKÓW I MENU STARTOWE
-// ===========================================
 
 function rozpocznijGre() {
   stan.punkty = 0;
@@ -106,6 +113,7 @@ function rozpocznijGre() {
   stan.bledne = 0;
   stan.mnoznikKombo = 1;
   stan.gra = true;
+  stan.historiaBledow = []; // Czyszczenie błędów z poprzedniej gry
 
   licznikPunktow.textContent = '0';
   kropki.forEach(k => k.classList.remove('aktywna'));
@@ -116,6 +124,26 @@ function rozpocznijGre() {
   ekranWyniki.classList.add('ukryty');
 
   nastepnePytanie();
+  playSound('pop');
+}
+
+function rysujBledy() {
+  const listaBledow = el('listaBledow');
+  const kontener = el('kontenerBledow');
+  kontener.innerHTML = '';
+  
+  if (stan.historiaBledow.length === 0) {
+    listaBledow.classList.add('ukryty');
+    return;
+  }
+  
+  listaBledow.classList.remove('ukryty');
+  stan.historiaBledow.forEach(blad => {
+    const wiersz = document.createElement('div');
+    wiersz.className = 'blad-wiersz';
+    wiersz.innerHTML = `${blad.pytanie} → <span style="color:var(--zielony)">${blad.poprawnie}</span>`;
+    kontener.appendChild(wiersz);
+  });
 }
 
 function pokazWyniki() {
@@ -145,8 +173,12 @@ function pokazWyniki() {
   }
   el('wynikKomunikat').textContent = komunikat;
 
+  rysujBledy();
+
   ekranWyniki.classList.remove('ukryty');
   if (navigator.vibrate) navigator.vibrate([50, 30, 50, 30, 80]);
+  
+  odswiezMenuWyniki(); 
 }
 
 function wrocDoMenu() {
@@ -156,16 +188,28 @@ function wrocDoMenu() {
   ekranMenu.classList.remove('ukryty');
 }
 
-// ===========================================
-// DEKLARACJA NASŁUCHIWACZY MENU START
-// ===========================================
+function odswiezMenuWyniki() {
+  if (stan.maxPunktyZapisane > 0 || stan.maxComboZapisane > 0) {
+    najlepszeWyniki.style.display = 'block';
+    maxImie.textContent = stan.gracz;
+    maxPkt.textContent = stan.maxPunktyZapisane;
+    maxCmb.textContent = stan.maxComboZapisane;
+  } else {
+    najlepszeWyniki.style.display = 'none';
+  }
+}
 
+// Inicjalizacja menu
+nazwaGraczaInput.value = stan.gracz;
+nazwaGraczaInput.addEventListener('input', (e) => {
+  zalogujProfil(e.target.value);
+  odswiezMenuWyniki();
+});
 el('btnGraj').addEventListener('click', rozpocznijGre);
 el('btnJeszczeRaz').addEventListener('click', rozpocznijGre);
 el('btnDoMenu').addEventListener('click', wrocDoMenu);
 el('btnMenu').addEventListener('click', pokazWyniki);
 
-// Zbijanie focusa z innych przycisków wyboru poziomu (Tylko najnowszy przycisk staje sie AKTYWNY)
 el('przyciskiPoziomu').querySelectorAll('.pigulka').forEach(btn => {
   btn.addEventListener('click', () => {
     el('przyciskiPoziomu').querySelectorAll('.pigulka').forEach(b => b.classList.remove('aktywny'));
@@ -174,45 +218,40 @@ el('przyciskiPoziomu').querySelectorAll('.pigulka').forEach(btn => {
   });
 });
 
-// Zapamiętywanie wyboru operacji arytmetycznych w state
 el('przyciskiDzialan').querySelectorAll('.przycisk-dzialania').forEach(btn => {
   btn.addEventListener('click', () => {
     btn.classList.toggle('aktywny');
     const aktywne = [...el('przyciskiDzialan').querySelectorAll('.przycisk-dzialania.aktywny')].map(b => b.dataset.op);
-    if (!aktywne.length) { btn.classList.add('aktywny'); return; } // Wymagany minimum jeden operator
+    if (!aktywne.length) { btn.classList.add('aktywny'); return; }
     stan.aktywneOperatory = aktywne;
   });
 });
 
-// Zapamiętywanie logiki zaznaczonych trybów
 el('listaTrybow').querySelectorAll('.tryb').forEach(btn => {
   btn.addEventListener('click', () => {
     btn.classList.toggle('aktywny');
     const aktywne = [...el('listaTrybow').querySelectorAll('.tryb.aktywny')].map(b => b.dataset.tryb);
     if (!aktywne.length) { btn.classList.add('aktywny'); return; }
     stan.aktywneTypy = aktywne;
-    // Blokowanie działań jeżeli tryb Działań jest opadnięty
     el('opcje-dzialan').classList.toggle('wyszarzony', !aktywne.includes('dzialania'));
   });
 });
 
-// ===========================================
-// PWA ORAZ ZABEZPIECZENIA DOTYKU
-// ===========================================
-
+// Zabezpieczenia PWA
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
 
-// Tłumienie przypadkowego zoomowania interfejsu PWA poprzez Multi-Touch Pinch
 document.addEventListener('touchmove', e => {
   if (e.touches.length > 1) e.preventDefault();
 }, { passive: false });
 
-// Tłumienie podwójnego ztapowania i efektu powiększania ekranu
 let ostatniDotyk = 0;
 document.addEventListener('touchend', e => {
   const teraz = Date.now();
-  if (teraz - ostatniDotyk < 280 && e.target.tagName !== 'INPUT') e.preventDefault();
+  if (teraz - ostatniDotyk < 280 && e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') e.preventDefault();
   ostatniDotyk = teraz;
 }, { passive: false });
+
+initKeyboard();
+odswiezMenuWyniki();

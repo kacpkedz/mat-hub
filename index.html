@@ -23,6 +23,11 @@
 <div class="ekran" id="ekranMenu">
 
   <div class="tytul">mat-hub</div>
+  
+  <div class="zaloguj-gracza" style="text-align: center; margin-bottom: 6px;">
+    <label for="nazwaGracza" style="color:var(--tekst2); font-size:11px;">Grasz jako:</label>
+    <input type="text" id="nazwaGracza" placeholder="Imię" value="Gość" style="background:transparent; border:none; border-bottom:1px solid var(--tekst3); color:var(--zielony); font-family:inherit; font-size:16px; width:120px; text-align:center; outline:none; padding:2px;" maxlength="12">
+  </div>
 
   <div class="menu-srodek">
 
@@ -43,6 +48,14 @@
       <div class="tryb aktywny" data-tryb="pitagoras">
         <div class="tryb-ikona">△</div>
         <div class="tryb-nazwa">Pitagoras</div>
+      </div>
+      <div class="tryb aktywny" data-tryb="ulamki">
+        <div class="tryb-ikona">½</div>
+        <div class="tryb-nazwa">Ułamki</div>
+      </div>
+      <div class="tryb aktywny" data-tryb="procenty">
+        <div class="tryb-ikona">%</div>
+        <div class="tryb-nazwa">Procenty</div>
       </div>
     </div>
 
@@ -70,6 +83,7 @@
   </div>
 
   <div class="menu-dol">
+    <div id="najlepszeWyniki" style="text-align: center; font-size: 11px; margin-bottom: 12px; color:var(--tekst2);">Najlepszy wynik (<span id="maxImie"></span>): <span id="maxPkt" style="color:var(--zielony)">0</span> <span style="margin:0 6px">|</span> Max combo: <span id="maxCmb" style="color:var(--akcent)">0</span></div>
     <button class="btn" id="btnGraj">Graj</button>
   </div>
 
@@ -88,8 +102,14 @@
       <div class="kafelek-wyniku"><div class="wartosc-wyniku" id="wynikKombo">0</div><div class="etykieta-wyniku">Max combo</div></div>
     </div>
     <div style="font-size:13px;color:var(--zolty);text-align:center" id="wynikKomunikat"></div>
-    <button class="btn" id="btnJeszczeRaz">Jeszcze raz</button>
-    <button class="btn duch" id="btnDoMenu">←  Menu</button>
+    <div id="listaBledow" class="ukryty">
+      <div class="bledy-tytul">Czego się nauczyłeś:</div>
+      <div id="kontenerBledow"></div>
+    </div>
+    <div style="margin-top:4px; width: 100%">
+      <button class="btn" id="btnJeszczeRaz" style="margin-bottom:8px">Jeszcze raz</button>
+      <button class="btn duch" id="btnDoMenu">←  Menu</button>
+    </div>
   </div>
 </div>
 
@@ -141,7 +161,17 @@
     <div id="widokPitagoras" style="display:none">
       <div class="pytanie-poly" id="pytaniePitagoras"></div>
       <!-- SVG trójkąt rysowany dynamicznie -->
-      <svg class="trojkat-svg" id="trojkatSVG" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg"></svg>
+      <svg class="trojkat-svg" id="trojkatSVG" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <!-- widok: ułamki -->
+    <div id="widokUlamki" style="display:none">
+      <div class="pytanie-arytm" id="pytanieUlamki"></div>
+    </div>
+
+    <!-- widok: procenty -->
+    <div id="widokProcenty" style="display:none">
+      <div class="pytanie-arytm" id="pytanieProcenty"></div>
     </div>
 
     <!-- animacja pop (np. "+20") -->
@@ -151,21 +181,21 @@
   <!-- ── KLAWIATURA: działania (jedno pole) ── -->
   <div id="klawiaturaDzialania">
     <div class="klawiatura">
-      <div class="klawisz" data-akcja="7">7</div>
-      <div class="klawisz" data-akcja="8">8</div>
-      <div class="klawisz" data-akcja="9">9</div>
-      <div class="klawisz znak" data-akcja="-">±</div>
-      <div class="klawisz" data-akcja="4">4</div>
-      <div class="klawisz" data-akcja="5">5</div>
-      <div class="klawisz" data-akcja="6">6</div>
-      <div class="klawisz kasowanie" data-akcja="del">⌫</div>
-      <div class="klawisz" data-akcja="1">1</div>
-      <div class="klawisz" data-akcja="2">2</div>
-      <div class="klawisz" data-akcja="3">3</div>
-      <div class="klawisz kasowanie" data-akcja="clr">C</div>
-      <div class="klawisz szerokie" data-akcja="0">0</div>
-      <div class="klawisz pominij" data-akcja="skip">skip</div>
-      <div class="klawisz zatwierdz" data-akcja="ok">↵</div>
+      <button type="button" class="klawisz" data-akcja="7">7</button>
+      <button type="button" class="klawisz" data-akcja="8">8</button>
+      <button type="button" class="klawisz" data-akcja="9">9</button>
+      <button type="button" class="klawisz znak" data-akcja="-">±</button>
+      <button type="button" class="klawisz" data-akcja="4">4</button>
+      <button type="button" class="klawisz" data-akcja="5">5</button>
+      <button type="button" class="klawisz" data-akcja="6">6</button>
+      <button type="button" class="klawisz kasowanie" data-akcja="del">⌫</button>
+      <button type="button" class="klawisz" data-akcja="1">1</button>
+      <button type="button" class="klawisz" data-akcja="2">2</button>
+      <button type="button" class="klawisz" data-akcja="3">3</button>
+      <button type="button" class="klawisz kasowanie" data-akcja="clr">C</button>
+      <button type="button" class="klawisz szerokie" data-akcja="0">0</button>
+      <button type="button" class="klawisz pominij" data-akcja="skip">skip</button>
+      <button type="button" class="klawisz zatwierdz" data-akcja="ok">↵</button>
     </div>
   </div>
 
@@ -187,21 +217,21 @@
       </div>
     </div>
     <div class="klawiatura">
-      <div class="klawisz" data-b="7">7</div>
-      <div class="klawisz" data-b="8">8</div>
-      <div class="klawisz" data-b="9">9</div>
-      <div class="klawisz znak" data-b="-">±</div>
-      <div class="klawisz" data-b="4">4</div>
-      <div class="klawisz" data-b="5">5</div>
-      <div class="klawisz" data-b="6">6</div>
-      <div class="klawisz kasowanie" data-b="del">⌫</div>
-      <div class="klawisz" data-b="1">1</div>
-      <div class="klawisz" data-b="2">2</div>
-      <div class="klawisz" data-b="3">3</div>
-      <div class="klawisz kasowanie" data-b="clr">C</div>
-      <div class="klawisz szerokie" data-b="0">0</div>
-      <div class="klawisz pominij" data-b="skip">skip</div>
-      <div class="klawisz zatwierdz" data-b="ok">↵</div>
+      <button type="button" class="klawisz" data-b="7">7</button>
+      <button type="button" class="klawisz" data-b="8">8</button>
+      <button type="button" class="klawisz" data-b="9">9</button>
+      <button type="button" class="klawisz znak" data-b="-">±</button>
+      <button type="button" class="klawisz" data-b="4">4</button>
+      <button type="button" class="klawisz" data-b="5">5</button>
+      <button type="button" class="klawisz" data-b="6">6</button>
+      <button type="button" class="klawisz kasowanie" data-b="del">⌫</button>
+      <button type="button" class="klawisz" data-b="1">1</button>
+      <button type="button" class="klawisz" data-b="2">2</button>
+      <button type="button" class="klawisz" data-b="3">3</button>
+      <button type="button" class="klawisz kasowanie" data-b="clr">C</button>
+      <button type="button" class="klawisz szerokie" data-b="0">0</button>
+      <button type="button" class="klawisz pominij" data-b="skip">skip</button>
+      <button type="button" class="klawisz zatwierdz" data-b="ok">↵</button>
     </div>
   </div>
 
@@ -229,35 +259,38 @@
       </div>
     </div>
     <div class="klawiatura">
-      <div class="klawisz" data-c="7">7</div>
-      <div class="klawisz" data-c="8">8</div>
-      <div class="klawisz" data-c="9">9</div>
-      <div class="klawisz znak" data-c="-">±</div>
-      <div class="klawisz" data-c="4">4</div>
-      <div class="klawisz" data-c="5">5</div>
-      <div class="klawisz" data-c="6">6</div>
-      <div class="klawisz kasowanie" data-c="del">⌫</div>
-      <div class="klawisz" data-c="1">1</div>
-      <div class="klawisz" data-c="2">2</div>
-      <div class="klawisz" data-c="3">3</div>
-      <div class="klawisz kasowanie" data-c="clr">C</div>
-      <div class="klawisz szerokie" data-c="0">0</div>
-      <div class="klawisz pominij" data-c="skip">skip</div>
-      <div class="klawisz zatwierdz" data-c="ok">↵</div>
+      <button type="button" class="klawisz" data-c="7">7</button>
+      <button type="button" class="klawisz" data-c="8">8</button>
+      <button type="button" class="klawisz" data-c="9">9</button>
+      <button type="button" class="klawisz znak" data-c="-">±</button>
+      <button type="button" class="klawisz" data-c="4">4</button>
+      <button type="button" class="klawisz" data-c="5">5</button>
+      <button type="button" class="klawisz" data-c="6">6</button>
+      <button type="button" class="klawisz kasowanie" data-c="del">⌫</button>
+      <button type="button" class="klawisz" data-c="1">1</button>
+      <button type="button" class="klawisz" data-c="2">2</button>
+      <button type="button" class="klawisz" data-c="3">3</button>
+      <button type="button" class="klawisz kasowanie" data-c="clr">C</button>
+      <button type="button" class="klawisz szerokie" data-c="0">0</button>
+      <button type="button" class="klawisz pominij" data-c="skip">skip</button>
+      <button type="button" class="klawisz zatwierdz" data-c="ok">↵</button>
     </div>
   </div>
 
 </div><!-- koniec .wrap -->
 
-<!-- Referencje do aplikacji z modułów -->
+<!-- Referencje do powiązanych skryptów (kolejność jest ważna) -->
 <script src="js/state.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/audio.js"></script>
 <script src="js/modes/dzialania.js"></script>
 <script src="js/modes/rozklad.js"></script>
 <script src="js/modes/wzory.js"></script>
 <script src="js/modes/pitagoras.js"></script>
-<script src="js/app.js"></script>
+<script src="js/modes/ulamki.js"></script>
+<script src="js/modes/procenty.js"></script>
 <script src="js/keyboard.js"></script>
+<script src="js/app.js"></script>
 
 </body>
 </html>

@@ -1,72 +1,98 @@
 // ===========================================
 // KONFIGURACJA POZIOMÓW TRUDNOŚCI
 // ===========================================
-// Konfiguracja wartości używanych na danym poziomie trudności
 
 const POZIOMY = {
   latwy: {
-    dzialanieMax: 12,      // Maksymalna liczba w dodawaniu/odejmowaniu
-    mnozeniMax:   10,      // Maksymalna liczba w mnożeniu
-    dzielenieMax: 10,      // Maksymalny dzielnik/wynik w dzieleniu
-    rozkladMax:   7,       // Maksymalny pierwiastek w rozkładzie
-    wspolczynniki: [1],    // Tylko x² (brak 2x², 3x²)
-    ujemneRzerwiastki: false, // Brak ujemnych pierwiastków
-    podwojnyPierwiastek: false, // Brak (x-a)²
-    wzoryMax:     7,       // Maksymalne 'b' we wzorach skróconego mnożenia
-    pitagorasMax: 15,      // Maksymalna długość boku w twierdzeniu Pitagorasa
+    dzialanieMax: 12,      
+    mnozeniMax:   10,      
+    dzielenieMax: 10,      
+    rozkladMax:   5,       
+    wspolczynniki: [1],    
+    ujemneRzerwiastki: false, 
+    podwojnyPierwiastek: false, 
+    wzoryMax:     5,       
+    pitagorasMax: 15,
+    ulamkiMax:    10,
+    procentyTypy: ['latwe']
   },
   sredni: {
-    dzialanieMax: 20,
+    dzialanieMax: 30,
     mnozeniMax:   12,
     dzielenieMax: 12,
+    rozkladMax:   7,
+    wspolczynniki: [1, 2],
+    ujemneRzerwiastki: true,
+    podwojnyPierwiastek: false,
+    wzoryMax:     8,
+    pitagorasMax: 20,
+    ulamkiMax:    25,
+    procentyTypy: ['latwe', 'srednie']
+  },
+  trudny: {
+    dzialanieMax: 50,
+    mnozeniMax:   15,
+    dzielenieMax: 15,
     rozkladMax:   10,
     wspolczynniki: [1, 2, 3],
     ujemneRzerwiastki: true,
-    podwojnyPierwiastek: false,
-    wzoryMax:     9,
-    pitagorasMax: 25,
-  },
-  trudny: {
-    dzialanieMax: 30,
-    mnozeniMax:   15,
-    dzielenieMax: 15,
-    rozkladMax:   12,
-    wspolczynniki: [1, 2, 3, 5],
-    ujemneRzerwiastki: true,
     podwojnyPierwiastek: true,
-    wzoryMax:     9,
-    pitagorasMax: 40,
+    wzoryMax:     12,
+    pitagorasMax: 30,
+    ulamkiMax:    50,
+    procentyTypy: ['srednie', 'trudne', 'odwrotne']
   },
 };
 
 // ===========================================
 // STAN GRY
 // ===========================================
-// Główny obiekt przechowujący logikę aktualnej rozgrywki
+
+// Profile z przeglądarki
+const domyslnyGracz = localStorage.getItem('matHub_ostatniGracz') || 'Gość';
 
 const stan = {
   // Postęp sesji
   punkty:      0,
-  streak:      0,   // Ilość poprawnych odpowiedzi z rzędu
-  maxStreak:   0,   // Najwyższy kombos
+  streak:      0,   
+  maxStreak:   0,   
   poprawne:    0,
   bledne:      0,
-  mnoznikKombo: 1,  // ×1, ×2, ×3... rośnie co 5 poprawnych
+  mnoznikKombo: 1,  
+
+  // Statystyki spięte z kontem LocalStorage
+  gracz: domyslnyGracz,
+  maxPunktyZapisane: parseInt(localStorage.getItem(`matHub_maxPkt_${domyslnyGracz}`)) || 0,
+  maxComboZapisane:  parseInt(localStorage.getItem(`matHub_maxCmb_${domyslnyGracz}`)) || 0,
+  
+  historiaBledow: [], 
 
   // Ustawienia menu
   poziom:      'latwy',
   aktywneOperatory: ['+', '−', '×', '÷'],
-  aktywneTypy:      ['dzialania', 'rozklad', 'wzory', 'pitagoras'],
+  aktywneTypy:      ['dzialania', 'rozklad', 'wzory', 'pitagoras', 'ulamki', 'procenty'],
 
   // Aktualne Pytanie
-  trybGry:   'dzialania', // Wylosowany tryb
-  pytanie:   null,        // Dane pytania po wylosowaniu
-  gra:       false,       // Flaga aktywności gry
+  trybGry:   'dzialania', 
+  pytanie:   null,        
+  gra:       false,       
 
-  // Miejsce na wpisywane wartości przez użytkownika
-  buforJeden:  '',            // Wykorzystywane przez klawiaturę 1-polową (działania)
-  buforDwa:    ['', ''],      // Wykorzystywane przez klawiaturę 2-polową (rozkład, pitagoras)
-  aktywnePoleDwa: 0,          // Zaznaczony input 2-polowy
-  buforTrzy:   ['', '', ''],  // Wykorzystywane przez klawiaturę 3-polową (wzory)
-  aktywnePoleTrzy: 0,         // Zaznaczony input 3-polowy
+  buforJeden:  '',            
+  buforDwa:    ['', ''],      
+  aktywnePoleDwa: 0,          
+  buforTrzy:   ['', '', ''],  
+  aktywnePoleTrzy: 0,         
 };
+
+function zalogujProfil(imie) {
+  const nowyWpis = imie.trim() || 'Gość';
+  stan.gracz = nowyWpis;
+  localStorage.setItem('matHub_ostatniGracz', nowyWpis);
+  stan.maxPunktyZapisane = parseInt(localStorage.getItem(`matHub_maxPkt_${nowyWpis}`)) || 0;
+  stan.maxComboZapisane = parseInt(localStorage.getItem(`matHub_maxCmb_${nowyWpis}`)) || 0;
+}
+
+function zapiszProfil() {
+  localStorage.setItem(`matHub_maxPkt_${stan.gracz}`, stan.maxPunktyZapisane);
+  localStorage.setItem(`matHub_maxCmb_${stan.gracz}`, stan.maxComboZapisane);
+}

@@ -1,3 +1,4 @@
+
 // ===========================================
 // NARZĘDZIA POMOCNICZE
 // ===========================================
@@ -23,6 +24,14 @@ const widokDzialania     = el('widokDzialania');
 const widokRozklad       = el('widokRozklad');
 const widokWzory         = el('widokWzory');
 const widokPitagoras     = el('widokPitagoras');
+const widokUlamki        = el('widokUlamki');
+const widokProcenty      = el('widokProcenty');
+
+const nazwaGraczaInput   = el('nazwaGracza');
+const maxImie            = el('maxImie');
+const maxPkt             = el('maxPkt');
+const maxCmb             = el('maxCmb');
+const najlepszeWyniki    = el('najlepszeWyniki');
 
 // Kontenery klawiatur ekranowych
 const klawiaturaDzialania = el('klawiaturaDzialania');
@@ -140,7 +149,6 @@ function pokazToast(komunikat) {
 // ===========================================
 // TIMER BONUSU COMBO
 // ===========================================
-// Gracz ma ograniczony czas do zdobycia następnych mnożników kombo
 
 const CZAS_KOMBO = 8; // Opóźnienie wygaśnięcia
 let timerKombo = null;

@@ -1,47 +1,36 @@
-const VER = 'ma-v4';
-const ASSETS = [
-  './',
-  './index.html',
-  './style.css',
-  './js/state.js',
-  './js/utils.js',
-  './js/modes/dzialania.js',
-  './js/modes/rozklad.js',
-  './js/modes/wzory.js',
-  './js/modes/pitagoras.js',
-  './js/app.js',
-  './js/keyboard.js',
-  './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
-];
+const CACHE_NAME = 'mat-hub-v7';
 
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(VER).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
-  );
+self.addEventListener('install', event => {
+  self.skipWaiting(); // Natychmiastowa aktywacja nowego pliku SW
 });
 
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== VER).map(k => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener('fetch', e => {
-  // Tylko GET, tylko same-origin lub assets
-  if (e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(res => {
-        if (!res || res.status !== 200 || res.type === 'opaque') return res;
-        const clone = res.clone();
-        caches.open(VER).then(c => c.put(e.request, clone));
-        return res;
-      }).catch(() => caches.match('./index.html'));
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+      );
     })
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  
+  // STRATEGIA NETWORK-FIRST (Dla deweloperów i częstych aktualizacji na Github Pages)
+  event.respondWith(
+    fetch(event.request)
+      .then(networkResponse => {
+        // Zapisanie świeżego pliku do pamięci offline zaraz po jego poprawnym zaciągnięciu
+        return caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, networkResponse.clone());
+          return networkResponse;
+        });
+      })
+      .catch(() => {
+        // Fallback do zbuforowanych na urządzeniu plików JEDYNIE podczas totalnego braku neta po stronie użytkownika
+        return caches.match(event.request);
+      })
   );
 });
